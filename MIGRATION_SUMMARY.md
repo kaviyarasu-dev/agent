@@ -25,7 +25,6 @@
 - ✅ Included feature flags for rate limiting, caching, and logging
 
 ### 5. **New Features Added**
-- ✅ Created `PassportRedirectTrait` for Laravel Passport integration
 - ✅ Added support for runtime provider switching
 - ✅ Implemented proper streaming support for text generation
 - ✅ Added comprehensive method implementations for all providers
@@ -113,8 +112,6 @@ WebsiteLearners/ai-agent/
 │   │       └── Storyboard/
 │   │           ├── CharacterService.php
 │   │           └── ShotService.php
-│   ├── Traits/
-│   │   └── PassportRedirectTrait.php
 │   ├── AIAgent.php
 │   └── AIAgentServiceProvider.php
 ├── tests/

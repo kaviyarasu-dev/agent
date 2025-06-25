@@ -76,22 +76,6 @@ $imageUrl = AIAgent::image()->generateImage('A futuristic city at sunset');
 $response = AIAgent::provider('openai')->text()->generateText('Hello world');
 ```
 
-### Using the PassportRedirectTrait
-
-```php
-use WebsiteLearners\AIAgent\Traits\PassportRedirectTrait;
-
-class YourController extends Controller
-{
-    use PassportRedirectTrait;
-
-    public function handleAuth()
-    {
-        return redirect($this->getPassportRedirectUrl());
-    }
-}
-```
-
 ### Advanced Usage
 
 #### Working with Specific Models

@@ -13,7 +13,6 @@ All notable changes to `ai-agent` will be documented in this file.
 - Improved test structure using Pest PHP
 
 ### Added
-- PassportRedirectTrait for Laravel Passport integration
 - Comprehensive GitHub Actions workflows
 - Better configuration options for modules
 - Support for fallback providers
