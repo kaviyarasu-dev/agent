@@ -7,6 +7,7 @@ namespace WebsiteLearners\AIAgent;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 use WebsiteLearners\AIAgent\Commands\AIAgentCommand;
+use WebsiteLearners\AIAgent\Commands\MakeAiAgentCommand;
 use WebsiteLearners\AIAgent\Config\AIConfigManager;
 use WebsiteLearners\AIAgent\Contracts\Services\ImageServiceInterface;
 use WebsiteLearners\AIAgent\Contracts\Services\TextServiceInterface;
@@ -32,7 +33,10 @@ class AIAgentServiceProvider extends PackageServiceProvider
             ->hasConfigFile('ai-agent')
             ->hasViews()
             ->hasMigration('create_ai_agent_table')
-            ->hasCommand(AIAgentCommand::class);
+            ->hasCommands([
+                AIAgentCommand::class,
+                MakeAiAgentCommand::class,
+            ]);
     }
 
     public function packageRegistered(): void

@@ -1,0 +1,103 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\AI\Traits;
+
+use Illuminate\Support\Facades\Log;
+
+/**
+ * Trait LogsAIUsage
+ *
+ * Provides logging functionality for AI service usage.
+ * Logs requests, responses, errors, and performance metrics.
+ */
+trait LogsAIUsage
+{
+    /**
+     * Log an AI request.
+     *
+     * @param  string  $service
+     * @param  string  $method
+     * @param  array  $parameters
+     * @return void
+     */
+    protected function logAIRequest(string $service, string $method, array $parameters): void
+    {
+        Log::info('AI Request', [
+            'service' => $service,
+            'method' => $method,
+            'parameters' => $parameters,
+            'timestamp' => now()->toISOString(),
+        ]);
+    }
+
+    /**
+     * Log an AI response.
+     *
+     * @param  string  $service
+     * @param  string  $method
+     * @param  mixed  $response
+     * @param  float  $duration
+     * @return void
+     */
+    protected function logAIResponse(string $service, string $method, $response, float $duration): void
+    {
+        Log::info('AI Response', [
+            'service' => $service,
+            'method' => $method,
+            'response_type' => gettype($response),
+            'duration' => $duration,
+            'timestamp' => now()->toISOString(),
+        ]);
+    }
+
+    /**
+     * Log an AI error.
+     *
+     * @param  string  $service
+     * @param  string  $method
+     * @param  \Throwable  $exception
+     * @return void
+     */
+    protected function logAIError(string $service, string $method, \Throwable $exception): void
+    {
+        Log::error('AI Error', [
+            'service' => $service,
+            'method' => $method,
+            'error' => $exception->getMessage(),
+            'trace' => $exception->getTraceAsString(),
+            'timestamp' => now()->toISOString(),
+        ]);
+    }
+
+    /**
+     * Execute with logging.
+     *
+     * @param  callable  $callback
+     * @param  string  $service
+     * @param  string  $method
+     * @param  array  $parameters
+     * @return mixed
+     *
+     * @throws \Throwable
+     */
+    protected function executeWithLogging(callable $callback, string $service, string $method, array $parameters = [])
+    {
+        $startTime = microtime(true);
+        
+        $this->logAIRequest($service, $method, $parameters);
+        
+        try {
+            $result = $callback();
+            
+            $duration = microtime(true) - $startTime;
+            $this->logAIResponse($service, $method, $result, $duration);
+            
+            return $result;
+        } catch (\Throwable $e) {
+            $this->logAIError($service, $method, $e);
+            throw $e;
+        }
+    }
+}

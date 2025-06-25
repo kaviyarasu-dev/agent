@@ -1,0 +1,57 @@
+<?php
+
+declare(strict_types=1);
+
+namespace {{ namespace }};
+
+use WebsiteLearners\AIAgent\Contracts\Services\{{ serviceInterface }};
+{{ traitImports }}
+
+/**
+ * Class {{ class }}
+ *
+ * This agent uses the AI {{ capability }} service to generate content.
+ * Default Provider: {{ provider }}
+ * Capability: {{ capability }}
+ *
+ * You can change the provider using $this->{{ serviceProperty }}->setProvider('provider_name');
+ * You can switch models using $this->{{ serviceProperty }}->switchModel('model_name');
+ */
+class {{ class }}
+{
+    {{ traits }}
+
+    /**
+     * The AI {{ capability }} service instance.
+     *
+     * @var {{ serviceInterface }}
+     */
+    protected {{ serviceInterface }} ${{ serviceProperty }};
+
+    /**
+     * Create a new AI agent instance.
+     *
+     * @param  {{ serviceInterface }}  ${{ serviceProperty }}
+     */
+    public function __construct({{ serviceInterface }} ${{ serviceProperty }})
+    {
+        $this->{{ serviceProperty }} = ${{ serviceProperty }};
+        
+        // Initialize provider and model
+        {{ providerInit }}
+    }
+
+    /**
+     * Execute the AI agent logic.
+     *
+     * @param  array  $data
+     * @return mixed
+     */
+    public function execute(array $data)
+    {
+        // TODO: Implement your AI agent logic here
+        
+        // Example usage:
+        // return $this->{{ serviceProperty }}->generate($prompt, $options);
+    }
+}

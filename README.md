@@ -19,6 +19,8 @@ A flexible, modular AI service architecture for Laravel that supports multiple A
 - 📊 **Rate Limiting**: Configurable rate limiting per provider
 - 📝 **Comprehensive Logging**: Track all API interactions
 - 🔐 **Laravel Passport Integration**: Optional API authentication support
+- 🛠️ **Artisan Commands**: Scaffolding commands for quick development
+
 ## Installation
 
 ```bash
@@ -118,6 +120,25 @@ $providerFactory = app(ProviderFactory::class);
 $textService = new TextService($providerFactory);
 $response = $textService->generateText('Hello world');
 ```
+
+### Creating AI Agents
+
+The package includes a powerful scaffolding command to create AI agent classes:
+```bash
+# Create a basic text agent
+php artisan ai-agent Blog/BlogAiAgent
+
+# Create an image processing agent
+php artisan ai-agent ImageProcessor --capability=image --provider=ideogram
+
+# Create a video agent with logging and fallback
+php artisan ai-agent VideoCreator --capability=video --with-logging --with-fallback
+
+# Interactive mode
+php artisan ai-agent
+```
+
+See the [AI Agent Command Documentation](docs/ai-agent-command.md) for detailed usage and examples.
 
 ## Configuration
 
