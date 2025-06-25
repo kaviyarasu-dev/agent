@@ -1,0 +1,36 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up()
+    {
+        Schema::create('ai_agent_logs', function (Blueprint $table) {
+            $table->id();
+            $table->string('provider');
+            $table->string('model')->nullable();
+            $table->string('capability'); // text, image, video
+            $table->text('request');
+            $table->text('response')->nullable();
+            $table->string('status'); // success, failed
+            $table->integer('tokens_used')->nullable();
+            $table->decimal('cost', 10, 6)->nullable();
+            $table->integer('response_time')->nullable(); // in milliseconds
+            $table->text('error')->nullable();
+            $table->json('metadata')->nullable();
+            $table->timestamps();
+            
+            $table->index(['provider', 'capability']);
+            $table->index(['status']);
+            $table->index('created_at');
+        });
+    }
+
+    public function down()
+    {
+        Schema::dropIfExists('ai_agent_logs');
+    }
+};

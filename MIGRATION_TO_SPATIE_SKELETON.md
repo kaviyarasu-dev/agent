@@ -2,13 +2,13 @@
 
 ## Executive Summary
 
-This document outlines a comprehensive plan to migrate the current Laravel AI Agent package (`kaviyarasu/ai-agent`) to follow the Spatie package skeleton architecture while preserving all existing functionality and maintaining backward compatibility.
+This document outlines a comprehensive plan to migrate the current Laravel AI Agent package (`WebsiteLearners/ai-agent`) to follow the Spatie package skeleton architecture while preserving all existing functionality and maintaining backward compatibility.
 
 ## Current State Analysis
 
 ### Existing Package Structure
 ```
-kaviyarasu/ai-agent/
+WebsiteLearners/ai-agent/
 ├── app/                    # Application code (non-standard for packages)
 │   ├── AI/
 │   │   ├── Config/
@@ -38,14 +38,11 @@ kaviyarasu/ai-agent/
 4. **Configuration**: Environment-based provider selection
 5. **Service Bindings**: Dependency injection configurations
 
-### Missing Component
-- **PassportRedirectTrait.php**: Not found in current codebase (needs clarification)
-
 ## Target Architecture (Spatie Skeleton)
 
 ### Expected Structure
 ```
-kaviyarasu/ai-agent/
+WebsiteLearners/ai-agent/
 ├── config/                 # Package configuration
 │   └── ai-agent.php
 ├── database/              # Migrations and factories
@@ -62,7 +59,6 @@ kaviyarasu/ai-agent/
 │   ├── Models/            # If database models needed
 │   ├── Providers/
 │   ├── Services/
-│   ├── Traits/            # For PassportRedirectTrait
 │   ├── AI.php            # Main package class
 │   └── AIAgentServiceProvider.php
 ├── tests/                 # Comprehensive test suite
@@ -75,20 +71,9 @@ kaviyarasu/ai-agent/
 ### Phase 1: Preparation and Setup (Day 1)
 
 #### 1.1 Backup Current State
+#### 1.3 Migration Branch
 ```bash
-# Create a backup branch
-git checkout -b backup/pre-spatie-migration
-git push origin backup/pre-spatie-migration
-```
-
-#### 1.2 Install Spatie Package Tools
-```bash
-composer require spatie/laravel-package-tools --dev
-```
-
-#### 1.3 Create Migration Branch
-```bash
-git checkout -b feature/spatie-skeleton-migration
+git checkout -b feature/change-architechture
 ```
 
 ### Phase 2: Restructure Codebase (Day 2-3)
@@ -108,7 +93,7 @@ mv app/AI/Factory/* src/Factory/
 
 #### 2.2 Update Namespaces
 From: `App\AI\*`
-To: `Kaviyarasu\AIAgent\*`
+To: `WebsiteLearners\AIAgent\*`
 
 Example transformation:
 ```php
@@ -116,34 +101,7 @@ Example transformation:
 namespace App\AI\Contracts\Services;
 
 // After
-namespace Kaviyarasu\AIAgent\Contracts\Services;
-```
-
-#### 2.3 Create PassportRedirectTrait (if needed)
-```php
-// src/Traits/PassportRedirectTrait.php
-<?php
-
-namespace Kaviyarasu\AIAgent\Traits;
-
-trait PassportRedirectTrait
-{
-    /**
-     * Get the redirect URL for Passport authentication
-     */
-    public function getPassportRedirectUrl(): string
-    {
-        return config('ai-agent.passport.redirect_url', '/home');
-    }
-
-    /**
-     * Handle Passport redirect logic
-     */
-    public function handlePassportRedirect($request)
-    {
-        // Implementation based on requirements
-    }
-}
+namespace WebsiteLearners\AIAgent\Contracts\Services;
 ```
 
 ### Phase 3: Update Service Provider (Day 4)
@@ -153,11 +111,11 @@ trait PassportRedirectTrait
 // src/AIAgentServiceProvider.php
 <?php
 
-namespace Kaviyarasu\AIAgent;
+namespace WebsiteLearners\AIAgent;
 
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use Kaviyarasu\AIAgent\Commands\AIAgentCommand;
+use WebsiteLearners\AIAgent\Commands\AIAgentCommand;
 
 class AIAgentServiceProvider extends PackageServiceProvider
 {
@@ -289,7 +247,7 @@ return [
 #### 5.1 Update composer.json
 ```json
 {
-    "name": "kaviyarasu/ai-agent",
+    "name": "websitelearners/ai-agent",
     "description": "A Laravel package for AI agent with multi-provider support",
     "keywords": [
         "ai",
@@ -300,11 +258,11 @@ return [
         "openai",
         "ideogram"
     ],
-    "homepage": "https://github.com/kaviyarasu/ai-agent",
+    "homepage": "https://github.com/websitelearners/ai-agent",
     "license": "MIT",
     "authors": [
         {
-            "name": "Kaviyarasu",
+            "name": "websitelearners",
             "email": "your-email@example.com",
             "role": "Developer"
         }
@@ -328,13 +286,13 @@ return [
     },
     "autoload": {
         "psr-4": {
-            "Kaviyarasu\\AIAgent\\": "src/",
-            "Kaviyarasu\\AIAgent\\Database\\Factories\\": "database/factories/"
+            "WebsiteLearners\\AIAgent\\": "src/",
+            "WebsiteLearners\\AIAgent\\Database\\Factories\\": "database/factories/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Kaviyarasu\\AIAgent\\Tests\\": "tests/",
+            "WebsiteLearners\\AIAgent\\Tests\\": "tests/",
             "Workbench\\App\\": "workbench/app/"
         }
     },
@@ -356,10 +314,10 @@ return [
     "extra": {
         "laravel": {
             "providers": [
-                "Kaviyarasu\\AIAgent\\AIAgentServiceProvider"
+                "WebsiteLearners\\AIAgent\\AIAgentServiceProvider"
             ],
             "aliases": {
-                "AIAgent": "Kaviyarasu\\AIAgent\\Facades\\AIAgent"
+                "AIAgent": "WebsiteLearners\\AIAgent\\Facades\\AIAgent"
             }
         }
     },
@@ -375,9 +333,9 @@ return [
 // src/AIAgent.php
 <?php
 
-namespace Kaviyarasu\AIAgent;
+namespace WebsiteLearners\AIAgent;
 
-use Kaviyarasu\AIAgent\Factory\ServiceFactory;
+use WebsiteLearners\AIAgent\Factory\ServiceFactory;
 
 class AIAgent
 {
@@ -413,23 +371,23 @@ class AIAgent
 // src/Facades/AIAgent.php
 <?php
 
-namespace Kaviyarasu\AIAgent\Facades;
+namespace WebsiteLearners\AIAgent\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
 /**
- * @method static \Kaviyarasu\AIAgent\Contracts\Services\TextServiceInterface text()
- * @method static \Kaviyarasu\AIAgent\Contracts\Services\ImageServiceInterface image()
- * @method static \Kaviyarasu\AIAgent\Contracts\Services\VideoServiceInterface video()
- * @method static \Kaviyarasu\AIAgent\AIAgent provider(string $name)
+ * @method static \WebsiteLearners\AIAgent\Contracts\Services\TextServiceInterface text()
+ * @method static \WebsiteLearners\AIAgent\Contracts\Services\ImageServiceInterface image()
+ * @method static \WebsiteLearners\AIAgent\Contracts\Services\VideoServiceInterface video()
+ * @method static \WebsiteLearners\AIAgent\AIAgent provider(string $name)
  * 
- * @see \Kaviyarasu\AIAgent\AIAgent
+ * @see \WebsiteLearners\AIAgent\AIAgent
  */
 class AIAgent extends Facade
 {
     protected static function getFacadeAccessor(): string
     {
-        return \Kaviyarasu\AIAgent\AIAgent::class;
+        return \WebsiteLearners\AIAgent\AIAgent::class;
     }
 }
 ```
@@ -441,11 +399,11 @@ class AIAgent extends Facade
 // tests/TestCase.php
 <?php
 
-namespace Kaviyarasu\AIAgent\Tests;
+namespace WebsiteLearners\AIAgent\Tests;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Orchestra\Testbench\TestCase as Orchestra;
-use Kaviyarasu\AIAgent\AIAgentServiceProvider;
+use WebsiteLearners\AIAgent\AIAgentServiceProvider;
 
 class TestCase extends Orchestra
 {
@@ -454,7 +412,7 @@ class TestCase extends Orchestra
         parent::setUp();
 
         Factory::guessFactoryNamesUsing(
-            fn (string $modelName) => 'Kaviyarasu\\AIAgent\\Database\\Factories\\'.class_basename($modelName).'Factory'
+            fn (string $modelName) => 'WebsiteLearners\\AIAgent\\Database\\Factories\\'.class_basename($modelName).'Factory'
         );
     }
 
@@ -482,19 +440,19 @@ class TestCase extends Orchestra
 // tests/ArchTest.php
 <?php
 
-use Kaviyarasu\AIAgent\Contracts;
-use Kaviyarasu\AIAgent\Services;
+use WebsiteLearners\AIAgent\Contracts;
+use WebsiteLearners\AIAgent\Services;
 
 it('ensures contracts are interfaces')
-    ->expect('Kaviyarasu\AIAgent\Contracts')
+    ->expect('WebsiteLearners\AIAgent\Contracts')
     ->toBeInterfaces();
 
 it('ensures services implement their contracts')
-    ->expect('Kaviyarasu\AIAgent\Services\Core')
-    ->toImplement('Kaviyarasu\AIAgent\Contracts');
+    ->expect('WebsiteLearners\AIAgent\Services\Core')
+    ->toImplement('WebsiteLearners\AIAgent\Contracts');
 
 it('follows naming conventions')
-    ->expect('Kaviyarasu\AIAgent\Services')
+    ->expect('WebsiteLearners\AIAgent\Services')
     ->classes()
     ->toHaveSuffix('Service');
 ```
@@ -505,10 +463,10 @@ it('follows naming conventions')
 ```markdown
 # AI Agent for Laravel
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/kaviyarasu/ai-agent.svg?style=flat-square)](https://packagist.org/packages/kaviyarasu/ai-agent)
-[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/kaviyarasu/ai-agent/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/kaviyarasu/ai-agent/actions?query=workflow%3Arun-tests+branch%3Amain)
-[![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/kaviyarasu/ai-agent/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/kaviyarasu/ai-agent/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
-[![Total Downloads](https://img.shields.io/packagist/dt/kaviyarasu/ai-agent.svg?style=flat-square)](https://packagist.org/packages/kaviyarasu/ai-agent)
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/WebsiteLearners/ai-agent.svg?style=flat-square)](https://packagist.org/packages/WebsiteLearners/ai-agent)
+[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/WebsiteLearners/ai-agent/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/WebsiteLearners/ai-agent/actions?query=workflow%3Arun-tests+branch%3Amain)
+[![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/WebsiteLearners/ai-agent/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/WebsiteLearners/ai-agent/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
+[![Total Downloads](https://img.shields.io/packagist/dt/WebsiteLearners/ai-agent.svg?style=flat-square)](https://packagist.org/packages/WebsiteLearners/ai-agent)
 
 A flexible, modular AI service architecture for Laravel that supports multiple AI providers (Claude, OpenAI, Ideogram) with easy switching via configuration.
 
@@ -517,7 +475,7 @@ A flexible, modular AI service architecture for Laravel that supports multiple A
 You can install the package via composer:
 
 ```bash
-composer require kaviyarasu/ai-agent
+composer require WebsiteLearners/ai-agent
 ```
 
 You can publish and run the migrations with:
@@ -536,7 +494,7 @@ php artisan vendor:publish --tag="ai-agent-config"
 ## Usage
 
 ```php
-use Kaviyarasu\AIAgent\Facades\AIAgent;
+use WebsiteLearners\AIAgent\Facades\AIAgent;
 
 // Text generation
 $response = AIAgent::text()->generateText('Write a story about a robot');
@@ -547,19 +505,6 @@ $imageUrl = AIAgent::image()->generateImage('A futuristic city at sunset');
 // Switch provider at runtime
 $response = AIAgent::provider('openai')->text()->generateText('Hello world');
 
-// Using PassportRedirectTrait
-use Kaviyarasu\AIAgent\Traits\PassportRedirectTrait;
-
-class YourController extends Controller
-{
-    use PassportRedirectTrait;
-    
-    public function handleAuth()
-    {
-        return redirect($this->getPassportRedirectUrl());
-    }
-}
-```
 
 ## Testing
 
@@ -581,7 +526,7 @@ Please review [our security policy](../../security/policy) on how to report secu
 
 ## Credits
 
-- [Kaviyarasu](https://github.com/kaviyarasu)
+- [WebsiteLearners](https://github.com/WebsiteLearners)
 - [All Contributors](../../contributors)
 
 ## License
@@ -601,9 +546,9 @@ echo "Starting migration to Spatie package skeleton...\n";
 
 // Namespace updates
 $namespaceMap = [
-    'App\\AI\\' => 'Kaviyarasu\\AIAgent\\',
-    'WebsiteLearners\\AI\\' => 'Kaviyarasu\\AIAgent\\',
-    'VendorName\\Skeleton\\' => 'Kaviyarasu\\AIAgent\\',
+    'App\\AI\\' => 'WebsiteLearners\\AIAgent\\',
+    'WebsiteLearners\\AI\\' => 'WebsiteLearners\\AIAgent\\',
+    'VendorName\\Skeleton\\' => 'WebsiteLearners\\AIAgent\\',
 ];
 
 // Directory mapping
@@ -717,7 +662,6 @@ jobs:
 ### Pre-Migration
 - [ ] Backup current codebase
 - [ ] Document all custom implementations
-- [ ] Identify PassportRedirectTrait requirements
 - [ ] Review current test coverage
 
 ### During Migration
@@ -727,7 +671,6 @@ jobs:
 - [ ] Update composer.json
 - [ ] Merge configuration files
 - [ ] Create/update facades
-- [ ] Implement PassportRedirectTrait
 - [ ] Update tests
 
 ### Post-Migration
@@ -777,13 +720,3 @@ If issues arise during migration:
 - **Day 12**: Final review and release
 
 Total estimated time: **12 working days**
-
-## Notes for PassportRedirectTrait
-
-Since PassportRedirectTrait.php was not found in the current codebase, I've included a placeholder implementation in the migration plan. Please provide:
-
-1. The actual implementation or requirements for this trait
-2. Its intended use cases
-3. Any Passport-specific configurations needed
-
-This will ensure the trait is properly implemented in the new structure.

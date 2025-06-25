@@ -1,0 +1,122 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\AI\Traits;
+
+use WebsiteLearners\AIAgent\Exceptions\AIAgentException;
+
+/**
+ * Trait UsesFallbackProvider
+ *
+ * Provides fallback functionality when primary AI provider fails.
+ * Automatically switches to configured fallback providers on error.
+ */
+trait UsesFallbackProvider
+{
+    /**
+     * The fallback providers in order of preference.
+     *
+     * @var array
+     */
+    protected array $fallbackProviders = [];
+
+    /**
+     * The current provider being used.
+     *
+     * @var string|null
+     */
+    protected ?string $currentProvider = null;
+
+    /**
+     * Set the fallback providers.
+     *
+     * @param  array  $providers
+     * @return $this
+     */
+    public function setFallbackProviders(array $providers): self
+    {
+        $this->fallbackProviders = $providers;
+        return $this;
+    }
+
+    /**
+     * Add a fallback provider.
+     *
+     * @param  string  $provider
+     * @return $this
+     */
+    public function addFallbackProvider(string $provider): self
+    {
+        if (!in_array($provider, $this->fallbackProviders)) {
+            $this->fallbackProviders[] = $provider;
+        }
+        
+        return $this;
+    }
+
+    /**
+     * Execute with fallback support.
+     *
+     * @param  callable  $callback
+     * @param  string  $service
+     * @return mixed
+     *
+     * @throws AIAgentException
+     */
+    protected function executeWithFallback(callable $callback, string $service)
+    {
+        $errors = [];
+        $originalProvider = $this->currentProvider ?? $this->$service->getProvider();
+        
+        // Try the primary provider first
+        try {
+            return $callback();
+        } catch (\Exception $e) {
+            $errors[$originalProvider] = $e->getMessage();
+        }
+
+        // Try fallback providers
+        foreach ($this->fallbackProviders as $fallbackProvider) {
+            if ($fallbackProvider === $originalProvider) {
+                continue;
+            }
+            
+            try {
+                $this->$service->setProvider($fallbackProvider);
+                $result = $callback();
+                
+                // Successfully used fallback, log warning
+                if (method_exists($this, 'logAIRequest')) {
+                    $this->logAIRequest($service, 'fallback', [
+                        'original_provider' => $originalProvider,
+                        'fallback_provider' => $fallbackProvider,
+                        'reason' => $errors[$originalProvider] ?? 'Unknown error',
+                    ]);
+                }
+                
+                return $result;
+            } catch (\Exception $e) {
+                $errors[$fallbackProvider] = $e->getMessage();
+            }
+        }
+
+        // Restore original provider
+        $this->$service->setProvider($originalProvider);
+
+        // All providers failed
+        throw new AIAgentException(
+            'All providers failed. Errors: ' . json_encode($errors)
+        );
+    }
+
+    /**
+     * Check if fallback providers are configured.
+     *
+     * @return bool
+     */
+    protected function hasFallbackProviders(): bool
+    {
+        return !empty($this->fallbackProviders);
+    }
+}

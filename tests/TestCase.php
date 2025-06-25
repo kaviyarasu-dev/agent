@@ -1,10 +1,10 @@
 <?php
 
-namespace VendorName\Skeleton\Tests;
+namespace WebsiteLearners\AIAgent\Tests;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Orchestra\Testbench\TestCase as Orchestra;
-use VendorName\Skeleton\SkeletonServiceProvider;
+use WebsiteLearners\AIAgent\AIAgentServiceProvider;
 
 class TestCase extends Orchestra
 {
@@ -13,25 +13,29 @@ class TestCase extends Orchestra
         parent::setUp();
 
         Factory::guessFactoryNamesUsing(
-            fn (string $modelName) => 'VendorName\\Skeleton\\Database\\Factories\\'.class_basename($modelName).'Factory'
+            fn (string $modelName) => 'WebsiteLearners\\AIAgent\\Database\\Factories\\'.class_basename($modelName).'Factory'
         );
     }
 
     protected function getPackageProviders($app)
     {
         return [
-            SkeletonServiceProvider::class,
+            AIAgentServiceProvider::class,
         ];
     }
 
     public function getEnvironmentSetUp($app)
     {
         config()->set('database.default', 'testing');
+        config()->set('ai-agent.default_provider', 'claude');
+        config()->set('ai-agent.providers.claude.api_key', 'test-api-key');
+        config()->set('ai-agent.providers.openai.api_key', 'test-api-key');
+        config()->set('ai-agent.providers.ideogram.api_key', 'test-api-key');
 
+        // Run migrations if needed
         /*
-         foreach (\Illuminate\Support\Facades\File::allFiles(__DIR__ . '/database/migrations') as $migration) {
-            (include $migration->getRealPath())->up();
-         }
-         */
+        $migration = include __DIR__.'/../database/migrations/create_ai_agent_table.php.stub';
+        $migration->up();
+        */
     }
 }

@@ -4,12 +4,11 @@
  * AI Architecture Package - Usage Examples
  */
 
-use App\AI\Contracts\Services\TextServiceInterface;
 use App\AI\Contracts\Services\ImageServiceInterface;
-use App\AI\Contracts\Services\VideoServiceInterface;
+use App\AI\Contracts\Services\TextServiceInterface;
+use App\AI\Factory\ProviderFactory;
 use App\AI\Services\Modules\Storyboard\CharacterService;
 use App\AI\Services\Modules\Storyboard\ShotService;
-use App\AI\Factory\ProviderFactory;
 
 // Example 1: Basic Text Generation
 // --------------------------------
@@ -131,7 +130,7 @@ $claude = $providerFactory->create('claude');
 if ($claude instanceof ClaudeProvider) {
     // Switch to a different Claude model
     $claude->switchModel('claude-3-sonnet-20241128');
-    
+
     // Use the new model
     $response = $claude->generateText([
         'prompt' => 'Explain the latest advances in AI',
@@ -147,6 +146,7 @@ app()->when(CharacterService::class)
     ->give(function ($app) {
         $service = $app->make(TextService::class);
         $service->setProvider('claude'); // Always use Claude for characters
+
         return $service;
     });
 
@@ -154,7 +154,7 @@ app()->when(CharacterService::class)
 // --------------------------
 use Illuminate\Support\Facades\Cache;
 
-$cacheKey = 'ai_response_' . md5($prompt);
+$cacheKey = 'ai_response_'.md5($prompt);
 $response = Cache::remember($cacheKey, 3600, function () use ($textService, $prompt) {
     return $textService->generateText($prompt);
 });

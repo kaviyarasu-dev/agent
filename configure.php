@@ -102,6 +102,7 @@ function remove_composer_script($scriptName)
     foreach ($data['scripts'] as $name => $script) {
         if ($scriptName === $name) {
             unset($data['scripts'][$name]);
+
             break;
         }
     }
