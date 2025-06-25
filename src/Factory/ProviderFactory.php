@@ -26,12 +26,11 @@ class ProviderFactory
         }
 
         $config = $this->configManager->getProviderConfig($providerName);
+        $providerClass = $this->configManager->getProviderClass($providerName);
 
-        if (empty($config)) {
+        if (empty($config) || ! $providerClass) {
             throw new \InvalidArgumentException("Provider {$providerName} not configured");
         }
-
-        $providerClass = $config['class'];
 
         if (! class_exists($providerClass)) {
             throw new \RuntimeException("Provider class {$providerClass} not found");
@@ -57,7 +56,7 @@ class ProviderFactory
             }
         } catch (\Exception $e) {
             // Log the error
-            logger()->warning("Default provider {$defaultProvider} failed: ".$e->getMessage());
+            logger()->warning("Default provider {$defaultProvider} failed: " . $e->getMessage());
         }
 
         // Try fallback providers
@@ -71,7 +70,7 @@ class ProviderFactory
                     return $provider;
                 }
             } catch (\Exception $e) {
-                logger()->warning("Fallback provider {$fallbackProvider} failed: ".$e->getMessage());
+                logger()->warning("Fallback provider {$fallbackProvider} failed: " . $e->getMessage());
             }
         }
 
@@ -90,7 +89,7 @@ class ProviderFactory
                     $providers[$name] = $provider;
                 }
             } catch (\Exception $e) {
-                logger()->debug("Provider {$name} not available: ".$e->getMessage());
+                logger()->debug("Provider {$name} not available: " . $e->getMessage());
             }
         }
 

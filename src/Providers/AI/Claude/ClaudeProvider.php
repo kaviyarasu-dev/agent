@@ -58,7 +58,7 @@ class ClaudeProvider extends AbstractProvider implements TextGenerationInterface
         ]);
 
         if (! $response->successful()) {
-            throw new \RuntimeException('Claude API error: '.$response->body());
+            throw new \RuntimeException('Claude API error: ' . $response->body());
         }
 
         return $response->json()['content'][0]['text'] ?? '';
@@ -85,8 +85,13 @@ class ClaudeProvider extends AbstractProvider implements TextGenerationInterface
             'stream' => true,
         ]);
 
-        foreach ($response->getBody() as $chunk) {
-            yield $chunk;
+        // Handle streaming response
+        $body = $response->getBody();
+        while (!$body->eof()) {
+            $chunk = $body->read(1024);
+            if ($chunk) {
+                yield $chunk;
+            }
         }
     }
 
