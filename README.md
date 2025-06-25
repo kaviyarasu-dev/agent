@@ -1,68 +1,86 @@
-# :package_description
+# AI Architecture Package
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/laravel/ai-architecture.svg?style=flat-square)](https://packagist.org/packages/laravel/ai-architecture)
+[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/laravel/ai-architecture/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/laravel/ai-architecture/actions?query=workflow%3Arun-tests+branch%3Amain)
+[![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/laravel/ai-architecture/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/laravel/ai-architecture/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
+[![Total Downloads](https://img.shields.io/packagist/dt/laravel/ai-architecture.svg?style=flat-square)](https://packagist.org/packages/laravel/ai-architecture)
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/:vendor_slug/:package_slug.svg?style=flat-square)](https://packagist.org/packages/:vendor_slug/:package_slug)
-[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/:vendor_slug/:package_slug/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/:vendor_slug/:package_slug/actions?query=workflow%3Arun-tests+branch%3Amain)
-[![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/:vendor_slug/:package_slug/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/:vendor_slug/:package_slug/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
-[![Total Downloads](https://img.shields.io/packagist/dt/:vendor_slug/:package_slug.svg?style=flat-square)](https://packagist.org/packages/:vendor_slug/:package_slug)
-<!--delete-->
----
-This repo can be used to scaffold a Laravel package. Follow these steps to get started:
+A flexible, modular AI service architecture for Laravel that supports multiple AI providers (Claude, OpenAI, Ideogram) with easy switching via configuration.
 
-1. Press the "Use this template" button at the top of this repo to create a new repo with the contents of this skeleton.
-2. Run "php ./configure.php" to run a script that will replace all placeholders throughout all the files.
-3. Have fun creating your package.
-4. If you need help creating a package, consider picking up our <a href="https://laravelpackage.training">Laravel Package Training</a> video course.
----
-<!--/delete-->
-This is where your description should go. Limit it to a paragraph or two. Consider adding a small example.
+## Features
 
-## Support us
-
-[<img src="https://github-ads.s3.eu-central-1.amazonaws.com/:package_name.jpg?t=1" width="419px" />](https://spatie.be/github-ad-click/:package_name)
-
-We invest a lot of resources into creating [best in class open source packages](https://spatie.be/open-source). You can support us by [buying one of our paid products](https://spatie.be/open-source/support-us).
-
-We highly appreciate you sending us a postcard from your hometown, mentioning which of our package(s) you are using. You'll find our address on [our contact page](https://spatie.be/about-us). We publish all received postcards on [our virtual postcard wall](https://spatie.be/open-source/postcards).
-
+- **Multi-Provider Support**: Seamlessly switch between Claude, OpenAI, and Ideogram
+- **Capability-Based Design**: Services are organized by capabilities (text, image, video)
+- **Automatic Fallback**: Fallback to alternative providers when primary fails
+- **Model Flexibility**: Easy switching between model versions
+- **Module Independence**: Each module can use different providers
+- **Configuration-Driven**: All settings managed through environment variables
+- **SOLID Principles**: Clean architecture following best practices
 ## Installation
 
-You can install the package via composer:
-
 ```bash
-composer require :vendor_slug/:package_slug
+composer require laravel/ai-architecture
 ```
 
-You can publish and run the migrations with:
-
-```bash
-php artisan vendor:publish --tag=":package_slug-migrations"
-php artisan migrate
-```
-
-You can publish the config file with:
-
-```bash
-php artisan vendor:publish --tag=":package_slug-config"
-```
-
-This is the contents of the published config file:
-
+Register the service provider in `config/app.php`:
 ```php
-return [
-];
+'providers' => [
+    App\Providers\AIServiceProvider::class,
+],
 ```
 
-Optionally, you can publish the views using
-
+Publish configuration:
 ```bash
-php artisan vendor:publish --tag=":package_slug-views"
+php artisan vendor:publish --tag=ai-config
+```
+
+Configure environment variables:
+
+```env
+AI_TEXT_PROVIDER=claude
+AI_IMAGE_PROVIDER=ideogram
+AI_VIDEO_PROVIDER=openai
+
+CLAUDE_API_KEY=your-claude-api-key
+OPENAI_API_KEY=your-openai-api-key
+IDEOGRAM_API_KEY=your-ideogram-api-key
 ```
 
 ## Usage
 
 ```php
-$variable = new VendorName\Skeleton();
-echo $variable->echoPhrase('Hello, VendorName!');
+use App\AI\Contracts\Services\TextServiceInterface;
+use App\AI\Contracts\Services\ImageServiceInterface;
+
+// Text generation
+$textService = app(TextServiceInterface::class);
+$response = $textService->generateText('Write a story about a robot');
+
+// Image generation
+$imageService = app(ImageServiceInterface::class);
+$imageUrl = $imageService->generateImage('A futuristic city at sunset');
+
+// Switch provider at runtime
+$textService->setProvider('openai');
+$response = $textService->generateText('Hello world');
+
+// Module-specific usage
+use App\AI\Services\Modules\Storyboard\CharacterService;
+
+$characterService = app(CharacterService::class);
+
+$description = $characterService->generateCharacterDescription([
+    'name' => 'John Doe',
+    'age' => '35',
+    'occupation' => 'Detective',
+]);
+
+$characterSheet = $characterService->generateCharacterSheet([
+    'attributes' => [
+        'name' => 'Jane Smith',
+        'appearance' => 'Tall, athletic build',
+        'personality' => 'Confident and mysterious',
+    ],
+]);
 ```
 
 ## Testing
@@ -85,7 +103,7 @@ Please review [our security policy](../../security/policy) on how to report secu
 
 ## Credits
 
-- [:author_name](https://github.com/:author_username)
+- [Taylor Otwell](https://github.com/taylorotwell)
 - [All Contributors](../../contributors)
 
 ## License
