@@ -99,7 +99,7 @@ A generated agent with all options looks like this:
 
 declare(strict_types=1);
 
-namespace App\AI\Agents\Blog;
+namespace App\Agents\Blog;
 
 use WebsiteLearners\AIAgent\Contracts\Services\TextServiceInterface;
 use App\AI\Traits\LogsAIUsage;
@@ -253,7 +253,7 @@ Enables automatic provider fallback:
 Using the generated agent in your application:
 
 ```php
-use App\AI\Agents\Blog\BlogAiAgent;
+use App\Agents\Blog\BlogAiAgent;
 
 class BlogController extends Controller
 {

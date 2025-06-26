@@ -108,7 +108,7 @@ class MakeAiAgentCommandTest extends TestCase
         $this->assertFileExists(app_path('AI/Agents/Blog/Post/BlogPostAgent.php'));
 
         $content = File::get(app_path('AI/Agents/Blog/Post/BlogPostAgent.php'));
-        $this->assertStringContainsString('namespace App\AI\Agents\Blog\Post;', $content);
+        $this->assertStringContainsString('namespace App\Agents\Blog\Post;', $content);
         $this->assertStringContainsString('class BlogPostAgent', $content);
     }
 
