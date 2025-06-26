@@ -2,7 +2,7 @@
 
 /**
  * AI Agent Command Examples
- * 
+ *
  * This file demonstrates various ways to use the ai-agent command
  * to scaffold AI agents in your Laravel application.
  */
@@ -38,7 +38,7 @@
  * Generated Agent Usage Example
  */
 
-use App\AI\Agents\Blog\BlogAiAgent;
+use App\Agents\Blog\BlogAiAgent;
 use WebsiteLearners\AIAgent\Services\Core\TextService;
 
 class BlogController extends Controller
@@ -47,18 +47,18 @@ class BlogController extends Controller
     {
         // The agent is automatically resolved with dependency injection
         $blogAgent = app(BlogAiAgent::class);
-        
+
         // Or manually instantiate
         $textService = app(TextService::class);
         $blogAgent = new BlogAiAgent($textService);
-        
+
         // Execute the agent
         $result = $blogAgent->execute([
             'prompt' => 'Write a blog post about ' . $request->input('topic'),
             'tone' => $request->input('tone', 'professional'),
             'length' => $request->input('length', 'medium'),
         ]);
-        
+
         return response()->json([
             'success' => true,
             'content' => $result,
@@ -70,7 +70,7 @@ class BlogController extends Controller
  * Agent with Traits Example
  */
 
-namespace App\AI\Agents;
+namespace App\Agents;
 
 use WebsiteLearners\AIAgent\Contracts\Services\TextServiceInterface;
 use App\AI\Traits\LogsAIUsage;
@@ -79,17 +79,17 @@ use App\AI\Traits\UsesFallbackProvider;
 class ProductionAgent
 {
     use LogsAIUsage, UsesFallbackProvider;
-    
+
     protected TextServiceInterface $textService;
-    
+
     public function __construct(TextServiceInterface $textService)
     {
         $this->textService = $textService;
-        
+
         // Set fallback providers
         $this->setFallbackProviders(['openai', 'anthropic']);
     }
-    
+
     public function execute(array $data)
     {
         // Execute with both logging and fallback support
@@ -109,42 +109,42 @@ class ProductionAgent
  * Custom Agent Implementation Example
  */
 
-namespace App\AI\Agents\Blog;
+namespace App\Agents\Blog;
 
 use WebsiteLearners\AIAgent\Contracts\Services\TextServiceInterface;
 
 class BlogSummaryAgent
 {
     protected TextServiceInterface $textService;
-    
+
     public function __construct(TextServiceInterface $textService)
     {
         $this->textService = $textService;
         $this->textService->setProvider('claude');
         $this->textService->switchModel('claude-3-haiku-20240307');
     }
-    
+
     public function summarize(string $content, int $maxWords = 150): string
     {
         $prompt = "Summarize the following content in no more than {$maxWords} words:\n\n{$content}";
-        
+
         $response = $this->textService->generateText($prompt, [
             'temperature' => 0.3,
             'max_tokens' => 500,
         ]);
-        
+
         return $response['content'] ?? '';
     }
-    
+
     public function extractKeyPoints(string $content): array
     {
         $prompt = "Extract 5 key points from the following content as a JSON array:\n\n{$content}";
-        
+
         $response = $this->textService->generateText($prompt, [
             'temperature' => 0.2,
             'response_format' => ['type' => 'json_object'],
         ]);
-        
+
         return json_decode($response['content'] ?? '[]', true);
     }
 }

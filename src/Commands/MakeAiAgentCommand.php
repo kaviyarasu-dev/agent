@@ -62,7 +62,11 @@ class MakeAiAgentCommand extends GeneratorCommand
         }
 
         // Validate capability
-        $capability = $this->option('capability');
+        $capability = $this->choice(
+            'Choose AI capability',
+            array_keys($this->capabilities),
+            'text'
+        );
         if (!isset($this->capabilities[$capability])) {
             $this->error("Invalid capability '$capability'. Valid options are: " . implode(', ', array_keys($this->capabilities)));
             return false;
@@ -148,7 +152,7 @@ class MakeAiAgentCommand extends GeneratorCommand
      */
     protected function getDefaultNamespace($rootNamespace)
     {
-        return $rootNamespace . '\AI\Agents';
+        return $rootNamespace . '\Agents';
     }
 
     /**
