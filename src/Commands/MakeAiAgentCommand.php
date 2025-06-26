@@ -56,39 +56,6 @@ class MakeAiAgentCommand extends GeneratorCommand
      */
     public function handle()
     {
-        // Interactive mode if no arguments provided
-        if (!$this->argument('name') || $this->argument('name') === 'ai-agent') {
-            return $this->handleInteractive();
-        }
-
-        // Validate capability
-        $capability = $this->choice(
-            'Choose AI capability',
-            array_keys($this->capabilities),
-            'text'
-        );
-        if (!isset($this->capabilities[$capability])) {
-            $this->error("Invalid capability '$capability'. Valid options are: " . implode(', ', array_keys($this->capabilities)));
-            return false;
-        }
-
-        // Validate provider if specified
-        if ($provider = $this->option('provider')) {
-            if (!$this->validateProvider($provider, $capability)) {
-                return false;
-            }
-        }
-
-        return parent::handle();
-    }
-
-    /**
-     * Handle interactive mode.
-     *
-     * @return bool|null
-     */
-    protected function handleInteractive()
-    {
         $name = $this->ask('Enter agent class (e.g. Blog\BlogAiAgent)');
         $capability = $this->choice(
             'Choose capability',
@@ -97,24 +64,24 @@ class MakeAiAgentCommand extends GeneratorCommand
         );
 
         $configManager = app(AIConfigManager::class);
-        $providers = $this->getProvidersForCapability($configManager, $capability);
+        $allProviders = $configManager->getAllProviders();
+        $providers = array_keys($allProviders);
 
-        $provider = null;
+        $provider = config()->get('ai-agent.default_provider');
         if (!empty($providers)) {
             $provider = $this->choice(
                 'Choose default provider (optional)',
-                array_merge(['<default>'], $providers),
-                '<default>'
+                $providers,
+                config()->get('ai-agent.default_provider')
             );
-            if ($provider === '<default>') {
-                $provider = null;
-            }
         }
 
-        $model = null;
-        if ($provider) {
-            $model = $this->ask('Choose default model (optional, press enter to skip)');
-        }
+        $models = array_keys($configManager->getModelsForProvider($provider));
+        $model = $this->choice(
+            'Choose default provider (optional)',
+            $models,
+            $allProviders[$provider]['default_model'] ?? null
+        );
 
         $withLogging = $this->confirm('Include logging functionality?', false);
         $withFallback = $this->confirm('Include fallback provider functionality?', false);
