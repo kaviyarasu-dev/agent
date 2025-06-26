@@ -90,4 +90,9 @@ class AIConfigManager
     {
         return $this->config['modules'][$module] ?? [];
     }
+
+    public function getModelsForProvider(string $provider): array
+    {
+        return $this->config['providers'][$provider]['models'] ?? [];
+    }
 }
