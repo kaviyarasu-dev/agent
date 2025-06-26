@@ -201,6 +201,7 @@ class MakeAiAgentCommand extends GeneratorCommand
         $stub = str_replace('{{ serviceInterface }}', $serviceInterface, $stub);
         $stub = str_replace('{{ serviceProperty }}', $serviceProperty, $stub);
         $stub = str_replace('{{ capability }}', $capability, $stub);
+        $stub = str_replace('{{ methodSuffix }}', ucfirst($capability), $stub);
 
         // Replace provider and model
         $stub = str_replace('{{ provider }}', $provider ?: 'config default', $stub);

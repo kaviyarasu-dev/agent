@@ -36,7 +36,7 @@ class {{ class }}
     public function __construct({{ serviceInterface }} ${{ serviceProperty }})
     {
         $this->{{ serviceProperty }} = ${{ serviceProperty }};
-        
+
         // Initialize provider and model
         {{ providerInit }}
     }
@@ -50,8 +50,8 @@ class {{ class }}
     public function execute(array $data)
     {
         // TODO: Implement your AI agent logic here
-        
+
         // Example usage:
-        // return $this->{{ serviceProperty }}->generate($prompt, $options);
+        // return $this->{{ serviceProperty }}->generate{{ methodSuffix }}($prompt, $options);
     }
 }
