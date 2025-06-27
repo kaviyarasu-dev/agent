@@ -28,68 +28,109 @@ return [
             'api_key' => env('CLAUDE_API_KEY'),
             'class' => \WebsiteLearners\AIAgent\Providers\AI\Claude\ClaudeProvider::class,
             'models' => [
-                'claude-3-sonnet-20241022' => [
-                    'name' => 'Claude 3 Sonnet',
-                    'version' => '3.5',
-                    'max_tokens' => 4096,
-                    'capabilities' => ['text'],
-                ],
-                'claude-3-sonnet-20241128' => [
-                    'name' => 'Claude 3 Sonnet',
+                'claude-3-7-sonnet-20250219' => [
+                    'name' => 'Claude 3.7 Sonnet',
                     'version' => '3.7',
                     'max_tokens' => 8192,
                     'capabilities' => ['text'],
+                    'supports_streaming' => true,
+                    'supports_functions' => false,
+                ],
+                'claude-3-5-sonnet-20241022' => [
+                    'name' => 'Claude 3.5 Sonnet',
+                    'version' => '3.5',
+                    'max_tokens' => 4096,
+                    'capabilities' => ['text'],
+                    'supports_streaming' => true,
+                    'supports_functions' => false,
+                ],
+                'claude-3-5-haiku-20241022' => [
+                    'name' => 'Claude 3.5 Haiku',
+                    'version' => '3.7',
+                    'max_tokens' => 8192,
+                    'capabilities' => ['text'],
+                    'supports_streaming' => true,
+                    'supports_functions' => false,
+                ],
+                'claude-3-sonnet-20240229' => [
+                    'name' => 'Claude 3 Sonnet',
+                    'version' => '3.0',
+                    'max_tokens' => 4096,
+                    'capabilities' => ['text'],
+                    'supports_streaming' => true,
+                    'supports_functions' => false,
                 ],
                 'claude-3-opus-20240229' => [
                     'name' => 'Claude 3 Opus',
                     'version' => '3.0',
                     'max_tokens' => 4096,
                     'capabilities' => ['text'],
+                    'supports_streaming' => true,
+                    'supports_functions' => false,
                 ],
                 'claude-3-haiku-20240307' => [
-                    'name' => 'Claude 3 Haiku',
+                    'name' => 'Claude 3 Haiku (Previous)',
                     'version' => '3.0',
                     'max_tokens' => 4096,
                     'capabilities' => ['text'],
+                    'supports_streaming' => true,
+                    'supports_functions' => false,
                 ],
             ],
-            'default_model' => env('CLAUDE_MODEL', 'claude-3-sonnet-20241022'),
+            'default_model' => env('CLAUDE_MODEL', 'claude-3-5-sonnet-20241022'),
         ],
 
         'openai' => [
             'api_key' => env('OPENAI_API_KEY'),
             'class' => \WebsiteLearners\AIAgent\Providers\AI\OpenAI\OpenAIProvider::class,
             'models' => [
-                'gpt-4' => [
-                    'name' => 'GPT-4',
-                    'version' => '4.0',
-                    'max_tokens' => 8192,
-                    'capabilities' => ['text'],
-                ],
-                'gpt-4-turbo' => [
-                    'name' => 'GPT-4 Turbo',
+                'o4-mini-2025-04-16' => [
+                    'name' => 'o4-Mini',
                     'version' => '4.0-turbo',
                     'max_tokens' => 128000,
                     'capabilities' => ['text'],
+                    'supports_streaming' => true,
+                    'supports_functions' => true,
+                ],
+                'o3-pro-2025-06-10' => [
+                    'name' => 'o3-pro',
+                    'version' => '3.0-turbo',
+                    'max_tokens' => 8192,
+                    'capabilities' => ['text'],
+                    'supports_streaming' => true,
+                    'supports_functions' => true,
+                ],
+                'gpt-4.1-mini-2025-04-14' => [
+                    'name' => 'GPT-4.1 Mini',
+                    'version' => '4.1-mini',
+                    'max_tokens' => 4096,
+                    'capabilities' => ['text'],
+                    'supports_streaming' => true,
+                    'supports_functions' => true,
                 ],
                 'gpt-3.5-turbo' => [
                     'name' => 'GPT-3.5 Turbo',
                     'version' => '3.5-turbo',
                     'max_tokens' => 4096,
                     'capabilities' => ['text'],
+                    'supports_streaming' => true,
+                    'supports_functions' => true,
                 ],
                 'dall-e-3' => [
                     'name' => 'DALL-E 3',
                     'version' => '3.0',
                     'capabilities' => ['image'],
+                    'sizes' => ['1024x1024', '1792x1024', '1024x1792'],
+                    'quality' => ['standard', 'hd'],
                 ],
                 'dall-e-2' => [
                     'name' => 'DALL-E 2',
                     'version' => '2.0',
                     'capabilities' => ['image'],
+                    'sizes' => ['256x256', '512x512', '1024x1024'],
                 ],
             ],
-            'default_model' => env('OPENAI_MODEL', 'gpt-4'),
+            'default_model' => env('OPENAI_MODEL', 'o4-mini-2025-04-16'),
         ],
 
         'ideogram' => [
@@ -100,15 +141,44 @@ return [
                     'name' => 'Ideogram V2',
                     'version' => '2.0',
                     'capabilities' => ['image'],
+                    'styles' => ['realistic', 'design', 'anime', '3d'],
                 ],
                 'ideogram-v1' => [
                     'name' => 'Ideogram V1',
                     'version' => '1.0',
                     'capabilities' => ['image'],
+                    'styles' => ['realistic', 'design'],
                 ],
             ],
             'default_model' => env('IDEOGRAM_MODEL', 'ideogram-v2'),
         ],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Model Selection Strategies
+    |--------------------------------------------------------------------------
+    |
+    | Configure how models are selected for different use cases.
+    |
+    */
+
+    'model_selection' => [
+        'strategies' => [
+            'cost_optimized' => [
+                'text' => ['claude-3-haiku-20240307', 'gpt-3.5-turbo'],
+                'image' => ['dall-e-2', 'ideogram-v1'],
+            ],
+            'quality_optimized' => [
+                'text' => ['claude-3-opus-20240229', 'o4-mini-2025-04-16'],
+                'image' => ['dall-e-3', 'ideogram-v2'],
+            ],
+            'balanced' => [
+                'text' => ['claude-3-5-sonnet-20241022', 'gpt-4.1-mini-2025-04-14'],
+                'image' => ['dall-e-3', 'ideogram-v2'],
+            ],
+        ],
+        'default_strategy' => env('AI_MODEL_STRATEGY', 'balanced'),
     ],
 
     /*
@@ -167,6 +237,16 @@ return [
     */
 
     'features' => [
+        'provider_switching' => [
+            'enabled' => env('AI_PROVIDER_SWITCHING_ENABLED', true),
+            'allow_runtime_switching' => env('AI_RUNTIME_SWITCHING', true),
+            'log_switches' => env('AI_LOG_PROVIDER_SWITCHES', true),
+        ],
+        'model_switching' => [
+            'enabled' => env('AI_MODEL_SWITCHING_ENABLED', true),
+            'validate_models' => env('AI_VALIDATE_MODELS', true),
+            'auto_fallback' => env('AI_MODEL_AUTO_FALLBACK', true),
+        ],
         'rate_limiting' => [
             'enabled' => env('AI_RATE_LIMITING_ENABLED', true),
             'requests_per_minute' => env('AI_RATE_LIMIT_PER_MINUTE', 60),
@@ -183,21 +263,5 @@ return [
             'log_responses' => env('AI_LOG_RESPONSES', false),
             'log_errors' => env('AI_LOG_ERRORS', true),
         ],
-    ],
-
-    /*
-    |--------------------------------------------------------------------------
-    | Passport Integration
-    |--------------------------------------------------------------------------
-    |
-    | Configure Laravel Passport integration for API authentication.
-    |
-    */
-
-    'passport' => [
-        'enabled' => env('AI_PASSPORT_ENABLED', false),
-        'redirect_url' => env('AI_PASSPORT_REDIRECT_URL', '/home'),
-        'client_id' => env('AI_PASSPORT_CLIENT_ID'),
-        'client_secret' => env('AI_PASSPORT_CLIENT_SECRET'),
     ],
 ];

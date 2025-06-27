@@ -1,0 +1,353 @@
+<?php
+
+declare(strict_types=1);
+
+namespace WebsiteLearners\AIAgent\Tests\Unit\Traits;
+
+use WebsiteLearners\AIAgent\Tests\TestCase;
+use WebsiteLearners\AIAgent\Traits\HasDynamicProvider;
+use WebsiteLearners\AIAgent\Factory\ProviderFactory;
+use WebsiteLearners\AIAgent\Contracts\ProviderInterface;
+use Mockery;
+
+class TestClassWithTrait
+{
+    use HasDynamicProvider;
+
+    public function getProviderState(): array
+    {
+        return [
+            'provider' => $this->currentProvider,
+            'model' => $this->currentModel,
+            'config' => $this->providerConfig,
+        ];
+    }
+}
+
+class HasDynamicProviderTest extends TestCase
+{
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        config([
+            'ai-agent.default_provider' => 'openai',
+            'ai-agent.providers.openai.models.default' => 'gpt-3.5-turbo',
+        ]);
+    }
+
+    /**
+     * Test trait initialization
+     */
+    public function test_trait_initialization(): void
+    {
+        $factory = Mockery::mock(ProviderFactory::class);
+        $this->app->instance(ProviderFactory::class, $factory);
+
+        $testClass = new TestClassWithTrait();
+
+        $state = $testClass->getProviderState();
+
+        $this->assertEquals('openai', $state['provider']);
+        $this->assertEquals('gpt-3.5-turbo', $state['model']);
+        $this->assertIsArray($state['config']);
+    }
+
+    /**
+     * Test useProvider method
+     */
+    public function test_use_provider(): void
+    {
+        $factory = Mockery::mock(ProviderFactory::class);
+        $provider = Mockery::mock(ProviderInterface::class);
+
+        $factory->shouldReceive('create')
+            ->with('claude')
+            ->andReturn($provider);
+
+        $this->app->instance(ProviderFactory::class, $factory);
+
+        $testClass = new TestClassWithTrait();
+        $result = $testClass->useProvider('claude');
+
+        $this->assertSame($testClass, $result);
+        $this->assertEquals('claude', $testClass->getCurrentProvider());
+    }
+
+    /**
+     * Test useModel method
+     */
+    public function test_use_model(): void
+    {
+        $factory = Mockery::mock(ProviderFactory::class);
+        $provider = Mockery::mock(ProviderInterface::class);
+
+        $factory->shouldReceive('create')->andReturn($provider);
+        $provider->shouldReceive('switchModel')
+            ->with('gpt-4')
+            ->andReturn(true);
+
+        $this->app->instance(ProviderFactory::class, $factory);
+
+        $testClass = new TestClassWithTrait();
+        $result = $testClass->useModel('gpt-4');
+
+        $this->assertSame($testClass, $result);
+        $this->assertEquals('gpt-4', $testClass->getCurrentModel());
+    }
+
+    /**
+     * Test withTemporaryProvider
+     */
+    public function test_with_temporary_provider(): void
+    {
+        $factory = Mockery::mock(ProviderFactory::class);
+        $openaiProvider = Mockery::mock(ProviderInterface::class);
+        $claudeProvider = Mockery::mock(ProviderInterface::class);
+
+        $factory->shouldReceive('create')
+            ->with('openai')
+            ->andReturn($openaiProvider);
+
+        $factory->shouldReceive('create')
+            ->with('claude')
+            ->andReturn($claudeProvider);
+
+        $this->app->instance(ProviderFactory::class, $factory);
+
+        $testClass = new TestClassWithTrait();
+
+        // Ensure we start with openai
+        $this->assertEquals('openai', $testClass->getCurrentProvider());
+
+        // Execute with temporary provider
+        $result = $testClass->withTemporaryProvider('claude', function ($instance) {
+            $this->assertEquals('claude', $instance->getCurrentProvider());
+            return 'executed with claude';
+        });
+
+        // Check result and that provider was restored
+        $this->assertEquals('executed with claude', $result);
+        $this->assertEquals('openai', $testClass->getCurrentProvider());
+    }
+
+    /**
+     * Test withTemporaryModel
+     */
+    public function test_with_temporary_model(): void
+    {
+        $factory = Mockery::mock(ProviderFactory::class);
+        $provider = Mockery::mock(ProviderInterface::class);
+
+        $factory->shouldReceive('create')->andReturn($provider);
+
+        $provider->shouldReceive('switchModel')
+            ->with('gpt-4')
+            ->once()
+            ->andReturn(true);
+
+        $provider->shouldReceive('switchModel')
+            ->with('gpt-3.5-turbo')
+            ->once()
+            ->andReturn(true);
+
+        $this->app->instance(ProviderFactory::class, $factory);
+
+        $testClass = new TestClassWithTrait();
+
+        // Ensure we start with default model
+        $this->assertEquals('gpt-3.5-turbo', $testClass->getCurrentModel());
+
+        // Execute with temporary model
+        $result = $testClass->withTemporaryModel('gpt-4', function ($instance) {
+            $this->assertEquals('gpt-4', $instance->getCurrentModel());
+            return 'executed with gpt-4';
+        });
+
+        // Check result and that model was restored
+        $this->assertEquals('executed with gpt-4', $result);
+        $this->assertEquals('gpt-3.5-turbo', $testClass->getCurrentModel());
+    }
+
+    /**
+     * Test withTemporaryConfiguration
+     */
+    public function test_with_temporary_configuration(): void
+    {
+        $factory = Mockery::mock(ProviderFactory::class);
+        $openaiProvider = Mockery::mock(ProviderInterface::class);
+        $claudeProvider = Mockery::mock(ProviderInterface::class);
+
+        $factory->shouldReceive('create')
+            ->with('openai')
+            ->andReturn($openaiProvider);
+
+        $factory->shouldReceive('create')
+            ->with('claude')
+            ->andReturn($claudeProvider);
+
+        $openaiProvider->shouldReceive('switchModel')
+            ->with('gpt-3.5-turbo')
+            ->andReturn(true);
+
+        $claudeProvider->shouldReceive('switchModel')
+            ->with('claude-3-opus')
+            ->andReturn(true);
+
+        $this->app->instance(ProviderFactory::class, $factory);
+
+        $testClass = new TestClassWithTrait();
+
+        // Check initial state
+        $this->assertEquals('openai', $testClass->getCurrentProvider());
+        $this->assertEquals('gpt-3.5-turbo', $testClass->getCurrentModel());
+
+        // Execute with temporary configuration
+        $result = $testClass->withTemporaryConfiguration(
+            'claude',
+            'claude-3-opus',
+            ['temperature' => 0.7],
+            function ($instance) {
+                $state = $instance->getProviderState();
+                $this->assertEquals('claude', $state['provider']);
+                $this->assertEquals('claude-3-opus', $state['model']);
+                $this->assertEquals(0.7, $state['config']['temperature']);
+                return 'executed with temp config';
+            }
+        );
+
+        // Verify restoration
+        $this->assertEquals('executed with temp config', $result);
+        $this->assertEquals('openai', $testClass->getCurrentProvider());
+        $this->assertEquals('gpt-3.5-turbo', $testClass->getCurrentModel());
+    }
+
+    /**
+     * Test getAvailableProviders
+     */
+    public function test_get_available_providers(): void
+    {
+        $factory = Mockery::mock(ProviderFactory::class);
+
+        $openaiProvider = Mockery::mock(ProviderInterface::class);
+        $openaiProvider->shouldReceive('getName')->andReturn('OpenAI');
+        $openaiProvider->shouldReceive('getVersion')->andReturn('1.0');
+        $openaiProvider->shouldReceive('isAvailable')->andReturn(true);
+        $openaiProvider->shouldReceive('getCapabilities')->andReturn(['text', 'image']);
+
+        $claudeProvider = Mockery::mock(ProviderInterface::class);
+        $claudeProvider->shouldReceive('getName')->andReturn('Claude');
+        $claudeProvider->shouldReceive('getVersion')->andReturn('3.0');
+        $claudeProvider->shouldReceive('isAvailable')->andReturn(true);
+        $claudeProvider->shouldReceive('getCapabilities')->andReturn(['text']);
+
+        $factory->shouldReceive('getAvailableProviders')
+            ->andReturn([
+                'openai' => $openaiProvider,
+                'claude' => $claudeProvider,
+            ]);
+
+        $this->app->instance(ProviderFactory::class, $factory);
+
+        $testClass = new TestClassWithTrait();
+
+        // Get all providers
+        $allProviders = $testClass->getAvailableProviders();
+        $this->assertCount(2, $allProviders);
+        $this->assertArrayHasKey('openai', $allProviders);
+        $this->assertArrayHasKey('claude', $allProviders);
+
+        // Get text providers only
+        $textProviders = $testClass->getAvailableProviders('text');
+        $this->assertCount(2, $textProviders);
+
+        // Get image providers only
+        $imageProviders = $testClass->getAvailableProviders('image');
+        $this->assertCount(1, $imageProviders);
+        $this->assertArrayHasKey('openai', $imageProviders);
+    }
+
+    /**
+     * Test getProviderInfo
+     */
+    public function test_get_provider_info(): void
+    {
+        $factory = Mockery::mock(ProviderFactory::class);
+        $provider = Mockery::mock(ProviderInterface::class);
+
+        $provider->shouldReceive('getName')->andReturn('OpenAI');
+        $provider->shouldReceive('getVersion')->andReturn('1.0');
+        $provider->shouldReceive('isAvailable')->andReturn(true);
+        $provider->shouldReceive('getCapabilities')->andReturn(['text', 'image']);
+
+        $factory->shouldReceive('create')
+            ->with('openai')
+            ->andReturn($provider);
+
+        $this->app->instance(ProviderFactory::class, $factory);
+
+        $testClass = new TestClassWithTrait();
+
+        $info = $testClass->getProviderInfo('openai');
+
+        $this->assertIsArray($info);
+        $this->assertEquals('OpenAI', $info['name']);
+        $this->assertEquals('1.0', $info['version']);
+        $this->assertTrue($info['available']);
+        $this->assertContains('text', $info['capabilities']);
+        $this->assertContains('image', $info['capabilities']);
+    }
+
+    /**
+     * Test error handling for invalid provider
+     */
+    public function test_invalid_provider_error(): void
+    {
+        $factory = Mockery::mock(ProviderFactory::class);
+
+        $factory->shouldReceive('create')
+            ->with('invalid')
+            ->andThrow(new \InvalidArgumentException('Provider not found'));
+
+        $this->app->instance(ProviderFactory::class, $factory);
+
+        $testClass = new TestClassWithTrait();
+
+        $this->expectException(\InvalidArgumentException::class);
+        $testClass->useProvider('invalid');
+    }
+
+    /**
+     * Test configuration stacking
+     */
+    public function test_configuration_stacking(): void
+    {
+        $factory = Mockery::mock(ProviderFactory::class);
+        $provider = Mockery::mock(ProviderInterface::class);
+
+        $factory->shouldReceive('create')->andReturn($provider);
+
+        $this->app->instance(ProviderFactory::class, $factory);
+
+        $testClass = new TestClassWithTrait();
+
+        // Set initial config
+        $testClass->useProvider('openai', ['temperature' => 0.5]);
+
+        $state = $testClass->getProviderState();
+        $this->assertEquals(0.5, $state['config']['temperature']);
+
+        // Add more config
+        $testClass->useProvider('openai', ['max_tokens' => 1000]);
+
+        $state = $testClass->getProviderState();
+        $this->assertEquals(0.5, $state['config']['temperature']);
+        $this->assertEquals(1000, $state['config']['max_tokens']);
+    }
+
+    protected function tearDown(): void
+    {
+        Mockery::close();
+        parent::tearDown();
+    }
+}

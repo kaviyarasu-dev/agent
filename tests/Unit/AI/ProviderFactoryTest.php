@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use WebsiteLearners\AIAgent\Config\AIConfigManager;
 use WebsiteLearners\AIAgent\Contracts\ProviderInterface;
+use WebsiteLearners\AIAgent\Contracts\HasModelSwitching;
 use WebsiteLearners\AIAgent\Factory\ProviderFactory;
 
 beforeEach(function () {
@@ -20,7 +21,6 @@ it('creates provider successfully', function () {
     $providerConfig = [
         'class' => MockProvider::class,
         'api_key' => 'test-key',
-
         'default_model' => 'test-model',
     ];
 
@@ -31,11 +31,9 @@ it('creates provider successfully', function () {
         ->andReturn($providerConfig);
 
     $this->mockConfigManager
-
         ->shouldReceive('getProviderClass')
         ->once()
         ->with($providerName)
-
         ->andReturn(MockProvider::class);
 
     $provider = $this->factory->create($providerName);
@@ -48,11 +46,8 @@ it('throws exception when provider not configured', function () {
     $providerName = 'unknown';
     $this->mockConfigManager
         ->shouldReceive('getProviderConfig')
-
         ->once()
-
         ->with($providerName)
-
         ->andReturn([]);
 
     $this->mockConfigManager
@@ -197,13 +192,16 @@ it('clears cache', function () {
 
     expect($provider1)->not->toBe($provider2);
 });
+
 class MockProvider implements ProviderInterface
 {
     private array $config;
+    private string $currentModel;
 
     public function __construct(array $config)
     {
         $this->config = $config;
+        $this->currentModel = $config['default_model'] ?? 'default-model';
     }
 
     public function getName(): string
@@ -229,5 +227,86 @@ class MockProvider implements ProviderInterface
     public function isAvailable(): bool
     {
         return ! empty($this->config['api_key']);
+    }
+
+    public function getDefaultModel(): string
+    {
+        return $this->config['default_model'] ?? 'default-model';
+    }
+
+    public function validateConfiguration(): bool
+    {
+        return ! empty($this->config['api_key']);
+    }
+
+    public function getConfiguration(): array
+    {
+        return $this->config;
+    }
+
+    public function setConfiguration(array $config): ProviderInterface
+    {
+        $this->config = array_merge($this->config, $config);
+        return $this;
+    }
+
+    public function switchModel(string $model): HasModelSwitching
+    {
+        $this->currentModel = $model;
+        return $this;
+    }
+
+    public function getCurrentModel(): string
+    {
+        return $this->currentModel;
+    }
+
+    public function getModelCapabilities(?string $model = null): array
+    {
+        return [
+            'max_tokens' => 4096,
+            'supports_functions' => true,
+            'supports_vision' => false,
+        ];
+    }
+
+    public function getSupportedModels(): array
+    {
+        return ['default-model', 'advanced-model'];
+    }
+
+    public function validateModel(string $model): bool
+    {
+        return in_array($model, $this->getSupportedModels());
+    }
+
+    public function getModelConfig(string $model): array
+    {
+        return [
+            'name' => $model,
+            'max_tokens' => 4096,
+        ];
+    }
+
+    public function getAvailableModels(): array
+    {
+        return $this->getSupportedModels();
+    }
+
+    public function hasModel(string $model): bool
+    {
+        return $this->validateModel($model);
+    }
+
+    public function withModel(string $model, callable $callback): mixed
+    {
+        $previousModel = $this->currentModel;
+        $this->switchModel($model);
+
+        try {
+            return $callback($this);
+        } finally {
+            $this->currentModel = $previousModel;
+        }
     }
 }

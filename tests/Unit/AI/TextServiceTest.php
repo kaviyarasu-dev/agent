@@ -29,6 +29,10 @@ it('generates text with default provider', function () {
         ->andReturn($this->mockProvider);
 
     $this->mockProvider
+        ->shouldReceive('getName')
+        ->andReturn('test-provider');
+
+    $this->mockProvider
         ->shouldReceive('generateText')
         ->once()
         ->with([
@@ -56,6 +60,10 @@ it('generates text with custom options', function () {
         ->once()
         ->with('text')
         ->andReturn($this->mockProvider);
+
+    $this->mockProvider
+        ->shouldReceive('getName')
+        ->andReturn('test-provider');
 
     $this->mockProvider
         ->shouldReceive('generateText')
@@ -95,6 +103,10 @@ it('falls back on provider failure', function () {
         ->andReturn($this->mockProvider);
 
     $this->mockProvider
+        ->shouldReceive('getName')
+        ->andReturn('test-provider');
+
+    $this->mockProvider
         ->shouldReceive('generateText')
         ->once()
         ->andThrow(new \Exception('Provider failed'));
@@ -106,6 +118,10 @@ it('falls back on provider failure', function () {
         ->once()
         ->with('text')
         ->andReturn($fallbackProvider);
+
+    $fallbackProvider
+        ->shouldReceive('getName')
+        ->andReturn('fallback-provider');
 
     $fallbackProvider
         ->shouldReceive('generateText')
@@ -131,6 +147,10 @@ it('streams text', function () {
         ->once()
         ->with('text')
         ->andReturn($this->mockProvider);
+
+    $this->mockProvider
+        ->shouldReceive('getName')
+        ->andReturn('test-provider');
 
     $this->mockProvider
         ->shouldReceive('streamText')

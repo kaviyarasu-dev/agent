@@ -234,11 +234,6 @@ return [
             'channel' => env('AI_LOG_CHANNEL', 'ai'),
         ],
     ],
-    
-    'passport' => [
-        'enabled' => env('AI_PASSPORT_ENABLED', false),
-        'redirect_url' => env('AI_PASSPORT_REDIRECT_URL', '/home'),
-    ],
 ];
 ```
 

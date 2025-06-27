@@ -7,6 +7,7 @@ namespace WebsiteLearners\AIAgent\Factory;
 use Illuminate\Support\Facades\Cache;
 use WebsiteLearners\AIAgent\Config\AIConfigManager;
 use WebsiteLearners\AIAgent\Contracts\ProviderInterface;
+use WebsiteLearners\AIAgent\Exceptions\AIAgentException;
 
 class ProviderFactory
 {
@@ -33,7 +34,7 @@ class ProviderFactory
         }
 
         if (! class_exists($providerClass)) {
-            throw new \RuntimeException("Provider class {$providerClass} not found");
+            throw new AIAgentException("Provider class {$providerClass} not found");
         }
 
         $provider = new $providerClass($config);
@@ -74,7 +75,7 @@ class ProviderFactory
             }
         }
 
-        throw new \RuntimeException("No available provider found for capability: {$capability}");
+        throw new AIAgentException("No available provider found for capability: {$capability}");
     }
 
     public function getAvailableProviders(string $capability): array
