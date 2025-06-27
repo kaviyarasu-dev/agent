@@ -100,16 +100,6 @@ return [
                     'supports_streaming' => true,
                     'supports_functions' => true,
                 ],
-
-                'o3-pro' => [
-                    'name' => 'o3-Pro',
-                    'version' => '4.0-full-pro',
-                    'max_tokens' => 128000,
-                    'capabilities' => ['text', 'vision', 'tool_use'],
-                    'supports_streaming' => true,
-                    'supports_functions' => true,
-                ],
-
                 'gpt-4.1-2025-04-14' => [
                     'name' => 'GPT-4.1',
                     'version' => '4.1',
