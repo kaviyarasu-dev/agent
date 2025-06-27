@@ -70,6 +70,7 @@ class IdeogramProvider extends AbstractProvider implements ImageGenerationInterf
         ])->post(self::API_URL, $requestParams);
 
         if (! $response->successful()) {
+            logger()->error('Ideogram API error:', $requestParams);
             throw new AIAgentException('Ideogram API error: ' . $response->body());
         }
 

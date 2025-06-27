@@ -65,10 +65,7 @@ class OpenAIProvider extends AbstractProvider implements TextGenerationInterface
             throw new AIAgentException("Model {$this->currentModel} does not support text generation");
         }
 
-        $response = Http::withHeaders([
-            'Authorization' => 'Bearer ' . $this->config['api_key'],
-            'Content-Type' => 'application/json',
-        ])->post(self::TEXT_API_URL, [
+        $requestParams = [
             'model' => $this->currentModel,
             'messages' => [
                 [
@@ -76,11 +73,17 @@ class OpenAIProvider extends AbstractProvider implements TextGenerationInterface
                     'content' => $params['prompt'],
                 ],
             ],
-            'temperature' => $params['temperature'] ?? 0.7,
+            'temperature' => $params['temperature'] ?? 1,
             'max_tokens' => $params['max_tokens'] ?? $this->getMaxTokens(),
-        ]);
+        ];
+
+        $response = Http::withHeaders([
+            'Authorization' => 'Bearer ' . $this->config['api_key'],
+            'Content-Type' => 'application/json',
+        ])->post(self::TEXT_API_URL, $requestParams);
 
         if (! $response->successful()) {
+            logger()->error('OpenAI API error:', $requestParams);
             throw new AIAgentException('OpenAI API error: ' . $response->body());
         }
 

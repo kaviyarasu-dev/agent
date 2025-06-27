@@ -52,6 +52,6 @@ class {{ class }}
         // TODO: Implement your AI agent logic here
 
         // Example usage:
-        // return $this->{{ serviceProperty }}->generate{{ methodSuffix }}($prompt, $options);
+        // return $this->{{ serviceProperty }}->generate{{ methodSuffix }}($data['prompt'], $data['options']);
     }
 }

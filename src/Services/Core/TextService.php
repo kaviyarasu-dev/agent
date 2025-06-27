@@ -34,7 +34,7 @@ class TextService implements TextServiceInterface, HasProviderSwitching, HasMode
 
         $params = array_merge([
             'prompt' => $prompt,
-            'temperature' => 0.7,
+            'temperature' => 1,
             'max_tokens' => 1000,
         ], $options);
 

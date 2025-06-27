@@ -212,15 +212,7 @@ Search engine optimization in Laravel applications requires special attention du
 
 ## Essential Laravel SEO Techniques
 
-### 1. URL Structure and Routing
-
-Laravel SEO starts with clean, descriptive URLs. Use semantic routing:
-
-```php
-Route::get('/blog/{slug}', 'BlogController@show')->name('blog.show');
-```
-
-### 2. Meta Tags Management
+### 1. Meta Tags Management
 
 Implement dynamic meta tags for better Laravel SEO:
 
@@ -231,7 +223,7 @@ Implement dynamic meta tags for better Laravel SEO:
 @endsection
 ```
 
-### 3. XML Sitemap Generation
+### 2. XML Sitemap Generation
 
 A sitemap is essential for Laravel SEO. Use packages like spatie/laravel-sitemap:
 

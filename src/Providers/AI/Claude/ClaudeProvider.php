@@ -65,11 +65,7 @@ class ClaudeProvider extends AbstractProvider implements TextGenerationInterface
 
     public function generateText(array $params): string
     {
-        $response = Http::withHeaders([
-            'x-api-key' => $this->config['api_key'],
-            'anthropic-version' => '2023-06-01',
-            'content-type' => 'application/json',
-        ])->post(self::API_URL, [
+        $requestParams = [
             'model' => $this->currentModel,
             'max_tokens' => $params['max_tokens'] ?? $this->getMaxTokens(),
             'messages' => [
@@ -79,9 +75,16 @@ class ClaudeProvider extends AbstractProvider implements TextGenerationInterface
                 ],
             ],
             'temperature' => $params['temperature'] ?? 0.7,
-        ]);
+        ];
+
+        $response = Http::withHeaders([
+            'x-api-key' => $this->config['api_key'],
+            'anthropic-version' => '2023-06-01',
+            'content-type' => 'application/json',
+        ])->post(self::API_URL, $requestParams);
 
         if (! $response->successful()) {
+            logger()->error('Claude API error:', $requestParams);
             throw new AIAgentException('Claude API error: ' . $response->body());
         }
 
