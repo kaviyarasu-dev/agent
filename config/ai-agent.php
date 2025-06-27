@@ -92,26 +92,28 @@ return [
                     'supports_streaming' => true,
                     'supports_functions' => true,
                 ],
-                'o3-pro-2025-06-10' => [
-                    'name' => 'o3-pro',
-                    'version' => '3.0-turbo',
-                    'max_tokens' => 4096,
-                    'capabilities' => ['text'],
+                'o3' => [
+                    'name' => 'o3',
+                    'version' => '4.0-full',
+                    'max_tokens' => 128000,
+                    'capabilities' => ['text', 'vision'],
                     'supports_streaming' => true,
                     'supports_functions' => true,
                 ],
-                'gpt-4.1-mini-2025-04-14' => [
-                    'name' => 'GPT-4.1 Mini',
-                    'version' => '4.1-mini',
-                    'max_tokens' => 4096,
-                    'capabilities' => ['text'],
+
+                'o3-pro' => [
+                    'name' => 'o3-Pro',
+                    'version' => '4.0-full-pro',
+                    'max_tokens' => 128000,
+                    'capabilities' => ['text', 'vision', 'tool_use'],
                     'supports_streaming' => true,
                     'supports_functions' => true,
                 ],
-                'gpt-3.5-turbo' => [
-                    'name' => 'GPT-3.5 Turbo',
-                    'version' => '3.5-turbo',
-                    'max_tokens' => 4096,
+
+                'gpt-4.1-2025-04-14' => [
+                    'name' => 'GPT-4.1',
+                    'version' => '4.1',
+                    'max_tokens' => 128000,
                     'capabilities' => ['text'],
                     'supports_streaming' => true,
                     'supports_functions' => true,
@@ -166,15 +168,15 @@ return [
     'model_selection' => [
         'strategies' => [
             'cost_optimized' => [
-                'text' => ['claude-3-haiku-20240307', 'gpt-3.5-turbo'],
+                'text' => ['claude-3-haiku-20240307', 'gpt-4.1-2025-04-14'],
                 'image' => ['dall-e-2', 'ideogram-v1'],
             ],
             'quality_optimized' => [
-                'text' => ['claude-3-opus-20240229', 'o4-mini-2025-04-16'],
+                'text' => ['claude-3-opus-20240229', 'o3'],
                 'image' => ['dall-e-3', 'ideogram-v2'],
             ],
             'balanced' => [
-                'text' => ['claude-3-5-sonnet-20241022', 'gpt-4.1-mini-2025-04-14'],
+                'text' => ['claude-3-5-sonnet-20241022', 'o4-mini-2025-04-16'],
                 'image' => ['dall-e-3', 'ideogram-v2'],
             ],
         ],
