@@ -74,7 +74,7 @@ class OpenAIProvider extends AbstractProvider implements TextGenerationInterface
                 ],
             ],
             'temperature' => $params['temperature'] ?? 1,
-            'max_tokens' => $params['max_tokens'] ?? $this->getMaxTokens(),
+            'max_completion_tokens' => $params['max_tokens'] ?? $this->getMaxTokens(),
         ];
 
         $response = Http::withHeaders([
@@ -110,7 +110,7 @@ class OpenAIProvider extends AbstractProvider implements TextGenerationInterface
                 ],
             ],
             'temperature' => $params['temperature'] ?? 0.7,
-            'max_tokens' => $params['max_tokens'] ?? $this->getMaxTokens(),
+            'max_completion_tokens' => $params['max_tokens'] ?? $this->getMaxTokens(),
             'stream' => true,
         ]);
 
