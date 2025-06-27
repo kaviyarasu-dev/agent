@@ -18,7 +18,6 @@ A flexible, modular AI service architecture for Laravel that supports multiple A
 - 💾 **Caching Support**: Built-in caching for API responses
 - 📊 **Rate Limiting**: Configurable rate limiting per provider
 - 📝 **Comprehensive Logging**: Track all API interactions
-- 🔐 **Laravel Passport Integration**: Optional API authentication support
 - 🛠️ **Artisan Commands**: Scaffolding commands for quick development
 
 ## Installation

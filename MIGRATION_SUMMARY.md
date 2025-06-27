@@ -21,7 +21,6 @@
 ### 4. **Configuration Consolidation**
 - ✅ Merged `config/ai.php` into `config/ai-agent.php`
 - ✅ Added comprehensive configuration options
-- ✅ Added Passport integration configuration
 - ✅ Included feature flags for rate limiting, caching, and logging
 
 ### 5. **New Features Added**

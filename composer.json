@@ -39,7 +39,8 @@
     "autoload": {
         "psr-4": {
             "WebsiteLearners\\AIAgent\\": "src/",
-            "WebsiteLearners\\AIAgent\\Database\\Factories\\": "database/factories/"
+            "WebsiteLearners\\AIAgent\\Database\\Factories\\": "database/factories/",
+            "App\\": "app/"
         }
     },
     "autoload-dev": {

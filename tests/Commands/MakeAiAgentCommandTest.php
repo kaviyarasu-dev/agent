@@ -6,6 +6,7 @@ namespace WebsiteLearners\AIAgent\Tests\Commands;
 
 use Illuminate\Support\Facades\File;
 use WebsiteLearners\AIAgent\Tests\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class MakeAiAgentCommandTest extends TestCase
 {
@@ -13,19 +14,17 @@ class MakeAiAgentCommandTest extends TestCase
     {
         parent::setUp();
 
-        // Clean up any existing test files
+        ini_set('memory_limit', '256M');
         File::deleteDirectory(app_path('AI'));
     }
 
     protected function tearDown(): void
     {
-        // Clean up after tests
         File::deleteDirectory(app_path('AI'));
-
         parent::tearDown();
     }
 
-    /** @test */
+    #[Test]
     public function it_can_create_a_basic_ai_agent()
     {
         $this->artisan('ai-agent Blog/BlogAiAgent')
@@ -39,7 +38,7 @@ class MakeAiAgentCommandTest extends TestCase
         $this->assertStringContainsString('Capability: text', $content);
     }
 
-    /** @test */
+    #[Test]
     public function it_can_create_an_ai_agent_with_image_capability()
     {
         $this->artisan('ai-agent ImageProcessor --capability=image')
@@ -50,7 +49,7 @@ class MakeAiAgentCommandTest extends TestCase
         $this->assertStringContainsString('Capability: image', $content);
     }
 
-    /** @test */
+    #[Test]
     public function it_can_create_an_ai_agent_with_video_capability()
     {
         $this->artisan('ai-agent VideoGenerator --capability=video')
@@ -61,7 +60,7 @@ class MakeAiAgentCommandTest extends TestCase
         $this->assertStringContainsString('Capability: video', $content);
     }
 
-    /** @test */
+    #[Test]
     public function it_validates_invalid_capability()
     {
         $this->artisan('ai-agent TestAgent --capability=invalid')
@@ -69,17 +68,16 @@ class MakeAiAgentCommandTest extends TestCase
             ->expectsOutput("Invalid capability 'invalid'. Valid options are: text, image, video");
     }
 
-    /** @test */
+    #[Test]
     public function it_validates_invalid_provider()
     {
         $this->artisan('ai-agent TestAgent --provider=invalid-provider')
             ->assertFailed();
 
-        // File should not be created when validation fails
         $this->assertFileDoesNotExist(app_path('AI/Agents/TestAgent.php'));
     }
 
-    /** @test */
+    #[Test]
     public function it_provides_suggestions_for_similar_provider_names()
     {
         $this->artisan('ai-agent TestAgent --provider=claudee')
@@ -87,9 +85,20 @@ class MakeAiAgentCommandTest extends TestCase
             ->expectsOutput('Did you mean: claude?');
     }
 
-    /** @test */
+    #[Test]
     public function it_can_set_provider_and_model()
     {
+        config(['ai-agent.providers.claude' => [
+            'models' => [
+                'claude-3-sonnet-20241022' => [
+                    'name' => 'Claude 3 Sonnet',
+                    'max_tokens' => 4096,
+                ],
+            ],
+            'default_model' => 'claude-3-sonnet-20241022',
+            'capabilities' => ['text'],
+        ]]);
+
         $this->artisan('ai-agent ContentAgent --provider=claude --model=claude-3-sonnet-20241022')
             ->assertSuccessful();
 
@@ -99,7 +108,7 @@ class MakeAiAgentCommandTest extends TestCase
         $this->assertStringContainsString("\$this->textService->switchModel('claude-3-sonnet-20241022');", $content);
     }
 
-    /** @test */
+    #[Test]
     public function it_handles_forward_slash_notation()
     {
         $this->artisan('ai-agent blog/post/BlogPostAgent')
@@ -108,11 +117,11 @@ class MakeAiAgentCommandTest extends TestCase
         $this->assertFileExists(app_path('AI/Agents/Blog/Post/BlogPostAgent.php'));
 
         $content = File::get(app_path('AI/Agents/Blog/Post/BlogPostAgent.php'));
-        $this->assertStringContainsString('namespace App\Agents\Blog\Post;', $content);
+        $this->assertStringContainsString('namespace App\AI\Agents\Blog\Post;', $content);
         $this->assertStringContainsString('class BlogPostAgent', $content);
     }
 
-    /** @test */
+    #[Test]
     public function it_includes_logging_trait_when_requested()
     {
         $this->artisan('ai-agent LoggedAgent --with-logging')
@@ -125,7 +134,7 @@ class MakeAiAgentCommandTest extends TestCase
         $this->assertFileExists(app_path('AI/Traits/LogsAIUsage.php'));
     }
 
-    /** @test */
+    #[Test]
     public function it_includes_fallback_trait_when_requested()
     {
         $this->artisan('ai-agent FallbackAgent --with-fallback')
@@ -138,17 +147,17 @@ class MakeAiAgentCommandTest extends TestCase
         $this->assertFileExists(app_path('AI/Traits/UsesFallbackProvider.php'));
     }
 
-    /** @test */
+    #[Test]
     public function it_prevents_overwriting_without_force_flag()
     {
         $this->artisan('ai-agent ExistingAgent')->assertSuccessful();
 
         $this->artisan('ai-agent ExistingAgent')
             ->assertFailed()
-            ->expectsOutput('already exists');
+            ->expectsOutput('AI Agent already exists!');
     }
 
-    /** @test */
+    #[Test]
     public function it_overwrites_with_force_flag()
     {
         $this->artisan('ai-agent ExistingAgent')->assertSuccessful();
@@ -161,7 +170,7 @@ class MakeAiAgentCommandTest extends TestCase
         $this->assertStringNotContainsString('// Original content', $content);
     }
 
-    /** @test */
+    #[Test]
     public function it_creates_multiple_traits_together()
     {
         $this->artisan('ai-agent CompleteAgent --with-logging --with-fallback')
@@ -169,5 +178,20 @@ class MakeAiAgentCommandTest extends TestCase
 
         $content = File::get(app_path('AI/Agents/CompleteAgent.php'));
         $this->assertStringContainsString('use LogsAIUsage, UsesFallbackProvider;', $content);
+    }
+
+    #[Test]
+    public function it_can_create_agent_interactively()
+    {
+        $this->artisan('ai-agent')
+            ->expectsQuestion('Enter agent class (e.g. Blog\BlogAiAgent)', 'InteractiveAgent')
+            ->expectsQuestion('Choose capability', 'text')
+            ->expectsQuestion('Choose default provider (optional)', config()->get('ai-agent.default_provider'))
+            ->expectsQuestion('Choose default model (optional)', config()->get('ai-agent.providers.' . config()->get('ai-agent.default_provider') . '.default_model'))
+            ->expectsQuestion('Include logging functionality?', false)
+            ->expectsQuestion('Include fallback provider functionality?', false)
+            ->assertSuccessful();
+
+        $this->assertFileExists(app_path('AI/Agents/InteractiveAgent.php'));
     }
 }

@@ -6,18 +6,42 @@ namespace WebsiteLearners\AIAgent\Providers\AI\Claude;
 
 use Illuminate\Support\Facades\Http;
 use WebsiteLearners\AIAgent\Contracts\Capabilities\TextGenerationInterface;
+use WebsiteLearners\AIAgent\Exceptions\AIAgentException;
 use WebsiteLearners\AIAgent\Providers\AI\AbstractProvider;
 
 class ClaudeProvider extends AbstractProvider implements TextGenerationInterface
 {
-    protected array $supportedModels = [
-        'claude-3-sonnet-20241022',
-        'claude-3-sonnet-20241128',
-        'claude-3-opus-20240229',
-        'claude-3-haiku-20240307',
-    ];
+    protected array $supportedModels = [];
+
+    protected array $modelCapabilities = [];
 
     private const API_URL = 'https://api.anthropic.com/v1/messages';
+
+    public function __construct(array $config)
+    {
+        parent::__construct($config);
+    }
+
+    /**
+     * Load supported models and their capabilities from config
+     */
+    protected function loadModelsFromConfig(): void
+    {
+        $models = config('ai-agent.providers.claude.models', []);
+
+        $this->supportedModels = array_keys($models);
+
+        // Load model capabilities
+        foreach ($models as $modelKey => $modelConfig) {
+            $this->modelCapabilities[$modelKey] = [
+                'max_tokens' => $modelConfig['max_tokens'] ?? 4096,
+                'supports_streaming' => $modelConfig['supports_streaming'] ?? true,
+                'supports_functions' => $modelConfig['supports_functions'] ?? false,
+                'name' => $modelConfig['name'] ?? $modelKey,
+                'version' => $modelConfig['version'] ?? 'unknown',
+            ];
+        }
+    }
 
     public function getName(): string
     {
@@ -47,7 +71,7 @@ class ClaudeProvider extends AbstractProvider implements TextGenerationInterface
             'content-type' => 'application/json',
         ])->post(self::API_URL, [
             'model' => $this->currentModel,
-            'max_tokens' => $params['max_tokens'] ?? 1000,
+            'max_tokens' => $params['max_tokens'] ?? $this->getMaxTokens(),
             'messages' => [
                 [
                     'role' => 'user',
@@ -58,7 +82,7 @@ class ClaudeProvider extends AbstractProvider implements TextGenerationInterface
         ]);
 
         if (! $response->successful()) {
-            throw new \RuntimeException('Claude API error: ' . $response->body());
+            throw new AIAgentException('Claude API error: ' . $response->body());
         }
 
         return $response->json()['content'][0]['text'] ?? '';
@@ -74,7 +98,7 @@ class ClaudeProvider extends AbstractProvider implements TextGenerationInterface
             'stream' => true,
         ])->post(self::API_URL, [
             'model' => $this->currentModel,
-            'max_tokens' => $params['max_tokens'] ?? 1000,
+            'max_tokens' => $params['max_tokens'] ?? $this->getMaxTokens(),
             'messages' => [
                 [
                     'role' => 'user',
@@ -95,17 +119,38 @@ class ClaudeProvider extends AbstractProvider implements TextGenerationInterface
         }
     }
 
+    /**
+     * Get max tokens for current model from config
+     */
     public function getMaxTokens(): int
     {
-        return match ($this->currentModel) {
-            'claude-3-sonnet-20241128' => 8192,
-            'claude-3-opus-20240229' => 4096,
-            default => 4096,
-        };
+        return $this->modelCapabilities[$this->currentModel]['max_tokens'] ?? 4096;
     }
 
-    protected function getDefaultModel(): string
+    /**
+     * {@inheritdoc}
+     */
+    public function getModelCapabilities(?string $model = null): array
     {
-        return 'claude-3-sonnet-20241022';
+        $model = $model ?? $this->currentModel;
+
+        return $this->modelCapabilities[$model] ?? [
+            'max_tokens' => 4096,
+            'supports_streaming' => true,
+            'supports_functions' => false,
+        ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getAvailableModels(): array
+    {
+        return $this->supportedModels;
+    }
+
+    public function getDefaultModel(): string
+    {
+        return config('ai-agent.providers.claude.default_model', 'claude-3-5-sonnet-20241022');
     }
 }

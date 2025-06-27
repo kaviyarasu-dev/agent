@@ -7,20 +7,32 @@ namespace WebsiteLearners\AIAgent\Providers\AI\OpenAI;
 use Illuminate\Support\Facades\Http;
 use WebsiteLearners\AIAgent\Contracts\Capabilities\ImageGenerationInterface;
 use WebsiteLearners\AIAgent\Contracts\Capabilities\TextGenerationInterface;
-use WebsiteLearners\AIAgent\Contracts\Capabilities\VideoGenerationInterface;
+use WebsiteLearners\AIAgent\Exceptions\AIAgentException;
 use WebsiteLearners\AIAgent\Providers\AI\AbstractProvider;
 
-class OpenAIProvider extends AbstractProvider implements TextGenerationInterface, ImageGenerationInterface, VideoGenerationInterface
+class OpenAIProvider extends AbstractProvider implements TextGenerationInterface, ImageGenerationInterface
 {
-    protected array $supportedModels = [
-        'gpt-4',
-        'gpt-4-turbo',
-        'gpt-3.5-turbo',
-        'dall-e-3',
-        'dall-e-2',
-    ];
+    protected array $supportedModels = [];
 
-    private const API_BASE_URL = 'https://api.openai.com/v1';
+    protected array $modelCapabilities = [];
+
+    private const TEXT_API_URL = 'https://api.openai.com/v1/chat/completions';
+
+    private const IMAGE_API_URL = 'https://api.openai.com/v1/images/generations';
+
+    public function __construct(array $config)
+    {
+        parent::__construct($config);
+    }
+
+    protected function loadModelsFromConfig(): void
+    {
+        $models = config('ai-agent.providers.openai.models', []);
+        $this->supportedModels = array_keys($models);
+        foreach ($models as $modelKey => $modelConfig) {
+            $this->modelCapabilities[$modelKey] = $modelConfig;
+        }
+    }
 
     public function getName(): string
     {
@@ -34,25 +46,29 @@ class OpenAIProvider extends AbstractProvider implements TextGenerationInterface
 
     public function supports(string $capability): bool
     {
-        return match ($capability) {
-            'text' => in_array($this->currentModel, ['gpt-4', 'gpt-4-turbo', 'gpt-3.5-turbo']),
-            'image' => in_array($this->currentModel, ['dall-e-3', 'dall-e-2']),
-            'video' => false, // Not yet supported
-            default => false,
-        };
+        $modelCapabilities = $this->modelCapabilities[$this->currentModel]['capabilities'] ?? [];
+        return in_array($capability, $modelCapabilities);
     }
 
     public function getCapabilities(): array
     {
-        return ['text', 'image'];
+        $capabilities = [];
+        foreach ($this->modelCapabilities as $model => $config) {
+            $capabilities = array_merge($capabilities, $config['capabilities'] ?? []);
+        }
+        return array_unique($capabilities);
     }
 
     public function generateText(array $params): string
     {
+        if (!$this->supports('text')) {
+            throw new AIAgentException("Model {$this->currentModel} does not support text generation");
+        }
+
         $response = Http::withHeaders([
             'Authorization' => 'Bearer ' . $this->config['api_key'],
             'Content-Type' => 'application/json',
-        ])->post(self::API_BASE_URL . '/chat/completions', [
+        ])->post(self::TEXT_API_URL, [
             'model' => $this->currentModel,
             'messages' => [
                 [
@@ -61,11 +77,11 @@ class OpenAIProvider extends AbstractProvider implements TextGenerationInterface
                 ],
             ],
             'temperature' => $params['temperature'] ?? 0.7,
-            'max_tokens' => $params['max_tokens'] ?? 1000,
+            'max_tokens' => $params['max_tokens'] ?? $this->getMaxTokens(),
         ]);
 
         if (! $response->successful()) {
-            throw new \RuntimeException('OpenAI API error: ' . $response->body());
+            throw new AIAgentException('OpenAI API error: ' . $response->body());
         }
 
         return $response->json()['choices'][0]['message']['content'] ?? '';
@@ -73,12 +89,16 @@ class OpenAIProvider extends AbstractProvider implements TextGenerationInterface
 
     public function streamText(array $params): iterable
     {
+        if (!$this->supports('text')) {
+            throw new AIAgentException("Model {$this->currentModel} does not support text generation");
+        }
+
         $response = Http::withHeaders([
             'Authorization' => 'Bearer ' . $this->config['api_key'],
             'Content-Type' => 'application/json',
         ])->withOptions([
             'stream' => true,
-        ])->post(self::API_BASE_URL . '/chat/completions', [
+        ])->post(self::TEXT_API_URL, [
             'model' => $this->currentModel,
             'messages' => [
                 [
@@ -87,11 +107,10 @@ class OpenAIProvider extends AbstractProvider implements TextGenerationInterface
                 ],
             ],
             'temperature' => $params['temperature'] ?? 0.7,
-            'max_tokens' => $params['max_tokens'] ?? 1000,
+            'max_tokens' => $params['max_tokens'] ?? $this->getMaxTokens(),
             'stream' => true,
         ]);
 
-        // Handle streaming response
         $body = $response->getBody();
         while (!$body->eof()) {
             $chunk = $body->read(1024);
@@ -101,85 +120,113 @@ class OpenAIProvider extends AbstractProvider implements TextGenerationInterface
         }
     }
 
-    public function getMaxTokens(): int
-    {
-        return match ($this->currentModel) {
-            'gpt-4-turbo' => 128000,
-            'gpt-4' => 8192,
-            'gpt-3.5-turbo' => 4096,
-            default => 4096,
-        };
-    }
-
     public function generateImage(array $params): string
     {
-        $response = Http::withHeaders([
-            'Authorization' => 'Bearer ' . $this->config['api_key'],
-            'Content-Type' => 'application/json',
-        ])->post(self::API_BASE_URL . '/images/generations', [
+        if (!$this->supports('image')) {
+            throw new AIAgentException("Model {$this->currentModel} does not support image generation");
+        }
+
+        $requestParams = [
             'model' => $this->currentModel,
             'prompt' => $params['prompt'],
             'n' => 1,
             'size' => $params['size'] ?? '1024x1024',
-        ]);
+        ];
 
-        if (! $response->successful()) {
-            throw new \RuntimeException('OpenAI API error: ' . $response->body());
+        if ($this->currentModel === 'dall-e-3' && isset($params['quality'])) {
+            $requestParams['quality'] = $params['quality'];
         }
 
-        return $response->json()['data'][0]['url'] ?? '';
+        $response = Http::withHeaders([
+            'Authorization' => 'Bearer ' . $this->config['api_key'],
+            'Content-Type' => 'application/json',
+        ])->post(self::IMAGE_API_URL, $requestParams);
+
+        if (! $response->successful()) {
+            throw new AIAgentException('OpenAI API error: ' . $response->body());
+        }
+
+        $data = $response->json()['data'] ?? [];
+
+        if (empty($data)) {
+            throw new AIAgentException('No image data returned from OpenAI API');
+        }
+
+        return $data[0]['url'] ?? '';
     }
 
     public function generateImages(array $params): array
     {
-        $response = Http::withHeaders([
-            'Authorization' => 'Bearer ' . $this->config['api_key'],
-            'Content-Type' => 'application/json',
-        ])->post(self::API_BASE_URL . '/images/generations', [
+        if (!$this->supports('image')) {
+            throw new AIAgentException("Model {$this->currentModel} does not support image generation");
+        }
+
+        $requestParams = [
             'model' => $this->currentModel,
             'prompt' => $params['prompt'],
             'n' => $params['n'] ?? 1,
             'size' => $params['size'] ?? '1024x1024',
-        ]);
+        ];
 
-        if (! $response->successful()) {
-            throw new \RuntimeException('OpenAI API error: ' . $response->body());
+        if ($this->currentModel === 'dall-e-3' && isset($params['quality'])) {
+            $requestParams['quality'] = $params['quality'];
         }
 
-        return array_map(fn($item) => $item['url'], $response->json()['data'] ?? []);
+        $response = Http::withHeaders([
+            'Authorization' => 'Bearer ' . $this->config['api_key'],
+            'Content-Type' => 'application/json',
+        ])->post(self::IMAGE_API_URL, $requestParams);
+
+        if (! $response->successful()) {
+            throw new AIAgentException('OpenAI API error: ' . $response->body());
+        }
+
+        return $response->json()['data'] ?? [];
     }
 
     public function getSupportedFormats(): array
     {
-        return ['png', 'jpg'];
+        return ['png'];
     }
 
     public function getMaxResolution(): array
     {
-        return match ($this->currentModel) {
-            'dall-e-3' => ['width' => 1792, 'height' => 1024],
-            'dall-e-2' => ['width' => 1024, 'height' => 1024],
-            default => ['width' => 1024, 'height' => 1024],
-        };
+        if ($this->currentModel === 'dall-e-3') {
+            return [
+                'width' => 1792,
+                'height' => 1024,
+            ];
+        }
+
+        return [
+            'width' => 1024,
+            'height' => 1024,
+        ];
     }
 
-    public function generateVideo(array $params): string
+    public function getMaxTokens(): int
     {
-        throw new \RuntimeException('Video generation not yet supported by OpenAI');
+        return $this->modelCapabilities[$this->currentModel]['max_tokens'] ?? 4096;
     }
 
-    public function getVideoStatus(string $videoId): array
+    public function getModelCapabilities(?string $model = null): array
     {
-        throw new \RuntimeException('Video generation not yet supported by OpenAI');
+        $model = $model ?? $this->currentModel;
+
+        return $this->modelCapabilities[$model] ?? [
+            'max_tokens' => 4096,
+            'supports_streaming' => true,
+            'supports_functions' => false,
+        ];
     }
 
-    public function getMaxDuration(): int
+    public function getAvailableModels(): array
     {
-        return 0; // Not supported
+        return $this->supportedModels;
     }
 
-    protected function getDefaultModel(): string
+    public function getDefaultModel(): string
     {
-        return 'gpt-4';
+        return config('ai-agent.providers.openai.default_model', 'gpt-4');
     }
 }

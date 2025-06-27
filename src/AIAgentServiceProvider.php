@@ -8,6 +8,7 @@ use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 use WebsiteLearners\AIAgent\Commands\AIAgentCommand;
 use WebsiteLearners\AIAgent\Commands\MakeAiAgentCommand;
+use WebsiteLearners\AIAgent\Commands\ListProvidersCommand;
 use WebsiteLearners\AIAgent\Config\AIConfigManager;
 use WebsiteLearners\AIAgent\Contracts\Services\ImageServiceInterface;
 use WebsiteLearners\AIAgent\Contracts\Services\TextServiceInterface;
@@ -36,6 +37,7 @@ class AIAgentServiceProvider extends PackageServiceProvider
             ->hasCommands([
                 AIAgentCommand::class,
                 MakeAiAgentCommand::class,
+                ListProvidersCommand::class,
             ]);
     }
 
