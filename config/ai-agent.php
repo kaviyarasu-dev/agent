@@ -87,7 +87,7 @@ return [
                 'o4-mini-2025-04-16' => [
                     'name' => 'o4-Mini',
                     'version' => '4.0-turbo',
-                    'max_tokens' => 128000,
+                    'max_tokens' => 4096,
                     'capabilities' => ['text'],
                     'supports_streaming' => true,
                     'supports_functions' => true,
@@ -95,7 +95,7 @@ return [
                 'o3-pro-2025-06-10' => [
                     'name' => 'o3-pro',
                     'version' => '3.0-turbo',
-                    'max_tokens' => 8192,
+                    'max_tokens' => 4096,
                     'capabilities' => ['text'],
                     'supports_streaming' => true,
                     'supports_functions' => true,
