@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace WebsiteLearners\AIAgent\Tests\Feature;
+namespace Kaviyarasu\AIAgent\Tests\Feature;
 
-use WebsiteLearners\AIAgent\Tests\TestCase;
-use WebsiteLearners\AIAgent\Services\Core\TextService;
-use WebsiteLearners\AIAgent\Services\Core\ImageService;
-use WebsiteLearners\AIAgent\Services\Core\VideoService;
-use WebsiteLearners\AIAgent\Factory\ProviderFactory;
-use WebsiteLearners\AIAgent\Examples\EmailAIAgent;
-use WebsiteLearners\AIAgent\Examples\ContentCreatorAgent;
+use Kaviyarasu\AIAgent\Tests\TestCase;
+use Kaviyarasu\AIAgent\Services\Core\TextService;
+use Kaviyarasu\AIAgent\Services\Core\ImageService;
+use Kaviyarasu\AIAgent\Services\Core\VideoService;
+use Kaviyarasu\AIAgent\Factory\ProviderFactory;
+use Kaviyarasu\AIAgent\Examples\EmailAIAgent;
+use Kaviyarasu\AIAgent\Examples\ContentCreatorAgent;
 use Mockery;
 
 class SimpleProviderSwitchingTest extends TestCase
@@ -32,13 +32,13 @@ class SimpleProviderSwitchingTest extends TestCase
         $factory = Mockery::mock(ProviderFactory::class);
 
         $openaiProvider = Mockery::mock(
-            \WebsiteLearners\AIAgent\Contracts\ProviderInterface::class . ',' .
-                \WebsiteLearners\AIAgent\Contracts\Capabilities\TextGenerationInterface::class
+            \Kaviyarasu\AIAgent\Contracts\ProviderInterface::class . ',' .
+                \Kaviyarasu\AIAgent\Contracts\Capabilities\TextGenerationInterface::class
         );
 
         $claudeProvider = Mockery::mock(
-            \WebsiteLearners\AIAgent\Contracts\ProviderInterface::class . ',' .
-                \WebsiteLearners\AIAgent\Contracts\Capabilities\TextGenerationInterface::class
+            \Kaviyarasu\AIAgent\Contracts\ProviderInterface::class . ',' .
+                \Kaviyarasu\AIAgent\Contracts\Capabilities\TextGenerationInterface::class
         );
 
         $openaiProvider->shouldReceive('getName')->andReturn('openai');
@@ -65,18 +65,18 @@ class SimpleProviderSwitchingTest extends TestCase
 
     public function test_email_agent_provider_switching(): void
     {
-        if (!class_exists(\WebsiteLearners\AIAgent\Examples\EmailAIAgent::class)) {
+        if (!class_exists(\Kaviyarasu\AIAgent\Examples\EmailAIAgent::class)) {
             $this->markTestSkipped('EmailAIAgent example not yet implemented');
         }
 
-        $textService = Mockery::mock(\WebsiteLearners\AIAgent\Contracts\Services\TextServiceInterface::class);
+        $textService = Mockery::mock(\Kaviyarasu\AIAgent\Contracts\Services\TextServiceInterface::class);
         $textService->shouldReceive('generateText')
             ->andReturn('Generated email content');
 
-        $this->app->instance(\WebsiteLearners\AIAgent\Contracts\Services\TextServiceInterface::class, $textService);
+        $this->app->instance(\Kaviyarasu\AIAgent\Contracts\Services\TextServiceInterface::class, $textService);
 
         $factory = Mockery::mock(ProviderFactory::class);
-        $provider = Mockery::mock(\WebsiteLearners\AIAgent\Contracts\ProviderInterface::class);
+        $provider = Mockery::mock(\Kaviyarasu\AIAgent\Contracts\ProviderInterface::class);
 
         $factory->shouldReceive('create')->andReturn($provider);
         $factory->shouldReceive('getAvailableProviders')->andReturn(['openai' => $provider]);
@@ -99,20 +99,20 @@ class SimpleProviderSwitchingTest extends TestCase
 
     public function test_content_creator_agent_initialization(): void
     {
-        if (!class_exists(\WebsiteLearners\AIAgent\Examples\ContentCreatorAgent::class)) {
+        if (!class_exists(\Kaviyarasu\AIAgent\Examples\ContentCreatorAgent::class)) {
             $this->markTestSkipped('ContentCreatorAgent example not yet implemented');
         }
 
-        $textService = Mockery::mock(\WebsiteLearners\AIAgent\Contracts\Services\TextServiceInterface::class);
-        $imageService = Mockery::mock(\WebsiteLearners\AIAgent\Contracts\Services\ImageServiceInterface::class);
+        $textService = Mockery::mock(\Kaviyarasu\AIAgent\Contracts\Services\TextServiceInterface::class);
+        $imageService = Mockery::mock(\Kaviyarasu\AIAgent\Contracts\Services\ImageServiceInterface::class);
 
         $textService->shouldReceive('switchProvider')->with('claude')->andReturn($textService);
         $textService->shouldReceive('switchModel')->with('claude-3-opus-20240229')->andReturn($textService);
 
         $imageService->shouldReceive('switchProvider')->with('ideogram')->andReturn($imageService);
 
-        $this->app->instance(\WebsiteLearners\AIAgent\Contracts\Services\TextServiceInterface::class, $textService);
-        $this->app->instance(\WebsiteLearners\AIAgent\Contracts\Services\ImageServiceInterface::class, $imageService);
+        $this->app->instance(\Kaviyarasu\AIAgent\Contracts\Services\TextServiceInterface::class, $textService);
+        $this->app->instance(\Kaviyarasu\AIAgent\Contracts\Services\ImageServiceInterface::class, $imageService);
 
         $agent = new ContentCreatorAgent();
 
@@ -124,8 +124,8 @@ class SimpleProviderSwitchingTest extends TestCase
     {
         $factory = Mockery::mock(ProviderFactory::class);
         $provider = Mockery::mock(
-            \WebsiteLearners\AIAgent\Contracts\ProviderInterface::class . ',' .
-                \WebsiteLearners\AIAgent\Contracts\Capabilities\TextGenerationInterface::class
+            \Kaviyarasu\AIAgent\Contracts\ProviderInterface::class . ',' .
+                \Kaviyarasu\AIAgent\Contracts\Capabilities\TextGenerationInterface::class
         );
 
         $provider->shouldReceive('getName')->andReturn('openai');
@@ -152,8 +152,8 @@ class SimpleProviderSwitchingTest extends TestCase
         $factory = Mockery::mock(ProviderFactory::class);
 
         $defaultProvider = Mockery::mock(
-            \WebsiteLearners\AIAgent\Contracts\ProviderInterface::class . ',' .
-                \WebsiteLearners\AIAgent\Contracts\Capabilities\TextGenerationInterface::class
+            \Kaviyarasu\AIAgent\Contracts\ProviderInterface::class . ',' .
+                \Kaviyarasu\AIAgent\Contracts\Capabilities\TextGenerationInterface::class
         );
         $defaultProvider->shouldReceive('getName')->andReturn('default');
 
@@ -162,12 +162,12 @@ class SimpleProviderSwitchingTest extends TestCase
             ->andReturn($defaultProvider);
 
         $openaiProvider = Mockery::mock(
-            \WebsiteLearners\AIAgent\Contracts\ProviderInterface::class . ',' .
-                \WebsiteLearners\AIAgent\Contracts\Capabilities\TextGenerationInterface::class
+            \Kaviyarasu\AIAgent\Contracts\ProviderInterface::class . ',' .
+                \Kaviyarasu\AIAgent\Contracts\Capabilities\TextGenerationInterface::class
         );
         $claudeProvider = Mockery::mock(
-            \WebsiteLearners\AIAgent\Contracts\ProviderInterface::class . ',' .
-                \WebsiteLearners\AIAgent\Contracts\Capabilities\TextGenerationInterface::class
+            \Kaviyarasu\AIAgent\Contracts\ProviderInterface::class . ',' .
+                \Kaviyarasu\AIAgent\Contracts\Capabilities\TextGenerationInterface::class
         );
         $openaiProvider->shouldReceive('getName')->andReturn('openai');
         $openaiProvider->shouldReceive('getCurrentModel')->andReturn('gpt-3.5-turbo');
@@ -203,8 +203,8 @@ class SimpleProviderSwitchingTest extends TestCase
     {
         $factory = Mockery::mock(ProviderFactory::class);
         $provider = Mockery::mock(
-            \WebsiteLearners\AIAgent\Contracts\ProviderInterface::class . ',' .
-                \WebsiteLearners\AIAgent\Contracts\Capabilities\TextGenerationInterface::class
+            \Kaviyarasu\AIAgent\Contracts\ProviderInterface::class . ',' .
+                \Kaviyarasu\AIAgent\Contracts\Capabilities\TextGenerationInterface::class
         );
 
         $provider->shouldReceive('getName')->andReturn('openai');

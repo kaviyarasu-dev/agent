@@ -2,23 +2,23 @@
 
 declare(strict_types=1);
 
-namespace WebsiteLearners\AIAgent;
+namespace Kaviyarasu\AIAgent;
 
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use WebsiteLearners\AIAgent\Commands\AIAgentCommand;
-use WebsiteLearners\AIAgent\Commands\MakeAiAgentCommand;
-use WebsiteLearners\AIAgent\Commands\ListProvidersCommand;
-use WebsiteLearners\AIAgent\Config\AIConfigManager;
-use WebsiteLearners\AIAgent\Contracts\Services\ImageServiceInterface;
-use WebsiteLearners\AIAgent\Contracts\Services\TextServiceInterface;
-use WebsiteLearners\AIAgent\Contracts\Services\VideoServiceInterface;
-use WebsiteLearners\AIAgent\Factory\ProviderFactory;
-use WebsiteLearners\AIAgent\Factory\ServiceFactory;
-use WebsiteLearners\AIAgent\Services\Core\ImageService;
-use WebsiteLearners\AIAgent\Services\Core\TextService;
-use WebsiteLearners\AIAgent\Services\Core\VideoService;
-use WebsiteLearners\AIAgent\Services\Modules\Storyboard\CharacterService;
+use Kaviyarasu\AIAgent\Commands\AIAgentCommand;
+use Kaviyarasu\AIAgent\Commands\MakeAiAgentCommand;
+use Kaviyarasu\AIAgent\Commands\ListProvidersCommand;
+use Kaviyarasu\AIAgent\Config\AIConfigManager;
+use Kaviyarasu\AIAgent\Contracts\Services\ImageServiceInterface;
+use Kaviyarasu\AIAgent\Contracts\Services\TextServiceInterface;
+use Kaviyarasu\AIAgent\Contracts\Services\VideoServiceInterface;
+use Kaviyarasu\AIAgent\Factory\ProviderFactory;
+use Kaviyarasu\AIAgent\Factory\ServiceFactory;
+use Kaviyarasu\AIAgent\Services\Core\ImageService;
+use Kaviyarasu\AIAgent\Services\Core\TextService;
+use Kaviyarasu\AIAgent\Services\Core\VideoService;
+use Kaviyarasu\AIAgent\Services\Modules\Storyboard\CharacterService;
 
 class AIAgentServiceProvider extends PackageServiceProvider
 {
@@ -106,7 +106,7 @@ class AIAgentServiceProvider extends PackageServiceProvider
             });
 
         // Storyboard Shot Service
-        $this->app->when(\WebsiteLearners\AIAgent\Services\Modules\Storyboard\ShotService::class)
+        $this->app->when(\Kaviyarasu\AIAgent\Services\Modules\Storyboard\ShotService::class)
             ->needs(ImageServiceInterface::class)
             ->give(function ($app) {
                 $service = $app->make(ImageService::class);

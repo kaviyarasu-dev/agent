@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace WebsiteLearners\AIAgent\Tests\Feature;
+namespace Kaviyarasu\AIAgent\Tests\Feature;
 
-use WebsiteLearners\AIAgent\Tests\TestCase;
-use WebsiteLearners\AIAgent\Examples\ContentCreatorAgent;
-use WebsiteLearners\AIAgent\Examples\EmailAIAgent;
-use WebsiteLearners\AIAgent\Examples\AdaptiveCodeAgent;
-use WebsiteLearners\AIAgent\Services\AI\TextService;
-use WebsiteLearners\AIAgent\Services\AI\ImageService;
-use WebsiteLearners\AIAgent\Factory\ProviderFactory;
-use WebsiteLearners\AIAgent\Providers\OpenAI\OpenAIProvider;
-use WebsiteLearners\AIAgent\Providers\Claude\ClaudeProvider;
-use WebsiteLearners\AIAgent\Providers\Ideogram\IdeogramProvider;
+use Kaviyarasu\AIAgent\Tests\TestCase;
+use Kaviyarasu\AIAgent\Examples\ContentCreatorAgent;
+use Kaviyarasu\AIAgent\Examples\EmailAIAgent;
+use Kaviyarasu\AIAgent\Examples\AdaptiveCodeAgent;
+use Kaviyarasu\AIAgent\Services\AI\TextService;
+use Kaviyarasu\AIAgent\Services\AI\ImageService;
+use Kaviyarasu\AIAgent\Factory\ProviderFactory;
+use Kaviyarasu\AIAgent\Providers\OpenAI\OpenAIProvider;
+use Kaviyarasu\AIAgent\Providers\Claude\ClaudeProvider;
+use Kaviyarasu\AIAgent\Providers\Ideogram\IdeogramProvider;
 
 /**
  * Full integration test to verify all components work together

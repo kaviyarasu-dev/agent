@@ -1,10 +1,10 @@
 <?php
 
-namespace WebsiteLearners\AIAgent\Tests;
+namespace Kaviyarasu\AIAgent\Tests;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Orchestra\Testbench\TestCase as Orchestra;
-use WebsiteLearners\AIAgent\AIAgentServiceProvider;
+use Kaviyarasu\AIAgent\AIAgentServiceProvider;
 
 class TestCase extends Orchestra
 {
@@ -13,7 +13,7 @@ class TestCase extends Orchestra
         parent::setUp();
 
         Factory::guessFactoryNamesUsing(
-            fn (string $modelName) => 'WebsiteLearners\\AIAgent\\Database\\Factories\\'.class_basename($modelName).'Factory'
+            fn (string $modelName) => 'Kaviyarasu\\AIAgent\\Database\\Factories\\'.class_basename($modelName).'Factory'
         );
     }
 

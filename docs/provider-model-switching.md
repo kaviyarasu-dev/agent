@@ -80,7 +80,7 @@ The trait can be added to any AI Agent class to provide switching capabilities.
 
 ```php
 use App\Agents\Traits\HasDynamicProvider;
-use WebsiteLearners\AIAgent\Contracts\Services\TextServiceInterface;
+use Kaviyarasu\AIAgent\Contracts\Services\TextServiceInterface;
 
 class MyCustomAgent
 {
@@ -133,7 +133,7 @@ $result = $agent->withConfiguration(
 For maximum control, use the ProviderFactory directly:
 
 ```php
-use WebsiteLearners\AIAgent\Factory\ProviderFactory;
+use Kaviyarasu\AIAgent\Factory\ProviderFactory;
 
 $factory = app(ProviderFactory::class);
 

@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace WebsiteLearners\AIAgent\Tests\Feature;
+namespace Kaviyarasu\AIAgent\Tests\Feature;
 
-use WebsiteLearners\AIAgent\Tests\TestCase;
-use WebsiteLearners\AIAgent\Examples\ContentCreatorAgent;
-use WebsiteLearners\AIAgent\Examples\EmailAIAgent;
-use WebsiteLearners\AIAgent\Examples\AdaptiveCodeAgent;
-use WebsiteLearners\AIAgent\Services\AI\TextService;
-use WebsiteLearners\AIAgent\Services\AI\ImageService;
-use WebsiteLearners\AIAgent\Factory\ProviderFactory;
-use WebsiteLearners\AIAgent\Contracts\Services\TextServiceInterface;
-use WebsiteLearners\AIAgent\Contracts\Services\ImageServiceInterface;
+use Kaviyarasu\AIAgent\Tests\TestCase;
+use Kaviyarasu\AIAgent\Examples\ContentCreatorAgent;
+use Kaviyarasu\AIAgent\Examples\EmailAIAgent;
+use Kaviyarasu\AIAgent\Examples\AdaptiveCodeAgent;
+use Kaviyarasu\AIAgent\Services\AI\TextService;
+use Kaviyarasu\AIAgent\Services\AI\ImageService;
+use Kaviyarasu\AIAgent\Factory\ProviderFactory;
+use Kaviyarasu\AIAgent\Contracts\Services\TextServiceInterface;
+use Kaviyarasu\AIAgent\Contracts\Services\ImageServiceInterface;
 use Mockery;
 
 class ExampleAgentsTest extends TestCase
@@ -98,7 +98,7 @@ class ExampleAgentsTest extends TestCase
 
         // Mock ProviderFactory for trait usage
         $factory = Mockery::mock(ProviderFactory::class);
-        $provider = Mockery::mock(\WebsiteLearners\AIAgent\Contracts\ProviderInterface::class);
+        $provider = Mockery::mock(\Kaviyarasu\AIAgent\Contracts\ProviderInterface::class);
 
         $factory->shouldReceive('create')->andReturn($provider);
         $factory->shouldReceive('getAvailableProviders')->andReturn(['openai' => $provider]);
@@ -133,7 +133,7 @@ class ExampleAgentsTest extends TestCase
 
         // Mock ProviderFactory
         $factory = Mockery::mock(ProviderFactory::class);
-        $provider = Mockery::mock(\WebsiteLearners\AIAgent\Contracts\ProviderInterface::class);
+        $provider = Mockery::mock(\Kaviyarasu\AIAgent\Contracts\ProviderInterface::class);
 
         $factory->shouldReceive('create')
             ->with('claude')

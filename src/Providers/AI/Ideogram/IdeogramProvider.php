@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace WebsiteLearners\AIAgent\Providers\AI\Ideogram;
+namespace Kaviyarasu\AIAgent\Providers\AI\Ideogram;
 
 use Illuminate\Support\Facades\Http;
-use WebsiteLearners\AIAgent\Contracts\Capabilities\ImageGenerationInterface;
-use WebsiteLearners\AIAgent\Exceptions\AIAgentException;
-use WebsiteLearners\AIAgent\Providers\AI\AbstractProvider;
+use Kaviyarasu\AIAgent\Contracts\Capabilities\ImageGenerationInterface;
+use Kaviyarasu\AIAgent\Exceptions\AIAgentException;
+use Kaviyarasu\AIAgent\Providers\AI\AbstractProvider;
 
 class IdeogramProvider extends AbstractProvider implements ImageGenerationInterface
 {

@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace WebsiteLearners\AIAgent\Commands;
+namespace Kaviyarasu\AIAgent\Commands;
 
 use Illuminate\Console\GeneratorCommand;
 use Illuminate\Support\Str;
 use Symfony\Component\Console\Input\InputOption;
-use WebsiteLearners\AIAgent\Config\AIConfigManager;
+use Kaviyarasu\AIAgent\Config\AIConfigManager;
 
 class MakeAiAgentCommand extends GeneratorCommand
 {

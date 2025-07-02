@@ -29,7 +29,7 @@ class MyAgent {
 #### 2. Extending BaseAIAgent
 
 ```php
-use WebsiteLearners\AIAgent\Agents\BaseAIAgent;
+use Kaviyarasu\AIAgent\Agents\BaseAIAgent;
 
 class BlogAgent extends BaseAIAgent {
     protected array $requiredServices = ['text'];
@@ -48,7 +48,7 @@ $agent->switchProvider('openai')
 #### 3. Direct Service Usage
 
 ```php
-use WebsiteLearners\AIAgent\Facades\AIAgent;
+use Kaviyarasu\AIAgent\Facades\AIAgent;
 
 AIAgent::text()
     ->switchProvider('claude')

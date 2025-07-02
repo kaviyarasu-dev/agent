@@ -6,7 +6,7 @@ All notable changes to `ai-agent` will be documented in this file.
 
 ### Changed
 - Migrated package architecture to follow Spatie package skeleton standards
-- Renamed namespaces from `App\AI` to `WebsiteLearners\AIAgent`
+- Renamed namespaces from `App\AI` to `Kaviyarasu\AIAgent`
 - Restructured all source files under `src/` directory
 - Updated service provider to extend Spatie's `PackageServiceProvider`
 - Consolidated configuration into single `ai-agent.php` file

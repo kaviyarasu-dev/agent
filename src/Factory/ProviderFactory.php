@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace WebsiteLearners\AIAgent\Factory;
+namespace Kaviyarasu\AIAgent\Factory;
 
 use Illuminate\Support\Facades\Cache;
-use WebsiteLearners\AIAgent\Config\AIConfigManager;
-use WebsiteLearners\AIAgent\Contracts\ProviderInterface;
-use WebsiteLearners\AIAgent\Exceptions\AIAgentException;
+use Kaviyarasu\AIAgent\Config\AIConfigManager;
+use Kaviyarasu\AIAgent\Contracts\ProviderInterface;
+use Kaviyarasu\AIAgent\Exceptions\AIAgentException;
 
 class ProviderFactory
 {

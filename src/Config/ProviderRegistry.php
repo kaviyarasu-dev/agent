@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace WebsiteLearners\AIAgent\Config;
+namespace Kaviyarasu\AIAgent\Config;
 
-use WebsiteLearners\AIAgent\Contracts\ProviderInterface;
+use Kaviyarasu\AIAgent\Contracts\ProviderInterface;
 
 class ProviderRegistry
 {

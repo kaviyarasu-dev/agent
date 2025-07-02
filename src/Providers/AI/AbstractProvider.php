@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace WebsiteLearners\AIAgent\Providers\AI;
+namespace Kaviyarasu\AIAgent\Providers\AI;
 
-use WebsiteLearners\AIAgent\Contracts\ProviderInterface;
+use Kaviyarasu\AIAgent\Contracts\ProviderInterface;
 
 abstract class AbstractProvider implements ProviderInterface
 {

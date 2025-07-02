@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace WebsiteLearners\AIAgent\Tests\Unit\Traits;
+namespace Kaviyarasu\AIAgent\Tests\Unit\Traits;
 
-use WebsiteLearners\AIAgent\Tests\TestCase;
-use WebsiteLearners\AIAgent\Traits\HasDynamicProvider;
-use WebsiteLearners\AIAgent\Factory\ProviderFactory;
-use WebsiteLearners\AIAgent\Contracts\ProviderInterface;
+use Kaviyarasu\AIAgent\Tests\TestCase;
+use Kaviyarasu\AIAgent\Traits\HasDynamicProvider;
+use Kaviyarasu\AIAgent\Factory\ProviderFactory;
+use Kaviyarasu\AIAgent\Contracts\ProviderInterface;
 use Mockery;
 
 class TestClassWithTrait

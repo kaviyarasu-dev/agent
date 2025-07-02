@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace WebsiteLearners\AIAgent\Tests\Unit;
+namespace Kaviyarasu\AIAgent\Tests\Unit;
 
 use Mockery;
-use WebsiteLearners\AIAgent\Tests\TestCase;
-use WebsiteLearners\AIAgent\Services\Core\TextService;
-use WebsiteLearners\AIAgent\Contracts\Services\TextServiceInterface;
-use WebsiteLearners\AIAgent\Contracts\Services\ImageServiceInterface;
-use WebsiteLearners\AIAgent\Contracts\Services\VideoServiceInterface;
-use WebsiteLearners\AIAgent\Factory\ProviderFactory;
-use WebsiteLearners\AIAgent\Factory\ServiceFactory;
-use WebsiteLearners\AIAgent\Agents\BaseAIAgent;
-use WebsiteLearners\AIAgent\Examples\EmailAIAgent;
+use Kaviyarasu\AIAgent\Tests\TestCase;
+use Kaviyarasu\AIAgent\Services\Core\TextService;
+use Kaviyarasu\AIAgent\Contracts\Services\TextServiceInterface;
+use Kaviyarasu\AIAgent\Contracts\Services\ImageServiceInterface;
+use Kaviyarasu\AIAgent\Contracts\Services\VideoServiceInterface;
+use Kaviyarasu\AIAgent\Factory\ProviderFactory;
+use Kaviyarasu\AIAgent\Factory\ServiceFactory;
+use Kaviyarasu\AIAgent\Agents\BaseAIAgent;
+use Kaviyarasu\AIAgent\Examples\EmailAIAgent;
 use App\Agents\Examples\AdaptiveCodeAgent;
 use App\Agents\Examples\ContentCreatorAgent;
 
@@ -30,8 +30,8 @@ class ProviderSwitchingTest extends TestCase
         $textService = new TextService($providerFactory);
 
         $mockProvider = Mockery::mock(
-            'WebsiteLearners\AIAgent\Contracts\ProviderInterface,' .
-                'WebsiteLearners\AIAgent\Contracts\Capabilities\TextGenerationInterface'
+            'Kaviyarasu\AIAgent\Contracts\ProviderInterface,' .
+                'Kaviyarasu\AIAgent\Contracts\Capabilities\TextGenerationInterface'
         );
         $mockProvider->shouldReceive('getName')->andReturn('openai');
         $mockProvider->shouldReceive('isAvailable')->andReturn(true);
@@ -52,8 +52,8 @@ class ProviderSwitchingTest extends TestCase
         $textService = new TextService($providerFactory);
 
         $mockProvider = Mockery::mock(
-            'WebsiteLearners\AIAgent\Contracts\ProviderInterface,' .
-                'WebsiteLearners\AIAgent\Contracts\Capabilities\TextGenerationInterface'
+            'Kaviyarasu\AIAgent\Contracts\ProviderInterface,' .
+                'Kaviyarasu\AIAgent\Contracts\Capabilities\TextGenerationInterface'
         );
 
         $mockProvider->shouldReceive('getName')->andReturn('openai');
@@ -82,15 +82,15 @@ class ProviderSwitchingTest extends TestCase
         $textService = new TextService($providerFactory);
 
         $claudeProvider = Mockery::mock(
-            'WebsiteLearners\AIAgent\Contracts\ProviderInterface,' .
-                'WebsiteLearners\AIAgent\Contracts\Capabilities\TextGenerationInterface'
+            'Kaviyarasu\AIAgent\Contracts\ProviderInterface,' .
+                'Kaviyarasu\AIAgent\Contracts\Capabilities\TextGenerationInterface'
         );
         $claudeProvider->shouldReceive('getName')->andReturn('claude');
         $claudeProvider->shouldReceive('getCurrentModel')->andReturn('claude-3-sonnet');
 
         $openaiProvider = Mockery::mock(
-            'WebsiteLearners\AIAgent\Contracts\ProviderInterface,' .
-                'WebsiteLearners\AIAgent\Contracts\Capabilities\TextGenerationInterface'
+            'Kaviyarasu\AIAgent\Contracts\ProviderInterface,' .
+                'Kaviyarasu\AIAgent\Contracts\Capabilities\TextGenerationInterface'
         );
         $openaiProvider->shouldReceive('getName')->andReturn('openai');
 
@@ -168,8 +168,8 @@ class ProviderSwitchingTest extends TestCase
         $textService = new TextService($providerFactory);
 
         $mockProvider = Mockery::mock(
-            'WebsiteLearners\AIAgent\Contracts\ProviderInterface,' .
-                'WebsiteLearners\AIAgent\Contracts\Capabilities\TextGenerationInterface'
+            'Kaviyarasu\AIAgent\Contracts\ProviderInterface,' .
+                'Kaviyarasu\AIAgent\Contracts\Capabilities\TextGenerationInterface'
         );
 
         $mockProvider->shouldReceive('getName')->andReturn('openai');
@@ -195,7 +195,7 @@ class ProviderSwitchingTest extends TestCase
     public function test_execute_with_fallback_providers()
     {
         $serviceFactory = Mockery::mock(ServiceFactory::class);
-        $textService = Mockery::mock('WebsiteLearners\AIAgent\Contracts\Services\TextServiceInterface');
+        $textService = Mockery::mock('Kaviyarasu\AIAgent\Contracts\Services\TextServiceInterface');
 
         $serviceFactory->shouldReceive('createTextService')->andReturn($textService);
         $serviceFactory->shouldReceive('setDefaultProvider')->once();

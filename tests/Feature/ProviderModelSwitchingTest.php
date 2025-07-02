@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace WebsiteLearners\AIAgent\Tests\Feature;
+namespace Kaviyarasu\AIAgent\Tests\Feature;
 
 use App\Agents\Blog\BlogAiAgentAdvanced;
 use App\Agents\Blog\BlogAiAgentWithTrait;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use WebsiteLearners\AIAgent\Tests\TestCase;
-use WebsiteLearners\AIAgent\Contracts\Services\TextServiceInterface;
-use WebsiteLearners\AIAgent\Factory\ProviderFactory;
+use Kaviyarasu\AIAgent\Tests\TestCase;
+use Kaviyarasu\AIAgent\Contracts\Services\TextServiceInterface;
+use Kaviyarasu\AIAgent\Factory\ProviderFactory;
 
 class ProviderModelSwitchingTest extends TestCase
 {
@@ -23,7 +23,7 @@ class ProviderModelSwitchingTest extends TestCase
         $providerFactory = $this->createMock(ProviderFactory::class);
 
         // Create mock provider
-        $mockProvider = $this->createMock(\WebsiteLearners\AIAgent\Contracts\Capabilities\TextGenerationInterface::class);
+        $mockProvider = $this->createMock(\Kaviyarasu\AIAgent\Contracts\Capabilities\TextGenerationInterface::class);
         $mockProvider->method('switchModel')->willReturn(true);
         $mockProvider->method('getCurrentModel')->willReturn('test-model');
 
@@ -53,7 +53,7 @@ class ProviderModelSwitchingTest extends TestCase
         $this->app->bind(ProviderFactory::class, function () {
             $factory = $this->createMock(ProviderFactory::class);
 
-            $mockProvider = $this->createMock(\WebsiteLearners\AIAgent\Contracts\ProviderInterface::class);
+            $mockProvider = $this->createMock(\Kaviyarasu\AIAgent\Contracts\ProviderInterface::class);
             $mockProvider->method('switchModel')->willReturn(true);
             $mockProvider->method('getCurrentModel')->willReturn('test-model');
             $mockProvider->method('getName')->willReturn('Test Provider');
@@ -89,7 +89,7 @@ class ProviderModelSwitchingTest extends TestCase
         $textService = $this->createMock(TextServiceInterface::class);
         $providerFactory = $this->createMock(ProviderFactory::class);
 
-        $mockProvider = $this->createMock(\WebsiteLearners\AIAgent\Contracts\Capabilities\TextGenerationInterface::class);
+        $mockProvider = $this->createMock(\Kaviyarasu\AIAgent\Contracts\Capabilities\TextGenerationInterface::class);
         $mockProvider->method('switchModel')->willReturn(true);
         $mockProvider->method('getCurrentModel')->willReturn('original-model');
 
@@ -137,7 +137,7 @@ class ProviderModelSwitchingTest extends TestCase
         $providerFactory = $this->createMock(ProviderFactory::class);
 
         // Create a mock provider with reflection access
-        $mockProvider = new class implements \WebsiteLearners\AIAgent\Contracts\Capabilities\TextGenerationInterface {
+        $mockProvider = new class implements \Kaviyarasu\AIAgent\Contracts\Capabilities\TextGenerationInterface {
             protected array $supportedModels = ['model-1', 'model-2', 'model-3'];
 
             public function generateText(array $params): string

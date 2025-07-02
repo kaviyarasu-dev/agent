@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace WebsiteLearners\AIAgent\Factory;
+namespace Kaviyarasu\AIAgent\Factory;
 
-use WebsiteLearners\AIAgent\Config\AIConfigManager;
-use WebsiteLearners\AIAgent\Contracts\Services\ImageServiceInterface;
-use WebsiteLearners\AIAgent\Contracts\Services\TextServiceInterface;
-use WebsiteLearners\AIAgent\Contracts\Services\VideoServiceInterface;
-use WebsiteLearners\AIAgent\Services\Core\ImageService;
-use WebsiteLearners\AIAgent\Services\Core\TextService;
-use WebsiteLearners\AIAgent\Services\Core\VideoService;
+use Kaviyarasu\AIAgent\Config\AIConfigManager;
+use Kaviyarasu\AIAgent\Contracts\Services\ImageServiceInterface;
+use Kaviyarasu\AIAgent\Contracts\Services\TextServiceInterface;
+use Kaviyarasu\AIAgent\Contracts\Services\VideoServiceInterface;
+use Kaviyarasu\AIAgent\Services\Core\ImageService;
+use Kaviyarasu\AIAgent\Services\Core\TextService;
+use Kaviyarasu\AIAgent\Services\Core\VideoService;
 
 class ServiceFactory
 {

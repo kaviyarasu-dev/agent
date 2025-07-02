@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace WebsiteLearners\AIAgent\Tests\Feature;
+namespace Kaviyarasu\AIAgent\Tests\Feature;
 
-use WebsiteLearners\AIAgent\Tests\TestCase;
-use WebsiteLearners\AIAgent\Contracts\Services\TextServiceInterface;
-use WebsiteLearners\AIAgent\Contracts\Services\ImageServiceInterface;
+use Kaviyarasu\AIAgent\Tests\TestCase;
+use Kaviyarasu\AIAgent\Contracts\Services\TextServiceInterface;
+use Kaviyarasu\AIAgent\Contracts\Services\ImageServiceInterface;
 use App\Agents\Blog\BlogAiAgent;
 use App\Agents\Blog\BlogAiAgentWithImages;
 

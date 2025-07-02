@@ -26,7 +26,7 @@ return [
     'providers' => [
         'claude' => [
             'api_key' => env('CLAUDE_API_KEY'),
-            'class' => \WebsiteLearners\AIAgent\Providers\AI\Claude\ClaudeProvider::class,
+            'class' => \Kaviyarasu\AIAgent\Providers\AI\Claude\ClaudeProvider::class,
             'models' => [
                 'claude-3-7-sonnet-20250219' => [
                     'name' => 'Claude 3.7 Sonnet',
@@ -82,7 +82,7 @@ return [
 
         'openai' => [
             'api_key' => env('OPENAI_API_KEY'),
-            'class' => \WebsiteLearners\AIAgent\Providers\AI\OpenAI\OpenAIProvider::class,
+            'class' => \Kaviyarasu\AIAgent\Providers\AI\OpenAI\OpenAIProvider::class,
             'models' => [
                 'o4-mini-2025-04-16' => [
                     'name' => 'o4-Mini',
@@ -127,7 +127,7 @@ return [
 
         'ideogram' => [
             'api_key' => env('IDEOGRAM_API_KEY'),
-            'class' => \WebsiteLearners\AIAgent\Providers\AI\Ideogram\IdeogramProvider::class,
+            'class' => \Kaviyarasu\AIAgent\Providers\AI\Ideogram\IdeogramProvider::class,
             'models' => [
                 'ideogram-v2' => [
                     'name' => 'Ideogram V2',

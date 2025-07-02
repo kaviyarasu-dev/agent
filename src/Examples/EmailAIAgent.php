@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace WebsiteLearners\AIAgent\Examples;
+namespace Kaviyarasu\AIAgent\Examples;
 
-use WebsiteLearners\AIAgent\Contracts\Services\TextServiceInterface;
-use WebsiteLearners\AIAgent\Traits\HasDynamicProvider;
+use Kaviyarasu\AIAgent\Contracts\Services\TextServiceInterface;
+use Kaviyarasu\AIAgent\Traits\HasDynamicProvider;
 
 class EmailAIAgent
 {

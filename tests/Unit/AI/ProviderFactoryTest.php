@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-use WebsiteLearners\AIAgent\Config\AIConfigManager;
-use WebsiteLearners\AIAgent\Contracts\ProviderInterface;
-use WebsiteLearners\AIAgent\Contracts\HasModelSwitching;
-use WebsiteLearners\AIAgent\Factory\ProviderFactory;
+use Kaviyarasu\AIAgent\Config\AIConfigManager;
+use Kaviyarasu\AIAgent\Contracts\ProviderInterface;
+use Kaviyarasu\AIAgent\Contracts\HasModelSwitching;
+use Kaviyarasu\AIAgent\Factory\ProviderFactory;
 
 beforeEach(function () {
     $this->mockConfigManager = Mockery::mock(AIConfigManager::class);

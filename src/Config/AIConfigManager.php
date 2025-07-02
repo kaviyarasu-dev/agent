@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace WebsiteLearners\AIAgent\Config;
+namespace Kaviyarasu\AIAgent\Config;
 
 class AIConfigManager
 {

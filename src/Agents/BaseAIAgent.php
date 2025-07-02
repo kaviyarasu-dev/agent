@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace WebsiteLearners\AIAgent\Agents;
+namespace Kaviyarasu\AIAgent\Agents;
 
-use WebsiteLearners\AIAgent\Contracts\HasProviderSwitching;
-use WebsiteLearners\AIAgent\Contracts\HasModelSwitching;
-use WebsiteLearners\AIAgent\Contracts\Services\TextServiceInterface;
-use WebsiteLearners\AIAgent\Contracts\Services\ImageServiceInterface;
-use WebsiteLearners\AIAgent\Contracts\Services\VideoServiceInterface;
-use WebsiteLearners\AIAgent\Exceptions\AIAgentException;
-use WebsiteLearners\AIAgent\Factory\ServiceFactory;
+use Kaviyarasu\AIAgent\Contracts\HasProviderSwitching;
+use Kaviyarasu\AIAgent\Contracts\HasModelSwitching;
+use Kaviyarasu\AIAgent\Contracts\Services\TextServiceInterface;
+use Kaviyarasu\AIAgent\Contracts\Services\ImageServiceInterface;
+use Kaviyarasu\AIAgent\Contracts\Services\VideoServiceInterface;
+use Kaviyarasu\AIAgent\Exceptions\AIAgentException;
+use Kaviyarasu\AIAgent\Factory\ServiceFactory;
 
 /**
  * Base class for all AI Agents with provider and model switching capabilities.

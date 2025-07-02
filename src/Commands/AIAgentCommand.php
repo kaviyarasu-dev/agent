@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace WebsiteLearners\AIAgent\Commands;
+namespace Kaviyarasu\AIAgent\Commands;
 
 use Illuminate\Console\Command;
 

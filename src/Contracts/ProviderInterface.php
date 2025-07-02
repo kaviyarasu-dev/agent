@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace WebsiteLearners\AIAgent\Contracts;
+namespace Kaviyarasu\AIAgent\Contracts;
 
 interface ProviderInterface extends HasModelSwitching
 {

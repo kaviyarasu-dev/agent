@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\AI\Traits;
 
-use WebsiteLearners\AIAgent\Exceptions\AIAgentException;
+use Kaviyarasu\AIAgent\Exceptions\AIAgentException;
 
 /**
  * Trait UsesFallbackProvider
@@ -51,7 +51,7 @@ trait UsesFallbackProvider
         if (!in_array($provider, $this->fallbackProviders)) {
             $this->fallbackProviders[] = $provider;
         }
-        
+
         return $this;
     }
 
@@ -68,7 +68,7 @@ trait UsesFallbackProvider
     {
         $errors = [];
         $originalProvider = $this->currentProvider ?? $this->$service->getProvider();
-        
+
         // Try the primary provider first
         try {
             return $callback();
@@ -81,11 +81,11 @@ trait UsesFallbackProvider
             if ($fallbackProvider === $originalProvider) {
                 continue;
             }
-            
+
             try {
                 $this->$service->setProvider($fallbackProvider);
                 $result = $callback();
-                
+
                 // Successfully used fallback, log warning
                 if (method_exists($this, 'logAIRequest')) {
                     $this->logAIRequest($service, 'fallback', [
@@ -94,7 +94,7 @@ trait UsesFallbackProvider
                         'reason' => $errors[$originalProvider] ?? 'Unknown error',
                     ]);
                 }
-                
+
                 return $result;
             } catch (\Exception $e) {
                 $errors[$fallbackProvider] = $e->getMessage();

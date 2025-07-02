@@ -1,39 +1,39 @@
 <?php
 
-use WebsiteLearners\AIAgent\Contracts;
-use WebsiteLearners\AIAgent\Providers;
-use WebsiteLearners\AIAgent\Services;
+use Kaviyarasu\AIAgent\Contracts;
+use Kaviyarasu\AIAgent\Providers;
+use Kaviyarasu\AIAgent\Services;
 
 it('ensures contracts are interfaces')
-    ->expect('WebsiteLearners\AIAgent\Contracts')
+    ->expect('Kaviyarasu\AIAgent\Contracts')
     ->toBeInterfaces();
 
 it('ensures services implement their contracts')
-    ->expect('WebsiteLearners\AIAgent\Services\Core\TextService')
-    ->toImplement('WebsiteLearners\AIAgent\Contracts\Services\TextServiceInterface')
-    ->and('WebsiteLearners\AIAgent\Services\Core\ImageService')
-    ->toImplement('WebsiteLearners\AIAgent\Contracts\Services\ImageServiceInterface')
-    ->and('WebsiteLearners\AIAgent\Services\Core\VideoService')
-    ->toImplement('WebsiteLearners\AIAgent\Contracts\Services\VideoServiceInterface');
+    ->expect('Kaviyarasu\AIAgent\Services\Core\TextService')
+    ->toImplement('Kaviyarasu\AIAgent\Contracts\Services\TextServiceInterface')
+    ->and('Kaviyarasu\AIAgent\Services\Core\ImageService')
+    ->toImplement('Kaviyarasu\AIAgent\Contracts\Services\ImageServiceInterface')
+    ->and('Kaviyarasu\AIAgent\Services\Core\VideoService')
+    ->toImplement('Kaviyarasu\AIAgent\Contracts\Services\VideoServiceInterface');
 
 it('follows naming conventions for services')
-    ->expect('WebsiteLearners\AIAgent\Services')
+    ->expect('Kaviyarasu\AIAgent\Services')
     ->classes()
     ->toHaveSuffix('Service');
 
 it('follows naming conventions for providers')
-    ->expect('WebsiteLearners\AIAgent\Providers\AI')
+    ->expect('Kaviyarasu\AIAgent\Providers\AI')
     ->classes()
     ->toHaveSuffix('Provider');
 
 it('ensures providers extend abstract provider')
-    ->expect('WebsiteLearners\AIAgent\Providers\AI')
+    ->expect('Kaviyarasu\AIAgent\Providers\AI')
     ->classes()
-    ->toExtend('WebsiteLearners\AIAgent\Providers\AI\AbstractProvider')
-    ->ignoring('WebsiteLearners\AIAgent\Providers\AI\AbstractProvider');
+    ->toExtend('Kaviyarasu\AIAgent\Providers\AI\AbstractProvider')
+    ->ignoring('Kaviyarasu\AIAgent\Providers\AI\AbstractProvider');
 
 it('uses strict types')
-    ->expect('WebsiteLearners\AIAgent')
+    ->expect('Kaviyarasu\AIAgent')
     ->toUseStrictTypes();
 
 it('avoids die and dd')

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace WebsiteLearners\AIAgent\Contracts\Capabilities;
+namespace Kaviyarasu\AIAgent\Contracts\Capabilities;
 
 interface ImageGenerationInterface
 {

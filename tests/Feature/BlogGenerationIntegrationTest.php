@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace WebsiteLearners\AIAgent\Tests\Feature;
+namespace Kaviyarasu\AIAgent\Tests\Feature;
 
 use App\Agents\Blog\BlogAiAgent;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use WebsiteLearners\AIAgent\Tests\TestCase;
-use WebsiteLearners\AIAgent\Contracts\Services\TextServiceInterface;
+use Kaviyarasu\AIAgent\Tests\TestCase;
+use Kaviyarasu\AIAgent\Contracts\Services\TextServiceInterface;
 
 class BlogGenerationIntegrationTest extends TestCase
 {

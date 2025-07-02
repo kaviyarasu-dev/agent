@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-use WebsiteLearners\AIAgent\Contracts\Capabilities\TextGenerationInterface;
-use WebsiteLearners\AIAgent\Contracts\ProviderInterface;
-use WebsiteLearners\AIAgent\Factory\ProviderFactory;
-use WebsiteLearners\AIAgent\Services\Core\TextService;
+use Kaviyarasu\AIAgent\Contracts\Capabilities\TextGenerationInterface;
+use Kaviyarasu\AIAgent\Contracts\ProviderInterface;
+use Kaviyarasu\AIAgent\Factory\ProviderFactory;
+use Kaviyarasu\AIAgent\Services\Core\TextService;
 
 beforeEach(function () {
     $this->mockProvider = Mockery::mock(ProviderInterface::class, TextGenerationInterface::class);

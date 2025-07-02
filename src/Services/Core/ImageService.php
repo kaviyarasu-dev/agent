@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace WebsiteLearners\AIAgent\Services\Core;
+namespace Kaviyarasu\AIAgent\Services\Core;
 
-use WebsiteLearners\AIAgent\Contracts\Capabilities\ImageGenerationInterface;
-use WebsiteLearners\AIAgent\Contracts\HasProviderSwitching;
-use WebsiteLearners\AIAgent\Contracts\HasModelSwitching;
-use WebsiteLearners\AIAgent\Contracts\Services\ImageServiceInterface;
-use WebsiteLearners\AIAgent\Exceptions\AIAgentException;
-use WebsiteLearners\AIAgent\Factory\ProviderFactory;
+use Kaviyarasu\AIAgent\Contracts\Capabilities\ImageGenerationInterface;
+use Kaviyarasu\AIAgent\Contracts\HasProviderSwitching;
+use Kaviyarasu\AIAgent\Contracts\HasModelSwitching;
+use Kaviyarasu\AIAgent\Contracts\Services\ImageServiceInterface;
+use Kaviyarasu\AIAgent\Exceptions\AIAgentException;
+use Kaviyarasu\AIAgent\Factory\ProviderFactory;
 
 class ImageService implements ImageServiceInterface, HasProviderSwitching, HasModelSwitching
 {

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace {{ namespace }};
 
-use WebsiteLearners\AIAgent\Contracts\Services\{{ serviceInterface }};
+use Kaviyarasu\AIAgent\Contracts\Services\{{ serviceInterface }};
 {{ traitImports }}
 
 /**

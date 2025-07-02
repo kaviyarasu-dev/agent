@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace WebsiteLearners\AIAgent\Exceptions;
+namespace Kaviyarasu\AIAgent\Exceptions;
 
 use Exception;
 

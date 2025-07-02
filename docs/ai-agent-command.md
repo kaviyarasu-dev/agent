@@ -101,7 +101,7 @@ declare(strict_types=1);
 
 namespace App\Agents\Blog;
 
-use WebsiteLearners\AIAgent\Contracts\Services\TextServiceInterface;
+use Kaviyarasu\AIAgent\Contracts\Services\TextServiceInterface;
 use App\AI\Traits\LogsAIUsage;
 use App\AI\Traits\UsesFallbackProvider;
 

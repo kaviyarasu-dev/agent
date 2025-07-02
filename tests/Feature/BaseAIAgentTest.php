@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace WebsiteLearners\AIAgent\Tests\Feature;
+namespace Kaviyarasu\AIAgent\Tests\Feature;
 
-use WebsiteLearners\AIAgent\Tests\TestCase;
-use WebsiteLearners\AIAgent\Agents\BaseAIAgent;
-use WebsiteLearners\AIAgent\Services\Core\TextService;
-use WebsiteLearners\AIAgent\Services\Core\ImageService;
-use WebsiteLearners\AIAgent\Services\Core\VideoService;
-use WebsiteLearners\AIAgent\Factory\ProviderFactory;
-use WebsiteLearners\AIAgent\Factory\ServiceFactory;
-use WebsiteLearners\AIAgent\Contracts\Services\TextServiceInterface;
-use WebsiteLearners\AIAgent\Contracts\Services\ImageServiceInterface;
-use WebsiteLearners\AIAgent\Contracts\Services\VideoServiceInterface;
+use Kaviyarasu\AIAgent\Tests\TestCase;
+use Kaviyarasu\AIAgent\Agents\BaseAIAgent;
+use Kaviyarasu\AIAgent\Services\Core\TextService;
+use Kaviyarasu\AIAgent\Services\Core\ImageService;
+use Kaviyarasu\AIAgent\Services\Core\VideoService;
+use Kaviyarasu\AIAgent\Factory\ProviderFactory;
+use Kaviyarasu\AIAgent\Factory\ServiceFactory;
+use Kaviyarasu\AIAgent\Contracts\Services\TextServiceInterface;
+use Kaviyarasu\AIAgent\Contracts\Services\ImageServiceInterface;
+use Kaviyarasu\AIAgent\Contracts\Services\VideoServiceInterface;
 use Mockery;
 
 class TestAgent extends BaseAIAgent

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace WebsiteLearners\AIAgent\Contracts;
+namespace Kaviyarasu\AIAgent\Contracts;
 
 /**
  * Interface for classes that support provider switching.

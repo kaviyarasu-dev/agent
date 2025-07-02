@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace WebsiteLearners\AIAgent\Tests\Feature;
+namespace Kaviyarasu\AIAgent\Tests\Feature;
 
-use WebsiteLearners\AIAgent\Tests\TestCase;
-use WebsiteLearners\AIAgent\Services\Core\TextService;
-use WebsiteLearners\AIAgent\Services\Core\ImageService;
-use WebsiteLearners\AIAgent\Services\Core\VideoService;
-use WebsiteLearners\AIAgent\Factory\ProviderFactory;
-use WebsiteLearners\AIAgent\Providers\AI\OpenAI\OpenAIProvider;
-use WebsiteLearners\AIAgent\Providers\AI\Claude\ClaudeProvider;
-use WebsiteLearners\AIAgent\Providers\AI\Ideogram\IdeogramProvider;
+use Kaviyarasu\AIAgent\Tests\TestCase;
+use Kaviyarasu\AIAgent\Services\Core\TextService;
+use Kaviyarasu\AIAgent\Services\Core\ImageService;
+use Kaviyarasu\AIAgent\Services\Core\VideoService;
+use Kaviyarasu\AIAgent\Factory\ProviderFactory;
+use Kaviyarasu\AIAgent\Providers\AI\OpenAI\OpenAIProvider;
+use Kaviyarasu\AIAgent\Providers\AI\Claude\ClaudeProvider;
+use Kaviyarasu\AIAgent\Providers\AI\Ideogram\IdeogramProvider;
 use Mockery;
 
 class ComprehensiveProviderSwitchingTest extends TestCase

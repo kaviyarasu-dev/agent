@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace WebsiteLearners\AIAgent\Contracts\Services;
+namespace Kaviyarasu\AIAgent\Contracts\Services;
 
 interface ImageServiceInterface
 {

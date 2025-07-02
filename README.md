@@ -1,8 +1,8 @@
 # AI Agent for Laravel
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/websitelearners/ai-agent.svg?style=flat-square)](https://packagist.org/packages/websitelearners/ai-agent)
-[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/websitelearners/ai-agent/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/websitelearners/ai-agent/actions?query=workflow%3Arun-tests+branch%3Amain)
-[![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/websitelearners/ai-agent/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/websitelearners/ai-agent/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
-[![Total Downloads](https://img.shields.io/packagist/dt/websitelearners/ai-agent.svg?style=flat-square)](https://packagist.org/packages/websitelearners/ai-agent)
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/kaviyarasu/ai-agent.svg?style=flat-square)](https://packagist.org/packages/kaviyarasu/ai-agent)
+[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/kaviyarasu/ai-agent/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/kaviyarasu/ai-agent/actions?query=workflow%3Arun-tests+branch%3Amain)
+[![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/kaviyarasu/ai-agent/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/kaviyarasu/ai-agent/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
+[![Total Downloads](https://img.shields.io/packagist/dt/kaviyarasu/ai-agent.svg?style=flat-square)](https://packagist.org/packages/kaviyarasu/ai-agent)
 
 A flexible, modular AI service architecture for Laravel that supports multiple AI providers (Claude, OpenAI, Ideogram) with easy switching via configuration.
 
@@ -23,7 +23,7 @@ A flexible, modular AI service architecture for Laravel that supports multiple A
 ## Installation
 
 ```bash
-composer require websitelearners/ai-agent
+composer require kaviyarasu/ai-agent
 ```
 
 This is publish migrations and config file
@@ -71,7 +71,7 @@ return [
 ### Basic Usage
 
 ```php
-use WebsiteLearners\AIAgent\Facades\AIAgent;
+use Kaviyarasu\AIAgent\Facades\AIAgent;
 
 // Text generation
 $response = AIAgent::text()->generateText('Write a story about a robot');
@@ -88,7 +88,7 @@ $response = AIAgent::provider('openai')->text()->generateText('Hello world');
 #### Working with Specific Models
 
 ```php
-use WebsiteLearners\AIAgent\Facades\AIAgent;
+use Kaviyarasu\AIAgent\Facades\AIAgent;
 
 // Use a specific Claude model
 $response = AIAgent::provider('claude')
@@ -107,18 +107,18 @@ $imageUrl = AIAgent::provider('openai')
 
 ```php
 // Storyboard module with specific providers
-$characterService = app(\WebsiteLearners\AIAgent\Services\Modules\Storyboard\CharacterService::class);
+$characterService = app(\Kaviyarasu\AIAgent\Services\Modules\Storyboard\CharacterService::class);
 $character = $characterService->generateCharacter('A brave knight');
 
-$shotService = app(\WebsiteLearners\AIAgent\Services\Modules\Storyboard\ShotService::class);
+$shotService = app(\Kaviyarasu\AIAgent\Services\Modules\Storyboard\ShotService::class);
 $shot = $shotService->generateShot('The knight standing on a hill');
 ```
 
 #### Direct Service Access
 
 ```php
-use WebsiteLearners\AIAgent\Services\Core\TextService;
-use WebsiteLearners\AIAgent\Factory\ProviderFactory;
+use Kaviyarasu\AIAgent\Services\Core\TextService;
+use Kaviyarasu\AIAgent\Factory\ProviderFactory;
 
 // Create services directly
 $providerFactory = app(ProviderFactory::class);
@@ -224,7 +224,7 @@ Please review [our security policy](../../security/policy) on how to report secu
 
 ## Credits
 
-- [WebsiteLearners](https://github.com/websitelearners)
+- [Kaviyarasu](https://github.com/kaviyarasu)
 - [All Contributors](../../contributors)
 
 ## License

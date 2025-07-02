@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 /**
  * BlogAiAgent Usage Examples
- * 
+ *
  * This file demonstrates various ways to use the BlogAiAgent
  * for generating blog posts with AI.
  */
@@ -17,12 +17,12 @@ use App\Agents\Blog\BlogAiAgent;
 class BlogService
 {
     private BlogAiAgent $blogAgent;
-    
+
     public function __construct(BlogAiAgent $blogAgent)
     {
         $this->blogAgent = $blogAgent;
     }
-    
+
     public function generatePost(string $topic): string
     {
         return $this->blogAgent->execute([
@@ -117,7 +117,7 @@ class BlogGeneratorController
             'tone' => 'string|in:professional,casual,friendly,formal,humorous',
             'length' => 'string|in:short,medium,long',
         ]);
-        
+
         try {
             $content = app(BlogAiAgent::class)->execute([
                 'prompt' => 'Write a blog post about ' . $validated['topic'],
@@ -126,7 +126,7 @@ class BlogGeneratorController
                     'length' => $validated['length'] ?? 'medium',
                 ]
             ]);
-            
+
             return response()->json([
                 'success' => true,
                 'content' => $content,
@@ -151,13 +151,13 @@ use Illuminate\Queue\SerializesModels;
 class GenerateBlogPostJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-    
+
     public function __construct(
         private string $topic,
         private string $tone = 'professional',
         private string $length = 'medium'
     ) {}
-    
+
     public function handle(BlogAiAgent $blogAgent): void
     {
         $content = $blogAgent->execute([
@@ -167,7 +167,7 @@ class GenerateBlogPostJob implements ShouldQueue
                 'length' => $this->length,
             ]
         ]);
-        
+
         // Save to database, send email, etc.
         \Log::info('Blog post generated', [
             'topic' => $this->topic,
@@ -186,10 +186,10 @@ try {
             'length' => 'medium',
         ]
     ]);
-    
+
     // Process the content
     echo $content;
-    
+
 } catch (\InvalidArgumentException $e) {
     // Handle validation errors
     echo "Invalid input: " . $e->getMessage();
@@ -240,7 +240,7 @@ class BlogServiceProvider extends ServiceProvider
         // Register BlogAiAgent as a singleton
         $this->app->singleton(BlogAiAgent::class, function ($app) {
             return new BlogAiAgent(
-                $app->make(\WebsiteLearners\AIAgent\Contracts\Services\TextServiceInterface::class)
+                $app->make(\Kaviyarasu\AIAgent\Contracts\Services\TextServiceInterface::class)
             );
         });
     }

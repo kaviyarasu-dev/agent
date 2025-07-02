@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace WebsiteLearners\AIAgent\Services\Modules\Storyboard;
+namespace Kaviyarasu\AIAgent\Services\Modules\Storyboard;
 
-use WebsiteLearners\AIAgent\Contracts\Services\ImageServiceInterface;
-use WebsiteLearners\AIAgent\Contracts\Services\TextServiceInterface;
+use Kaviyarasu\AIAgent\Contracts\Services\ImageServiceInterface;
+use Kaviyarasu\AIAgent\Contracts\Services\TextServiceInterface;
 
 class ShotService
 {

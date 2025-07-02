@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace WebsiteLearners\AIAgent\Tests\Commands;
+namespace Kaviyarasu\AIAgent\Tests\Commands;
 
 use Illuminate\Support\Facades\File;
-use WebsiteLearners\AIAgent\Tests\TestCase;
+use Kaviyarasu\AIAgent\Tests\TestCase;
 use PHPUnit\Framework\Attributes\Test;
 
 class MakeAiAgentCommandTest extends TestCase

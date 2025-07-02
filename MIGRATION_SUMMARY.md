@@ -8,7 +8,7 @@
 - ✅ Removed old `app/` directory completely
 
 ### 2. **Namespace Updates**
-- ✅ Changed from `App\AI\*` to `WebsiteLearners\AIAgent\*`
+- ✅ Changed from `App\AI\*` to `Kaviyarasu\AIAgent\*`
 - ✅ Updated all file namespaces and imports
 - ✅ Fixed all namespace references in tests
 
@@ -61,7 +61,7 @@
 ## 📁 New Package Structure
 
 ```
-WebsiteLearners/ai-agent/
+Kaviyarasu/ai-agent/
 ├── .github/
 │   └── workflows/
 │       ├── fix-php-code-style-issues.yml
@@ -144,7 +144,7 @@ Users upgrading from the old version will need to:
    use App\AI\Services\Core\TextService;
    
    // New
-   use WebsiteLearners\AIAgent\Services\Core\TextService;
+   use Kaviyarasu\AIAgent\Services\Core\TextService;
    ```
 
 2. Update service provider registration (if manually registered):
@@ -153,16 +153,16 @@ Users upgrading from the old version will need to:
    App\Providers\AIServiceProvider::class
    
    // New
-   WebsiteLearners\AIAgent\AIAgentServiceProvider::class
+   Kaviyarasu\AIAgent\AIAgentServiceProvider::class
    ```
 
 3. Update facade usage:
    ```php
    // Old
-   use WebsiteLearners\AI\Facades\AI;
+   use Kaviyarasu\AI\Facades\AI;
    
    // New
-   use WebsiteLearners\AIAgent\Facades\AIAgent;
+   use Kaviyarasu\AIAgent\Facades\AIAgent;
    ```
 
 4. Update configuration file reference:

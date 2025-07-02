@@ -8,7 +8,7 @@ declare(strict_types=1);
 
 use App\Agents\Blog\BlogAiAgentAdvanced;
 use App\Agents\Blog\BlogAiAgentWithTrait;
-use WebsiteLearners\AIAgent\Factory\ProviderFactory;
+use Kaviyarasu\AIAgent\Factory\ProviderFactory;
 
 // ===================================================================
 // Method 1: Using BlogAiAgentAdvanced (Direct Provider Access)
@@ -101,32 +101,32 @@ class CustomAiAgent
     private ProviderFactory $providerFactory;
     private ?string $provider = null;
     private ?string $model = null;
-    
+
     public function __construct(ProviderFactory $providerFactory)
     {
         $this->providerFactory = $providerFactory;
     }
-    
+
     public function setProvider(string $provider): self
     {
         $this->provider = $provider;
         return $this;
     }
-    
+
     public function setModel(string $model): self
     {
         $this->model = $model;
         return $this;
     }
-    
+
     public function generate(string $prompt): string
     {
         $provider = $this->providerFactory->create($this->provider ?? 'claude');
-        
+
         if ($this->model && method_exists($provider, 'switchModel')) {
             $provider->switchModel($this->model);
         }
-        
+
         return $provider->generateText([
             'prompt' => $prompt,
             'max_tokens' => 1000
@@ -183,7 +183,7 @@ $results['gpt-4'] = $agent
 function generateWithFallback(string $prompt, array $providers): ?string
 {
     $agent = app(BlogAiAgentAdvanced::class);
-    
+
     foreach ($providers as $config) {
         try {
             return $agent
@@ -195,7 +195,7 @@ function generateWithFallback(string $prompt, array $providers): ?string
             continue;
         }
     }
-    
+
     return null;
 }
 
@@ -211,7 +211,7 @@ class SmartBlogAgent extends BlogAiAgentAdvanced
     public function executeSmartly(array $data)
     {
         $length = $data['options']['length'] ?? 'medium';
-        
+
         // Use different models based on requirements
         if ($length === 'long') {
             // Use more capable model for long content
@@ -223,7 +223,7 @@ class SmartBlogAgent extends BlogAiAgentAdvanced
             // Default for medium
             $this->switchProvider('claude')->switchModel('claude-3-sonnet-20241022');
         }
-        
+
         return $this->execute($data);
     }
 }
@@ -235,12 +235,12 @@ class BlogAgentTest extends TestCase
     {
         $agent = app(BlogAiAgentAdvanced::class);
         $data = ['prompt' => 'Test topic', 'options' => []];
-        
+
         // Test with Claude
         $agent->switchProvider('claude');
         $claudeResult = $agent->execute($data);
         $this->assertNotEmpty($claudeResult);
-        
+
         // Test with OpenAI
         $agent->switchProvider('openai');
         $openaiResult = $agent->execute($data);

@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace WebsiteLearners\AIAgent\Providers\AI\OpenAI;
+namespace Kaviyarasu\AIAgent\Providers\AI\OpenAI;
 
 use Illuminate\Support\Facades\Http;
-use WebsiteLearners\AIAgent\Contracts\Capabilities\ImageGenerationInterface;
-use WebsiteLearners\AIAgent\Contracts\Capabilities\TextGenerationInterface;
-use WebsiteLearners\AIAgent\Exceptions\AIAgentException;
-use WebsiteLearners\AIAgent\Providers\AI\AbstractProvider;
+use Kaviyarasu\AIAgent\Contracts\Capabilities\ImageGenerationInterface;
+use Kaviyarasu\AIAgent\Contracts\Capabilities\TextGenerationInterface;
+use Kaviyarasu\AIAgent\Exceptions\AIAgentException;
+use Kaviyarasu\AIAgent\Providers\AI\AbstractProvider;
 
 class OpenAIProvider extends AbstractProvider implements TextGenerationInterface, ImageGenerationInterface
 {

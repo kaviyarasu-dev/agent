@@ -1,5 +1,5 @@
 {
-    "name": "websitelearners/ai-agent",
+    "name": "kaviyarasu/ai-agent",
     "description": "A Laravel package for AI agent with multi-provider support",
     "keywords": [
         "ai",
@@ -10,12 +10,12 @@
         "openai",
         "ideogram"
     ],
-    "homepage": "https://github.com/websitelearners/ai-agent",
+    "homepage": "https://github.com/kaviyarasu/ai-agent",
     "license": "MIT",
     "authors": [
         {
-            "name": "websitelearners",
-            "email": "your-email@example.com",
+            "name": "kaviyarasu",
+            "email": "kaviphpnschool@gmail.com",
             "role": "Developer"
         }
     ],
@@ -38,14 +38,14 @@
     },
     "autoload": {
         "psr-4": {
-            "WebsiteLearners\\AIAgent\\": "src/",
-            "WebsiteLearners\\AIAgent\\Database\\Factories\\": "database/factories/",
+            "Kaviyarasu\\AIAgent\\": "src/",
+            "Kaviyarasu\\AIAgent\\Database\\Factories\\": "database/factories/",
             "App\\": "app/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "WebsiteLearners\\AIAgent\\Tests\\": "tests/",
+            "Kaviyarasu\\AIAgent\\Tests\\": "tests/",
             "Workbench\\App\\": "workbench/app/"
         }
     },
@@ -67,10 +67,10 @@
     "extra": {
         "laravel": {
             "providers": [
-                "WebsiteLearners\\AIAgent\\AIAgentServiceProvider"
+                "Kaviyarasu\\AIAgent\\AIAgentServiceProvider"
             ],
             "aliases": {
-                "AIAgent": "WebsiteLearners\\AIAgent\\Facades\\AIAgent"
+                "AIAgent": "Kaviyarasu\\AIAgent\\Facades\\AIAgent"
             }
         }
     },
@@ -79,7 +79,7 @@
     "repositories": [
         {
             "type": "vcs",
-            "url": "https://github.com/websitelearners/ai-agent"
+            "url": "https://github.com/kaviyarasu/ai-agent"
         }
     ]
 }

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace WebsiteLearners\AIAgent\Examples;
+namespace Kaviyarasu\AIAgent\Examples;
 
-use WebsiteLearners\AIAgent\Agents\BaseAIAgent;
+use Kaviyarasu\AIAgent\Agents\BaseAIAgent;
 
 class ContentCreatorAgent extends BaseAIAgent
 {
@@ -12,7 +12,7 @@ class ContentCreatorAgent extends BaseAIAgent
 
     public function __construct()
     {
-        parent::__construct(app(\WebsiteLearners\AIAgent\Factory\ServiceFactory::class));
+        parent::__construct(app(\Kaviyarasu\AIAgent\Factory\ServiceFactory::class));
 
         // Default to Claude for text
         if ($this->textService) {

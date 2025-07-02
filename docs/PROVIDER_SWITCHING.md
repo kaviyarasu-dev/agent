@@ -30,7 +30,7 @@ The simplest way to add provider/model switching to any class is using the `HasD
 
 ```php
 use App\Agents\Traits\HasDynamicProvider;
-use WebsiteLearners\AIAgent\Contracts\Services\TextServiceInterface;
+use Kaviyarasu\AIAgent\Contracts\Services\TextServiceInterface;
 
 class MyCustomAgent
 {
@@ -60,7 +60,7 @@ class MyCustomAgent
 For more complex agents, extend the `BaseAIAgent` class:
 
 ```php
-use WebsiteLearners\AIAgent\Agents\BaseAIAgent;
+use Kaviyarasu\AIAgent\Agents\BaseAIAgent;
 
 class BlogWriterAgent extends BaseAIAgent
 {
@@ -85,7 +85,7 @@ $result = $agent->switchProvider('openai')
 Services can be used directly with provider/model switching:
 
 ```php
-use WebsiteLearners\AIAgent\Facades\AIAgent;
+use Kaviyarasu\AIAgent\Facades\AIAgent;
 
 // Switch provider for text generation
 $text = AIAgent::text()
@@ -232,7 +232,7 @@ class TranslationAgent
 ### Advanced Agent with BaseAIAgent
 
 ```php
-use WebsiteLearners\AIAgent\Agents\BaseAIAgent;
+use Kaviyarasu\AIAgent\Agents\BaseAIAgent;
 
 class ResearchAgent extends BaseAIAgent
 {
