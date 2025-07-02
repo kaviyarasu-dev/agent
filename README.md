@@ -26,6 +26,12 @@ A flexible, modular AI service architecture for Laravel that supports multiple A
 composer require websitelearners/ai-agent
 ```
 
+This is publish migrations and config file
+```bash
+php artisan ai-agent:install"
+```
+or
+
 ```bash
 php artisan vendor:publish --tag="ai-agent-migrations"
 php artisan migrate
@@ -87,13 +93,13 @@ use WebsiteLearners\AIAgent\Facades\AIAgent;
 // Use a specific Claude model
 $response = AIAgent::provider('claude')
     ->text()
-    ->setModel('claude-3-opus-20240229')
+    ->switchModel('claude-3-opus-20240229')
     ->generateText('Explain quantum computing');
 
 // Use DALL-E 3 for image generation
 $imageUrl = AIAgent::provider('openai')
     ->image()
-    ->setModel('dall-e-3')
+    ->switchModel('dall-e-3')
     ->generateImage('A serene landscape');
 ```
 
