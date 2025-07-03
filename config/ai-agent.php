@@ -28,6 +28,22 @@ return [
             'api_key' => env('CLAUDE_API_KEY'),
             'class' => \Kaviyarasu\AIAgent\Providers\AI\Claude\ClaudeProvider::class,
             'models' => [
+                'claude-sonnet-4-20250514' => [
+                    'name' => 'Claude 4 Sonnet (Latest)',
+                    'version' => '4.0',
+                    'max_tokens' => 4096,
+                    'capabilities' => ['text'],
+                    'supports_streaming' => true,
+                    'supports_functions' => false,
+                ],
+                'claude-opus-4-20250514' => [
+                    'name' => 'Claude 4 Opus (Latest)',
+                    'version' => '4.0',
+                    'max_tokens' => 4096,
+                    'capabilities' => ['text'],
+                    'supports_streaming' => true,
+                    'supports_functions' => false,
+                ],
                 'claude-3-7-sonnet-20250219' => [
                     'name' => 'Claude 3.7 Sonnet',
                     'version' => '3.7',
@@ -92,7 +108,7 @@ return [
                     'supports_streaming' => true,
                     'supports_functions' => true,
                 ],
-                'o3' => [
+                'o3-2025-04-16' => [
                     'name' => 'o3',
                     'version' => '4.0-full',
                     'max_tokens' => 128000,
