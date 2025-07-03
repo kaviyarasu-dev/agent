@@ -193,23 +193,6 @@ STORYBOARD_SHOT_PROVIDER=ideogram
 ],
 ```
 
-## Testing
-
-```bash
-composer test
-```
-
-```bash
-# Run unit tests only
-composer test -- --filter=Unit
-
-# Run architecture tests
-composer test -- --filter=Arch
-
-# Generate coverage report
-composer test-coverage
-```
-
 ## Changelog
 
 Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
@@ -221,11 +204,6 @@ Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
 ## Security Vulnerabilities
 
 Please review [our security policy](../../security/policy) on how to report security vulnerabilities.
-
-## Credits
-
-- [Kaviyarasu](https://github.com/kaviyarasu)
-- [All Contributors](../../contributors)
 
 ## License
 
