@@ -27,11 +27,12 @@ class ImageService implements ImageServiceInterface, HasProviderSwitching, HasMo
     public function generateImage(string $prompt, array $options = []): string
     {
         $provider = $this->getProvider();
+        $model = $provider->getCurrentModel();
 
         $params = array_merge([
             'prompt' => $prompt,
-            'size' => '1024x1024',
-            'quality' => 'standard',
+            'size' => $model['default_size'] ?? '',
+            'style' => $model['default_style'] ?? '',
             'n' => 1,
         ], $options);
 
@@ -41,11 +42,12 @@ class ImageService implements ImageServiceInterface, HasProviderSwitching, HasMo
     public function generateMultipleImages(string $prompt, int $count, array $options = []): array
     {
         $provider = $this->getProvider();
+        $model = $provider->getCurrentModel();
 
         $params = array_merge([
             'prompt' => $prompt,
-            'size' => '1024x1024',
-            'quality' => 'standard',
+            'size' => $model['default_size'] ?? '',
+            'style' => $model['default_style'] ?? '',
             'n' => $count,
         ], $options);
 

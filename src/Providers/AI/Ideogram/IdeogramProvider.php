@@ -54,10 +54,14 @@ class IdeogramProvider extends AbstractProvider implements ImageGenerationInterf
     public function generateImage(array $params): string
     {
         $requestParams = [
-            'prompt' => $params['prompt'],
-            'model' => $this->currentModel,
-            'seed' => $params['seed'] ?? null,
-            'resolution' => $params['resolution'] ?? '1024x1024',
+            'image_request' => [
+                'prompt' => $params['prompt'],
+                'model' => $this->currentModel,
+                'aspect_ratio' => $params['size'] ?? 'ASPECT_10_16',
+                'magic_prompt_option' => 'OFF',
+                'num_images' => $params['n'],
+                'style_type' => $params['style'] ?? 'AUTO',
+            ]
         ];
 
         if (isset($params['style']) && in_array($params['style'], $this->getAvailableStyles())) {
@@ -67,6 +71,7 @@ class IdeogramProvider extends AbstractProvider implements ImageGenerationInterf
         $response = Http::withHeaders([
             'Api-Key' => $this->config['api_key'],
             'Content-Type' => 'application/json',
+            'accept' => 'application/json',
         ])->post(self::API_URL, $requestParams);
 
         if (! $response->successful()) {
@@ -80,35 +85,35 @@ class IdeogramProvider extends AbstractProvider implements ImageGenerationInterf
 
     public function generateImages(array $params): array
     {
-        $count = $params['n'] ?? 1;
-        $images = [];
-
-        for ($i = 0; $i < $count; $i++) {
-            $requestParams = [
+        $requestParams = [
+            'image_request' => [
                 'prompt' => $params['prompt'],
                 'model' => $this->currentModel,
-                'seed' => $params['seed'] ?? null,
-                'resolution' => $params['resolution'] ?? '1024x1024',
-            ];
+                'aspect_ratio' => $params['size'] ?? 'ASPECT_10_16',
+                'magic_prompt_option' => 'OFF',
+                'num_images' => $params['n'],
+                'style_type' => $params['style'] ?? 'AUTO',
+            ]
+        ];
 
-            if (isset($params['style']) && in_array($params['style'], $this->getAvailableStyles())) {
-                $requestParams['style'] = $params['style'];
-            }
-
-            $response = Http::withHeaders([
-                'Api-Key' => $this->config['api_key'],
-                'Content-Type' => 'application/json',
-            ])->post(self::API_URL, $requestParams);
-
-            if (! $response->successful()) {
-                throw new AIAgentException('Ideogram API error: ' . $response->body());
-            }
-
-            $data = $response->json();
-            $images[] = $data['data'][0]['url'] ?? '';
+        if (isset($params['style']) && in_array($params['style'], $this->getAvailableStyles())) {
+            $requestParams['style'] = $params['style'];
         }
 
-        return $images;
+        $response = Http::withHeaders([
+            'Api-Key' => $this->config['api_key'],
+            'Content-Type' => 'application/json',
+            'accept' => 'application/json',
+        ])->post(self::API_URL, $requestParams);
+
+        if (! $response->successful()) {
+            logger()->error('Ideogram API error:', $requestParams);
+            throw new AIAgentException('Ideogram API error: ' . $response->body());
+        }
+
+        $data = $response->json();
+
+        return collect($data['data'])->pluck('url')->all() ?? '';
     }
 
     public function getSupportedFormats(): array
@@ -126,14 +131,14 @@ class IdeogramProvider extends AbstractProvider implements ImageGenerationInterf
 
     public function getAvailableStyles(): array
     {
-        return $this->modelCapabilities[$this->currentModel]['styles'] ?? ['realistic', 'design'];
+        return $this->modelCapabilities[$this->currentModel]['styles'] ?? ['AUTO', 'GENERAL'];
     }
 
     public function getModelCapabilities(?string $model = null): array
     {
         $model = $model ?? $this->currentModel;
         return $this->modelCapabilities[$model] ?? [
-            'styles' => ['realistic', 'design'],
+            'styles' => ['AUTO', 'GENERAL'],
             'capabilities' => ['image'],
         ];
     }
@@ -145,6 +150,6 @@ class IdeogramProvider extends AbstractProvider implements ImageGenerationInterf
 
     public function getDefaultModel(): string
     {
-        return config('ai-agent.providers.ideogram.default_model', 'ideogram-v2');
+        return config('ai-agent.providers.ideogram.default_model', 'V2');
     }
 }
