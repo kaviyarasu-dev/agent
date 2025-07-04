@@ -132,37 +132,15 @@ class OpenAIProvider extends AbstractProvider implements ImageGenerationInterfac
             throw new AIAgentException("Model {$this->currentModel} does not support image generation");
         }
 
-        $requestParams = [
-            'model' => $this->currentModel,
-            'prompt' => $params['prompt'],
-            'n' => 1,
-            'size' => $params['size'] ?? '1024x1024',
-        ];
-
-        if ($this->currentModel === 'dall-e-3' && isset($params['quality'])) {
-            $requestParams['quality'] = $params['quality'];
-        }
-
-        $response = Http::withHeaders([
-            'Authorization' => 'Bearer '.$this->config['api_key'],
-            'Content-Type' => 'application/json',
-        ])->post(self::IMAGE_API_URL, $requestParams);
-
-        if (! $response->successful()) {
-            throw new AIAgentException('OpenAI API error: '.$response->body());
-        }
-
-        $data = $response->json()['data'] ?? [];
-
-        if (empty($data)) {
-            throw new AIAgentException('No image data returned from OpenAI API');
-        }
-
-        return $data[0]['url'] ?? '';
+        return $this->generateImages($params)[0] ?? '';
     }
 
     public function generateImages(array $params): array
     {
+        if (! $this->supports('image')) {
+            throw new AIAgentException("Model {$this->currentModel} does not support image generation");
+        }
+
         if (! $this->supports('image')) {
             throw new AIAgentException("Model {$this->currentModel} does not support image generation");
         }
@@ -172,11 +150,9 @@ class OpenAIProvider extends AbstractProvider implements ImageGenerationInterfac
             'prompt' => $params['prompt'],
             'n' => $params['n'] ?? 1,
             'size' => $params['size'] ?? '1024x1024',
+            'quality' => $params['quality'] ?? 'standard',
+            ...$params,
         ];
-
-        if ($this->currentModel === 'dall-e-3' && isset($params['quality'])) {
-            $requestParams['quality'] = $params['quality'];
-        }
 
         $response = Http::withHeaders([
             'Authorization' => 'Bearer '.$this->config['api_key'],
@@ -187,7 +163,9 @@ class OpenAIProvider extends AbstractProvider implements ImageGenerationInterfac
             throw new AIAgentException('OpenAI API error: '.$response->body());
         }
 
-        return $response->json()['data'] ?? [];
+        $data = $response->json();
+
+        return collect($data['data'])->pluck('b64_json')->all() ?? [];
     }
 
     public function getSupportedFormats(): array
