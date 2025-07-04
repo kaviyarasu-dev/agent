@@ -154,8 +154,6 @@ $result = Agent::provider('claude')->generateText('Explain quantum computing');
 
 This package is licensed under the MIT License. See the [LICENSE](LICENSE.md) file for details.
 
----
-
 <p align="center">
     <strong>Built with ❤️ for the Laravel community</strong>
 </p>
