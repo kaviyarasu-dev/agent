@@ -12,7 +12,8 @@ class EmailAIAgent
     use HasDynamicProvider;
 
     protected TextServiceInterface $textService;
-    public function __construct(TextServiceInterface $textService = null)
+
+    public function __construct(?TextServiceInterface $textService = null)
     {
         $this->textService = $textService ?: app(TextServiceInterface::class);
         $this->currentProvider = 'openai';
@@ -34,6 +35,7 @@ class EmailAIAgent
         // Parse JSON response if needed
         if ($this->isJsonResponse($response)) {
             $parsed = json_decode($response, true);
+
             return $parsed['body'] ?? $response;
         }
 
@@ -43,8 +45,10 @@ class EmailAIAgent
     public function withTemporaryProvider(string $provider, callable $callback)
     {
         $original = $this->currentProvider;
+
         try {
             $this->useProvider($provider);
+
             return $callback($this);
         } finally {
             $this->useProvider($original);
@@ -67,6 +71,7 @@ PROMPT;
     protected function isJsonResponse(string $response): bool
     {
         json_decode($response);
+
         return json_last_error() === JSON_ERROR_NONE;
     }
 }
