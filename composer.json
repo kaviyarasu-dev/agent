@@ -53,9 +53,15 @@
         "post-autoload-dump": "@composer run prepare",
         "prepare": "@php vendor/bin/testbench package:discover --ansi",
         "analyse": "vendor/bin/phpstan analyse",
-        "test": "vendor/bin/pest",
         "test-coverage": "vendor/bin/pest --coverage",
-        "format": "vendor/bin/pint"
+        "format": "vendor/bin/pint",
+        "test": [
+            "./vendor/bin/pint",
+            "./vendor/bin/peck",
+            "./vendor/bin/rector"
+        ],
+        "test:typos": "./vendor/bin/peck",
+        "test:rector": "./vendor/bin/rector"
     },
     "config": {
         "sort-packages": true,
