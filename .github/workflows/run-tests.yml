@@ -2,7 +2,7 @@ name: Fix Code Style
 
 on:
   push:
-    branches-ignore:
+    branches:
       - '**'
 
 jobs:
