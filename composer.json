@@ -79,7 +79,7 @@
     "repositories": [
         {
             "type": "vcs",
-            "url": "https://github.com/kaviyarasu/ai-agent"
+            "url": "https://github.com/kaviyarasu-dev/agent.git"
         }
     ]
 }
