@@ -9,7 +9,7 @@ return RectorConfig::configure()
         __DIR__ . '/config',
         __DIR__ . '/examples',
         __DIR__ . '/src',
-        __DIR__ . '/tests',
+        // __DIR__ . '/tests',
     ])
     // uncomment to reach your current PHP version
     // ->withPhpSets()
