@@ -146,7 +146,6 @@ $result = Agent::provider('claude')->generateText('Explain quantum computing');
 ## 🆘 Support
 
 - **Issues**: [GitHub Issues](https://github.com/kaviyarasu-dev/agent/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/kaviyarasu-dev/agent/discussions)
 
 ## 📄 License
 
