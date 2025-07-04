@@ -1,24 +1,28 @@
-# AI Agent for Laravel
+# AI Agent - Laravel Package
+
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/kaviyarasu/ai-agent.svg?style=flat-square)](https://packagist.org/packages/kaviyarasu/ai-agent)
-[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/kaviyarasu/ai-agent/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/kaviyarasu/ai-agent/actions?query=workflow%3Arun-tests+branch%3Amain)
-[![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/kaviyarasu/ai-agent/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/kaviyarasu/ai-agent/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
+[![GitHub Tests Action Status](https://img.shields.io/github/workflow/status/kaviyarasu-dev/agent/run-tests?label=tests)](https://github.com/kaviyarasu-dev/agent/actions?query=workflow%3Arun-tests+branch%3Amain)
+[![GitHub Code Style Action Status](https://img.shields.io/github/workflow/status/kaviyarasu-dev/agent/Fix%20PHP%20code%20style%20issues?label=code%20style)](https://github.com/kaviyarasu-dev/agent/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
 [![Total Downloads](https://img.shields.io/packagist/dt/kaviyarasu/ai-agent.svg?style=flat-square)](https://packagist.org/packages/kaviyarasu/ai-agent)
 
-A flexible, modular AI service architecture for Laravel that supports multiple AI providers (Claude, OpenAI, Ideogram) with easy switching via configuration.
+A flexible, modular AI service architecture for Laravel that supports multiple AI providers with easy switching via configuration. Built with SOLID principles and designed for enterprise-grade applications.
 
-## Features
+## Core Features
 
-- 🤖 **Multi-Provider Support**: Claude, OpenAI, and Ideogram
-- 🔄 **Easy Provider Switching**: Switch providers at runtime or via configuration
-- 📝 **Text Generation**: Support for multiple text models
-- 🎨 **Image Generation**: Create images with DALL-E or Ideogram
-- 🎬 **Video Generation**: Future-ready video generation support
-- 🏗️ **SOLID Architecture**: Clean, maintainable code following SOLID principles
-- 🔧 **Modular Design**: Easy to extend with new providers or capabilities
-- 💾 **Caching Support**: Built-in caching for API responses
-- 📊 **Rate Limiting**: Configurable rate limiting per provider
-- 📝 **Comprehensive Logging**: Track all API interactions
-- 🛠️ **Artisan Commands**: Scaffolding commands for quick development
+- **🤖 Multi-Provider Support**: Claude, OpenAI, Ideogram, and more
+- **🔄 Runtime Provider Switching**: Switch providers dynamically based on requirements
+- **📝 Text Generation**: Support for multiple text models with customizable parameters
+- **🎨 Image Generation**: Create images with DALL-E, Ideogram, or other providers
+- **🎬 Video Generation**: Future-ready video generation support
+- **🏗️ SOLID Architecture**: Clean, maintainable code following SOLID principles
+- **🔧 Modular Design**: Easy to extend with new providers or capabilities
+- **🛠️ Artisan Commands**: Scaffolding commands for rapid development
+
+## 📋 Requirements
+
+- PHP 8.1 or higher
+- Laravel 10.0 or Laravel 11.0
+- Composer
 
 ## Installation
 
@@ -26,47 +30,49 @@ A flexible, modular AI service architecture for Laravel that supports multiple A
 composer require kaviyarasu/ai-agent
 ```
 
-This is publish migrations and config file
-```bash
-php artisan ai-agent:install"
-```
-or
+### 2. Publish and Run Migrations
 
 ```bash
+# Quick install (publishes config and runs migrations)
+php artisan ai-agent:install
+
+# Or manually
 php artisan vendor:publish --tag="ai-agent-migrations"
 php artisan migrate
-```
-
-```bash
 php artisan vendor:publish --tag="ai-agent-config"
 ```
 
-This is the contents of the published config file:
+## Configuration
+### 1. Set Up Environment Variables
 
-```php
-return [
-    'default_provider' => env('AI_DEFAULT_PROVIDER', 'claude'),
+Add your API keys to your `.env` file:
 
-    'providers' => [
-        'claude' => [
-            'api_key' => env('CLAUDE_API_KEY'),
-            'models' => [...],
-        ],
-        'openai' => [
-            'api_key' => env('OPENAI_API_KEY'),
-            'models' => [...],
-        ],
-        'ideogram' => [
-            'api_key' => env('IDEOGRAM_API_KEY'),
-            'models' => [...],
-        ],
-    ],
-
-    // ... more configuration options
-];
+```env
+CLAUDE_API_KEY=your-claude-api-key
+OPENAI_API_KEY=your-openai-api-key
+IDEOGRAM_API_KEY=your-ideogram-api-key
 ```
 
-## Usage
+## Artisan Commands
+
+### Basic Agent Creation
+
+```bash
+# Create a agent with text or image or video capability
+php artisan ai-agent
+```
+
+## 📚 Detailed Usage Guide
+
+### Provider Management
+
+#### Available Providers
+
+| Provider | Text | Image | Video | Status |
+|----------|------|-------|-------|---------|
+| Claude   | ✅   | ❌    | ❌    | Stable |
+| OpenAI   | ✅   | ✅    | ❌    | Stable |
+| Ideogram | ❌   | ✅    | ❌    | Stable |
 
 ### Basic Usage
 
@@ -75,6 +81,11 @@ use Kaviyarasu\AIAgent\Facades\AIAgent;
 
 // Text generation
 $response = AIAgent::text()->generateText('Write a story about a robot');
+
+// Stream text generation
+foreach (AIAgent::text()->streamText('Explain the theory of relativity') as $chunk) {
+    echo $chunk;
+}
 
 // Image generation
 $imageUrl = AIAgent::image()->generateImage('A futuristic city at sunset');
@@ -85,118 +96,64 @@ $response = AIAgent::provider('openai')->text()->generateText('Hello world');
 
 ### Advanced Usage
 
-#### Working with Specific Models
-
 ```php
 use Kaviyarasu\AIAgent\Facades\AIAgent;
 
-// Use a specific Claude model
+// Use specific model with custom parameters
 $response = AIAgent::provider('claude')
     ->text()
     ->switchModel('claude-3-opus-20240229')
-    ->generateText('Explain quantum computing');
+    ->generateText('Explain quantum computing', [
+        'max_tokens' => 1000,
+        'temperature' => 0.7,
+        'top_p' => 0.9
+    ]);
 
-// Use DALL-E 3 for image generation
+// Generate image with specific dimensions
 $imageUrl = AIAgent::provider('openai')
     ->image()
     ->switchModel('dall-e-3')
-    ->generateImage('A serene landscape');
+    ->generateImage('A serene landscape with mountains', [
+        'size' => '1024x1024',
+        'quality' => 'hd',
+        'style' => 'vivid'
+    ]);
+
+// Generate multiple images
+$imageUrls = AIAgent::provider('openai')
+    ->image()
+    ->generateMultipleImages('A serene landscape with mountains', 3);
 ```
 
-#### Module-Specific Services
+## Quick Start
 
 ```php
-// Storyboard module with specific providers
-$characterService = app(\Kaviyarasu\AIAgent\Services\Modules\Storyboard\CharacterService::class);
-$character = $characterService->generateCharacter('A brave knight');
+use Kaviyarasu\Agent\Facades\Agent;
 
-$shotService = app(\Kaviyarasu\AIAgent\Services\Modules\Storyboard\ShotService::class);
-$shot = $shotService->generateShot('The knight standing on a hill');
+// Generate text
+$response = Agent::generateText('Write a haiku about Laravel');
+
+// Create an image
+$image = Agent::provider('openai')->createImage('A coding workspace');
+
+// Switch providers dynamically
+$result = Agent::provider('claude')->generateText('Explain quantum computing');
 ```
 
-#### Direct Service Access
+## 📚 Documentation
 
-```php
-use Kaviyarasu\AIAgent\Services\Core\TextService;
-use Kaviyarasu\AIAgent\Factory\ProviderFactory;
+- [Custom Agent Documentation](docs/CUSTOM_AGENT.md)
+- [Service Agent Documentation](docs/SERVICE_AGENT.md)
 
-// Create services directly
-$providerFactory = app(ProviderFactory::class);
-$textService = new TextService($providerFactory);
-$response = $textService->generateText('Hello world');
-```
+## 🆘 Support
 
-### Creating AI Agents
+- **Issues**: [GitHub Issues](https://github.com/kaviyarasu-dev/agent/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/kaviyarasu-dev/agent/discussions)
 
-The package includes a powerful scaffolding command to create AI agent classes:
-```bash
-# Create a basic text agent
-php artisan ai-agent Blog/BlogAiAgent
+## 📄 License
 
-# Create an image processing agent
-php artisan ai-agent ImageProcessor --capability=image --provider=ideogram
+This package is licensed under the MIT License. See the [LICENSE](LICENSE.md) file for details.
 
-# Create a video agent with logging and fallback
-php artisan ai-agent VideoCreator --capability=video --with-logging --with-fallback
-
-# Interactive mode
-php artisan ai-agent
-```
-
-See the [AI Agent Command Documentation](docs/ai-agent-command.md) for detailed usage and examples.
-
-## Configuration
-
-### Environment Variables
-
-```env
-# Default provider
-AI_DEFAULT_PROVIDER=claude
-
-# Claude configuration
-CLAUDE_API_KEY=your-claude-api-key
-CLAUDE_MODEL=claude-3-sonnet-20241022
-
-# OpenAI configuration
-OPENAI_API_KEY=your-openai-api-key
-OPENAI_MODEL=gpt-4
-
-# Ideogram configuration
-IDEOGRAM_API_KEY=your-ideogram-api-key
-IDEOGRAM_MODEL=ideogram-v2
-
-# Feature flags
-AI_RATE_LIMITING_ENABLED=true
-AI_CACHE_ENABLED=true
-AI_LOGGING_ENABLED=true
-
-# Module-specific providers
-STORYBOARD_CHARACTER_PROVIDER=claude
-STORYBOARD_SHOT_PROVIDER=ideogram
-```
-
-### Provider Configuration
-
-```php
-'providers' => [
-    'claude' => [
-        'api_key' => env('CLAUDE_API_KEY'),
-        'models' => [
-            'claude-3-sonnet-20241022' => [
-                'name' => 'Claude 3 Sonnet',
-                'max_tokens' => 4096,
-                'capabilities' => ['text'],
-            ],
-            // ... more models
-        ],
-    ],
-],
-```
-
-## Security Vulnerabilities
-
-Please review [our security policy](../../security/policy) on how to report security vulnerabilities.
-
-## License
-
-The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
+<p align="center">
+    <strong>Built with ❤️ for the Laravel community</strong>
+</p>
