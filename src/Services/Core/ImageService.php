@@ -27,7 +27,7 @@ class ImageService implements HasModelSwitching, HasProviderSwitching, ImageServ
     public function generateImage(string $prompt, array $options = []): string
     {
         $provider = $this->getProvider();
-        $model = $provider->getCurrentModel();
+        $model = $provider->getModelCapabilities();
 
         $params = array_merge([
             'prompt' => $prompt,
@@ -42,7 +42,7 @@ class ImageService implements HasModelSwitching, HasProviderSwitching, ImageServ
     public function generateMultipleImages(string $prompt, int $count, array $options = []): array
     {
         $provider = $this->getProvider();
-        $model = $provider->getCurrentModel();
+        $model = $provider->getModelCapabilities();
 
         $params = array_merge([
             'prompt' => $prompt,

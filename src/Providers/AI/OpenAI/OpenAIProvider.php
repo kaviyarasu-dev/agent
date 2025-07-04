@@ -141,18 +141,16 @@ class OpenAIProvider extends AbstractProvider implements ImageGenerationInterfac
             throw new AIAgentException("Model {$this->currentModel} does not support image generation");
         }
 
-        if (! $this->supports('image')) {
-            throw new AIAgentException("Model {$this->currentModel} does not support image generation");
-        }
-
         $requestParams = [
             'model' => $this->currentModel,
             'prompt' => $params['prompt'],
             'n' => $params['n'] ?? 1,
             'size' => $params['size'] ?? '1024x1024',
-            'quality' => $params['quality'] ?? 'standard',
-            ...$params,
         ];
+
+        if ($this->currentModel === 'dall-e-3' && isset($params['quality'])) {
+            $requestParams['quality'] = $params['quality'];
+        }
 
         $response = Http::withHeaders([
             'Authorization' => 'Bearer '.$this->config['api_key'],
@@ -165,7 +163,7 @@ class OpenAIProvider extends AbstractProvider implements ImageGenerationInterfac
 
         $data = $response->json();
 
-        return collect($data['data'])->pluck('b64_json')->all() ?? [];
+        return collect($data['data'])->pluck('url')->all() ?? [];
     }
 
     public function getSupportedFormats(): array
