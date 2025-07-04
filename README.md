@@ -1,8 +1,7 @@
 # AI Agent - Laravel Package
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/kaviyarasu/ai-agent.svg?style=flat-square)](https://packagist.org/packages/kaviyarasu/ai-agent)
-[![GitHub Tests Action Status](https://img.shields.io/github/workflow/status/kaviyarasu-dev/agent/run-tests?label=tests)](https://github.com/kaviyarasu-dev/agent/actions?query=workflow%3Arun-tests+branch%3Amain)
-[![GitHub Code Style Action Status](https://img.shields.io/github/workflow/status/kaviyarasu-dev/agent/Fix%20PHP%20code%20style%20issues?label=code%20style)](https://github.com/kaviyarasu-dev/agent/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
+[![GitHub Code Style Action Status](https://img.shields.io/github/workflow/status/kaviyarasu-dev/agent/Fix%20Code%20Style?label=code%20style)](https://github.com/kaviyarasu-dev/agent/actions?query=workflow%3A"Fix+Code+Style"+branch%3Amain)
 [![Total Downloads](https://img.shields.io/packagist/dt/kaviyarasu/ai-agent.svg?style=flat-square)](https://packagist.org/packages/kaviyarasu/ai-agent)
 
 A flexible, modular AI service architecture for Laravel that supports multiple AI providers with easy switching via configuration. Built with SOLID principles and designed for enterprise-grade applications.
@@ -21,7 +20,7 @@ A flexible, modular AI service architecture for Laravel that supports multiple A
 ## 📋 Requirements
 
 - PHP 8.1 or higher
-- Laravel 10.0 or Laravel 11.0
+- Laravel 10.0 or Higher
 - Composer
 
 ## Installation
