@@ -35,38 +35,6 @@
 // php artisan ai-agent
 
 /**
- * Generated Agent Usage Example
- */
-
-use App\Agents\Blog\BlogAiAgent;
-use Kaviyarasu\AIAgent\Services\Core\TextService;
-
-class BlogController extends Controller
-{
-    public function generatePost(Request $request)
-    {
-        // The agent is automatically resolved with dependency injection
-        $blogAgent = app(BlogAiAgent::class);
-
-        // Or manually instantiate
-        $textService = app(TextService::class);
-        $blogAgent = new BlogAiAgent($textService);
-
-        // Execute the agent
-        $result = $blogAgent->execute([
-            'prompt' => 'Write a blog post about '.$request->input('topic'),
-            'tone' => $request->input('tone', 'professional'),
-            'length' => $request->input('length', 'medium'),
-        ]);
-
-        return response()->json([
-            'success' => true,
-            'content' => $result,
-        ]);
-    }
-}
-
-/**
  * Agent with Traits Example
  */
 
