@@ -58,7 +58,7 @@ class MakeAiAgentCommand extends GeneratorCommand
     {
         $name = $this->argument('name');
 
-        if (!$name) {
+        if (! $name) {
             $name = $this->ask('Enter agent class (e.g. Blog\\BlogAiAgent)');
         }
         $capability = $this->choice(
