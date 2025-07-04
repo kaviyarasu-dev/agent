@@ -3,7 +3,6 @@
 /**
  * Verification script for provider switching implementation
  */
-
 echo "=== Provider Switching Implementation Verification ===\n\n";
 
 // Check core interfaces

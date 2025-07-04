@@ -57,7 +57,7 @@ class ProviderFactory
             }
         } catch (\Exception $e) {
             // Log the error
-            logger()->warning("Default provider {$defaultProvider} failed: " . $e->getMessage());
+            logger()->warning("Default provider {$defaultProvider} failed: ".$e->getMessage());
         }
 
         // Try fallback providers
@@ -71,7 +71,7 @@ class ProviderFactory
                     return $provider;
                 }
             } catch (\Exception $e) {
-                logger()->warning("Fallback provider {$fallbackProvider} failed: " . $e->getMessage());
+                logger()->warning("Fallback provider {$fallbackProvider} failed: ".$e->getMessage());
             }
         }
 
@@ -90,7 +90,7 @@ class ProviderFactory
                     $providers[$name] = $provider;
                 }
             } catch (\Exception $e) {
-                logger()->debug("Provider {$name} not available: " . $e->getMessage());
+                logger()->debug("Provider {$name} not available: ".$e->getMessage());
             }
         }
 

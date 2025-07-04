@@ -4,15 +4,13 @@ declare(strict_types=1);
 
 namespace Kaviyarasu\AIAgent\Tests\Feature;
 
-use Kaviyarasu\AIAgent\Tests\TestCase;
+use Kaviyarasu\AIAgent\Contracts\Services\ImageServiceInterface;
+use Kaviyarasu\AIAgent\Contracts\Services\TextServiceInterface;
+use Kaviyarasu\AIAgent\Examples\AdaptiveCodeAgent;
 use Kaviyarasu\AIAgent\Examples\ContentCreatorAgent;
 use Kaviyarasu\AIAgent\Examples\EmailAIAgent;
-use Kaviyarasu\AIAgent\Examples\AdaptiveCodeAgent;
-use Kaviyarasu\AIAgent\Services\AI\TextService;
-use Kaviyarasu\AIAgent\Services\AI\ImageService;
 use Kaviyarasu\AIAgent\Factory\ProviderFactory;
-use Kaviyarasu\AIAgent\Contracts\Services\TextServiceInterface;
-use Kaviyarasu\AIAgent\Contracts\Services\ImageServiceInterface;
+use Kaviyarasu\AIAgent\Tests\TestCase;
 use Mockery;
 
 class ExampleAgentsTest extends TestCase
@@ -64,7 +62,7 @@ class ExampleAgentsTest extends TestCase
         $this->app->instance(ImageServiceInterface::class, $imageService);
 
         // Create and test agent
-        $agent = new ContentCreatorAgent();
+        $agent = new ContentCreatorAgent;
 
         $result = $agent->execute([
             'topic' => 'Artificial Intelligence',
@@ -176,7 +174,7 @@ class ExampleAgentsTest extends TestCase
 
         $this->app->instance(TextServiceInterface::class, $textService);
 
-        $agent = new AdaptiveCodeAgent();
+        $agent = new AdaptiveCodeAgent;
 
         $result = $agent->execute([
             'task' => 'Create a function to add two numbers',
@@ -211,7 +209,7 @@ class ExampleAgentsTest extends TestCase
 
         $this->app->instance(TextServiceInterface::class, $textService);
 
-        $agent = new AdaptiveCodeAgent();
+        $agent = new AdaptiveCodeAgent;
 
         $result = $agent->execute([
             'task' => 'Implement a neural network with backpropagation',
@@ -259,7 +257,7 @@ class ExampleAgentsTest extends TestCase
 
         $this->app->instance(TextServiceInterface::class, $textService);
 
-        $agent = new AdaptiveCodeAgent();
+        $agent = new AdaptiveCodeAgent;
 
         $result = $agent->execute([
             'task' => 'Complex algorithm implementation',
@@ -297,7 +295,7 @@ class ExampleAgentsTest extends TestCase
         $this->app->instance(TextServiceInterface::class, $textService);
         $this->app->instance(ImageServiceInterface::class, $imageService);
 
-        $agent = new ContentCreatorAgent();
+        $agent = new ContentCreatorAgent;
 
         $result = $agent->execute([
             'topic' => 'Technology',

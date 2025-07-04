@@ -4,16 +4,13 @@ declare(strict_types=1);
 
 namespace Kaviyarasu\AIAgent\Tests\Feature;
 
-use Kaviyarasu\AIAgent\Tests\TestCase;
+use Kaviyarasu\AIAgent\Examples\AdaptiveCodeAgent;
 use Kaviyarasu\AIAgent\Examples\ContentCreatorAgent;
 use Kaviyarasu\AIAgent\Examples\EmailAIAgent;
-use Kaviyarasu\AIAgent\Examples\AdaptiveCodeAgent;
-use Kaviyarasu\AIAgent\Services\AI\TextService;
-use Kaviyarasu\AIAgent\Services\AI\ImageService;
-use Kaviyarasu\AIAgent\Factory\ProviderFactory;
-use Kaviyarasu\AIAgent\Providers\OpenAI\OpenAIProvider;
 use Kaviyarasu\AIAgent\Providers\Claude\ClaudeProvider;
 use Kaviyarasu\AIAgent\Providers\Ideogram\IdeogramProvider;
+use Kaviyarasu\AIAgent\Providers\OpenAI\OpenAIProvider;
+use Kaviyarasu\AIAgent\Tests\TestCase;
 
 /**
  * Full integration test to verify all components work together
@@ -39,7 +36,7 @@ class FullIntegrationTest extends TestCase
 
     public function test_content_creator_agent_full_workflow(): void
     {
-        $agent = new ContentCreatorAgent();
+        $agent = new ContentCreatorAgent;
 
         $this->assertEquals('claude', $agent->getCurrentProvider());
 
@@ -63,7 +60,7 @@ class FullIntegrationTest extends TestCase
 
     public function test_email_agent_with_provider_switching(): void
     {
-        $agent = new EmailAIAgent();
+        $agent = new EmailAIAgent;
 
         $result1 = $agent->execute([
             'recipient' => 'Alice',
@@ -91,7 +88,7 @@ class FullIntegrationTest extends TestCase
 
     public function test_adaptive_code_agent_automatic_selection(): void
     {
-        $agent = new AdaptiveCodeAgent();
+        $agent = new AdaptiveCodeAgent;
 
         $result1 = $agent->execute([
             'task' => 'Write a function to reverse a string',
@@ -118,7 +115,7 @@ class FullIntegrationTest extends TestCase
 
     public function test_temporary_switching(): void
     {
-        $agent = new EmailAIAgent();
+        $agent = new EmailAIAgent;
 
         $this->assertEquals('openai', $agent->getCurrentProvider());
 
@@ -140,7 +137,7 @@ class FullIntegrationTest extends TestCase
 
     public function test_model_capabilities(): void
     {
-        $agent = new ContentCreatorAgent();
+        $agent = new ContentCreatorAgent;
 
         $capabilities = $agent->getModelCapabilities('gpt-4');
 
@@ -158,7 +155,7 @@ class FullIntegrationTest extends TestCase
     {
         $this->mockFailingProvider('claude');
 
-        $agent = new AdaptiveCodeAgent();
+        $agent = new AdaptiveCodeAgent;
 
         $result = $agent->execute([
             'task' => 'Complex task that should use Claude',
@@ -174,7 +171,7 @@ class FullIntegrationTest extends TestCase
 
     public function test_multi_service_different_providers(): void
     {
-        $agent = new ContentCreatorAgent();
+        $agent = new ContentCreatorAgent;
 
         $result = $agent->execute([
             'topic' => 'Space Exploration',
@@ -191,7 +188,7 @@ class FullIntegrationTest extends TestCase
 
     public function test_configuration_stacking(): void
     {
-        $agent = new EmailAIAgent();
+        $agent = new EmailAIAgent;
 
         $agent->useProvider('openai', ['temperature' => 0.7]);
 
@@ -223,6 +220,7 @@ class FullIntegrationTest extends TestCase
                     if (str_contains($prompt, 'reverse a string')) {
                         return "def reverse_string(s):\n    return s[::-1]";
                     }
+
                     return "Generated text content about {$topic}";
                 });
 
@@ -253,6 +251,7 @@ class FullIntegrationTest extends TestCase
                     if (str_contains($prompt, 'distributed cache')) {
                         return "public class DistributedCache {\n    // Complex implementation\n}";
                     }
+
                     return "Comprehensive article about {$topic} written in an informative style.";
                 });
 

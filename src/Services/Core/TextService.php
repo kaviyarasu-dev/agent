@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace Kaviyarasu\AIAgent\Services\Core;
 
 use Kaviyarasu\AIAgent\Contracts\Capabilities\TextGenerationInterface;
-use Kaviyarasu\AIAgent\Contracts\HasProviderSwitching;
 use Kaviyarasu\AIAgent\Contracts\HasModelSwitching;
+use Kaviyarasu\AIAgent\Contracts\HasProviderSwitching;
 use Kaviyarasu\AIAgent\Contracts\Services\TextServiceInterface;
 use Kaviyarasu\AIAgent\Exceptions\AIAgentException;
 use Kaviyarasu\AIAgent\Factory\ProviderFactory;
 
-class TextService implements TextServiceInterface, HasProviderSwitching, HasModelSwitching
+class TextService implements HasModelSwitching, HasProviderSwitching, TextServiceInterface
 {
     private ProviderFactory $providerFactory;
 
@@ -83,6 +83,7 @@ class TextService implements TextServiceInterface, HasProviderSwitching, HasMode
     public function switchProvider(string $providerName): self
     {
         $this->setProvider($providerName);
+
         return $this;
     }
 
@@ -120,6 +121,7 @@ class TextService implements TextServiceInterface, HasProviderSwitching, HasMode
     {
         try {
             $provider = $this->providerFactory->create($providerName);
+
             return $provider->supports('text') && $provider->isAvailable();
         } catch (\Exception $e) {
             return false;
@@ -136,6 +138,7 @@ class TextService implements TextServiceInterface, HasProviderSwitching, HasMode
 
         try {
             $this->switchProvider($providerName);
+
             return $callback($this);
         } finally {
             if ($originalProvider) {
@@ -145,7 +148,7 @@ class TextService implements TextServiceInterface, HasProviderSwitching, HasMode
                         $this->switchModel($originalModel);
                     } catch (\Exception $e) {
                         // Log but don't throw
-                        logger()->warning('Could not restore original model: ' . $e->getMessage());
+                        logger()->warning('Could not restore original model: '.$e->getMessage());
                     }
                 }
             }
@@ -159,11 +162,12 @@ class TextService implements TextServiceInterface, HasProviderSwitching, HasMode
     {
         $provider = $this->getProvider();
 
-        if (!method_exists($provider, 'switchModel')) {
+        if (! method_exists($provider, 'switchModel')) {
             throw new AIAgentException('Current provider does not support model switching');
         }
 
         $provider->switchModel($model);
+
         return $this;
     }
 
@@ -174,7 +178,7 @@ class TextService implements TextServiceInterface, HasProviderSwitching, HasMode
     {
         $provider = $this->getProvider();
 
-        if (!method_exists($provider, 'getCurrentModel')) {
+        if (! method_exists($provider, 'getCurrentModel')) {
             return 'unknown';
         }
 
@@ -188,7 +192,7 @@ class TextService implements TextServiceInterface, HasProviderSwitching, HasMode
     {
         $provider = $this->getProvider();
 
-        if (!method_exists($provider, 'getAvailableModels')) {
+        if (! method_exists($provider, 'getAvailableModels')) {
             return [];
         }
 
@@ -212,13 +216,14 @@ class TextService implements TextServiceInterface, HasProviderSwitching, HasMode
 
         try {
             $this->switchModel($model);
+
             return $callback($this);
         } finally {
             if ($originalModel && $originalModel !== 'unknown') {
                 try {
                     $this->switchModel($originalModel);
                 } catch (\Exception $e) {
-                    logger()->warning('Could not restore original model: ' . $e->getMessage());
+                    logger()->warning('Could not restore original model: '.$e->getMessage());
                 }
             }
         }
@@ -231,7 +236,7 @@ class TextService implements TextServiceInterface, HasProviderSwitching, HasMode
     {
         $provider = $this->getProvider();
 
-        if (!method_exists($provider, 'getModelCapabilities')) {
+        if (! method_exists($provider, 'getModelCapabilities')) {
             return [];
         }
 

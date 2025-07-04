@@ -61,7 +61,7 @@ class IdeogramProvider extends AbstractProvider implements ImageGenerationInterf
                 'magic_prompt_option' => 'OFF',
                 'num_images' => $params['n'],
                 'style_type' => $params['style'] ?? 'AUTO',
-            ]
+            ],
         ];
 
         if (isset($params['style']) && in_array($params['style'], $this->getAvailableStyles())) {
@@ -76,10 +76,12 @@ class IdeogramProvider extends AbstractProvider implements ImageGenerationInterf
 
         if (! $response->successful()) {
             logger()->error('Ideogram API error:', $requestParams);
-            throw new AIAgentException('Ideogram API error: ' . $response->body());
+
+            throw new AIAgentException('Ideogram API error: '.$response->body());
         }
 
         $data = $response->json();
+
         return $data['data'][0]['url'] ?? '';
     }
 
@@ -93,7 +95,7 @@ class IdeogramProvider extends AbstractProvider implements ImageGenerationInterf
                 'magic_prompt_option' => 'OFF',
                 'num_images' => $params['n'],
                 'style_type' => $params['style'] ?? 'AUTO',
-            ]
+            ],
         ];
 
         if (isset($params['style']) && in_array($params['style'], $this->getAvailableStyles())) {
@@ -108,7 +110,8 @@ class IdeogramProvider extends AbstractProvider implements ImageGenerationInterf
 
         if (! $response->successful()) {
             logger()->error('Ideogram API error:', $requestParams);
-            throw new AIAgentException('Ideogram API error: ' . $response->body());
+
+            throw new AIAgentException('Ideogram API error: '.$response->body());
         }
 
         $data = $response->json();
@@ -137,6 +140,7 @@ class IdeogramProvider extends AbstractProvider implements ImageGenerationInterf
     public function getModelCapabilities(?string $model = null): array
     {
         $model = $model ?? $this->currentModel;
+
         return $this->modelCapabilities[$model] ?? [
             'styles' => ['AUTO', 'GENERAL'],
             'capabilities' => ['image'],

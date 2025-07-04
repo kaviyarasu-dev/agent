@@ -5,9 +5,8 @@ declare(strict_types=1);
 namespace Kaviyarasu\AIAgent\Tests\Feature;
 
 use App\Agents\Blog\BlogAiAgent;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Kaviyarasu\AIAgent\Tests\TestCase;
 use Kaviyarasu\AIAgent\Contracts\Services\TextServiceInterface;
+use Kaviyarasu\AIAgent\Tests\TestCase;
 
 class BlogGenerationIntegrationTest extends TestCase
 {
@@ -28,8 +27,8 @@ class BlogGenerationIntegrationTest extends TestCase
             'prompt' => 'Laravel Best Practices',
             'options' => [
                 'tone' => 'professional',
-                'length' => 'medium'
-            ]
+                'length' => 'medium',
+            ],
         ]);
 
         $this->assertIsString($result);
@@ -51,7 +50,7 @@ class BlogGenerationIntegrationTest extends TestCase
         $lengths = [
             'short' => 300,
             'medium' => 800,
-            'long' => 1500
+            'long' => 1500,
         ];
 
         $textService->expects($this->exactly(3))
@@ -62,6 +61,7 @@ class BlogGenerationIntegrationTest extends TestCase
                         return $this->generateContentWithLength($wordCount);
                     }
                 }
+
                 return 'Default content';
             });
 
@@ -71,8 +71,8 @@ class BlogGenerationIntegrationTest extends TestCase
             $result = $agent->execute([
                 'prompt' => 'PHP Development',
                 'options' => [
-                    'length' => $lengthType
-                ]
+                    'length' => $lengthType,
+                ],
             ]);
 
             $wordCount = str_word_count($result);
@@ -102,8 +102,8 @@ class BlogGenerationIntegrationTest extends TestCase
         $result = $agent->execute([
             'prompt' => 'Laravel SEO Best Practices',
             'options' => [
-                'tone' => 'professional'
-            ]
+                'tone' => 'professional',
+            ],
         ]);
 
         $this->assertStringContainsString('Laravel SEO', $result);
@@ -128,7 +128,7 @@ class BlogGenerationIntegrationTest extends TestCase
 
     private function getSampleBlogPost(): string
     {
-        return <<<BLOG
+        return <<<'BLOG'
 # Laravel Best Practices: A Comprehensive Guide
 
 ## Introduction
@@ -153,7 +153,7 @@ class User extends Model
 {
     public function posts()
     {
-        return \$this->hasMany(Post::class);
+        return $this->hasMany(Post::class);
     }
 }
 ```
@@ -307,7 +307,7 @@ BLOG;
             'controllers',
             'models',
             'views',
-            'blade'
+            'blade',
         ];
 
         $content = "# Blog Post About Web Development\n\n";
@@ -318,10 +318,10 @@ BLOG;
             $sentence = '';
 
             for ($i = 0; $i < $sentenceLength; $i++) {
-                $sentence .= $words[array_rand($words)] . ' ';
+                $sentence .= $words[array_rand($words)].' ';
             }
 
-            $content .= ucfirst(trim($sentence)) . '. ';
+            $content .= ucfirst(trim($sentence)).'. ';
             $currentWordCount += $sentenceLength;
 
             if ($currentWordCount % 100 < 20) {

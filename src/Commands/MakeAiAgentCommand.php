@@ -6,8 +6,8 @@ namespace Kaviyarasu\AIAgent\Commands;
 
 use Illuminate\Console\GeneratorCommand;
 use Illuminate\Support\Str;
-use Symfony\Component\Console\Input\InputOption;
 use Kaviyarasu\AIAgent\Config\AIConfigManager;
+use Symfony\Component\Console\Input\InputOption;
 
 class MakeAiAgentCommand extends GeneratorCommand
 {
@@ -68,7 +68,7 @@ class MakeAiAgentCommand extends GeneratorCommand
         $providers = array_keys($allProviders);
 
         $provider = config()->get('ai-agent.default_provider');
-        if (!empty($providers)) {
+        if (! empty($providers)) {
             $provider = $this->choice(
                 'Choose default provider (optional)',
                 $providers,
@@ -108,7 +108,7 @@ class MakeAiAgentCommand extends GeneratorCommand
      */
     protected function getStub()
     {
-        return __DIR__ . '/../../stubs/ai-agent.stub';
+        return __DIR__.'/../../stubs/ai-agent.stub';
     }
 
     /**
@@ -119,7 +119,7 @@ class MakeAiAgentCommand extends GeneratorCommand
      */
     protected function getDefaultNamespace($rootNamespace)
     {
-        return $rootNamespace . '\AI\Agents';
+        return $rootNamespace.'\AI\Agents';
     }
 
     /**
@@ -139,11 +139,11 @@ class MakeAiAgentCommand extends GeneratorCommand
             $className = array_pop($parts);
             $namespace = implode('\\', array_map('ucfirst', $parts));
 
-            $name = $this->getDefaultNamespace('') . '\\' . $namespace . '\\' . $className;
+            $name = $this->getDefaultNamespace('').'\\'.$namespace.'\\'.$className;
             $name = str_replace('\\', '/', $name);
         }
 
-        return $this->laravel['path'] . '/' . $name . '.php';
+        return $this->laravel['path'].'/'.$name.'.php';
     }
 
     /**
@@ -165,7 +165,7 @@ class MakeAiAgentCommand extends GeneratorCommand
             $parts = array_map('ucfirst', $parts);
             $className = ucfirst(Str::studly($className));
 
-            $name = implode('\\', $parts) . '\\' . $className;
+            $name = implode('\\', $parts).'\\'.$className;
         }
 
         $name = str_replace('/', '\\', $name);
@@ -175,7 +175,7 @@ class MakeAiAgentCommand extends GeneratorCommand
         }
 
         return $this->qualifyClass(
-            $this->getDefaultNamespace(trim($rootNamespace, '\\')) . '\\' . $name
+            $this->getDefaultNamespace(trim($rootNamespace, '\\')).'\\'.$name
         );
     }
 
@@ -232,17 +232,13 @@ class MakeAiAgentCommand extends GeneratorCommand
         }
 
         $stub = str_replace('{{ traitImports }}', implode("\n", $traitImports), $stub);
-        $stub = str_replace('{{ traits }}', !empty($traits) ? 'use ' . implode(', ', $traits) . ';' : '', $stub);
+        $stub = str_replace('{{ traits }}', ! empty($traits) ? 'use '.implode(', ', $traits).';' : '', $stub);
 
         return $stub;
     }
 
     /**
      * Validate the provider for the given capability.
-     *
-     * @param  string  $provider
-     * @param  string  $capability
-     * @return bool
      */
     protected function validateProvider(string $provider, string $capability): bool
     {
@@ -250,15 +246,15 @@ class MakeAiAgentCommand extends GeneratorCommand
             $configManager = app(AIConfigManager::class);
             $supportedProviders = $this->getProvidersForCapability($configManager, $capability);
 
-            if (!in_array($provider, $supportedProviders)) {
+            if (! in_array($provider, $supportedProviders)) {
                 $this->error("Provider '$provider' does not support '$capability' capability.");
 
                 // Find similar provider names
                 $suggestions = $this->findSimilarProviders($provider, $supportedProviders);
-                if (!empty($suggestions)) {
-                    $this->error('Did you mean: ' . implode(', ', $suggestions) . '?');
+                if (! empty($suggestions)) {
+                    $this->error('Did you mean: '.implode(', ', $suggestions).'?');
                 } else {
-                    $this->error('Available providers for ' . $capability . ': ' . implode(', ', $supportedProviders));
+                    $this->error('Available providers for '.$capability.': '.implode(', ', $supportedProviders));
                 }
 
                 return false;
@@ -273,10 +269,6 @@ class MakeAiAgentCommand extends GeneratorCommand
 
     /**
      * Get providers that support the given capability.
-     *
-     * @param  AIConfigManager  $configManager
-     * @param  string  $capability
-     * @return array
      */
     protected function getProvidersForCapability(AIConfigManager $configManager, string $capability): array
     {
@@ -300,10 +292,6 @@ class MakeAiAgentCommand extends GeneratorCommand
 
     /**
      * Find similar provider names using fuzzy matching.
-     *
-     * @param  string  $input
-     * @param  array  $providers
-     * @return array
      */
     protected function findSimilarProviders(string $input, array $providers): array
     {
@@ -336,7 +324,7 @@ class MakeAiAgentCommand extends GeneratorCommand
         // Ensure the traits directory exists if needed
         if ($this->option('with-logging') || $this->option('with-fallback')) {
             $traitsPath = app_path('AI/Traits');
-            if (!$this->files->exists($traitsPath)) {
+            if (! $this->files->exists($traitsPath)) {
                 $this->files->makeDirectory($traitsPath, 0755, true);
             }
 
@@ -349,40 +337,34 @@ class MakeAiAgentCommand extends GeneratorCommand
 
     /**
      * Create trait stubs if they don't exist.
-     *
-     * @return void
      */
     protected function createTraitStubs(): void
     {
-        if ($this->option('with-logging') && !$this->files->exists(app_path('AI/Traits/LogsAIUsage.php'))) {
+        if ($this->option('with-logging') && ! $this->files->exists(app_path('AI/Traits/LogsAIUsage.php'))) {
             $this->createLoggingTrait();
         }
 
-        if ($this->option('with-fallback') && !$this->files->exists(app_path('AI/Traits/UsesFallbackProvider.php'))) {
+        if ($this->option('with-fallback') && ! $this->files->exists(app_path('AI/Traits/UsesFallbackProvider.php'))) {
             $this->createFallbackTrait();
         }
     }
 
     /**
      * Create the logging trait.
-     *
-     * @return void
      */
     protected function createLoggingTrait(): void
     {
-        $stub = $this->files->get(__DIR__ . '/../../stubs/traits/logs-ai-usage.stub');
+        $stub = $this->files->get(__DIR__.'/../../stubs/traits/logs-ai-usage.stub');
         $this->files->put(app_path('AI/Traits/LogsAIUsage.php'), $stub);
         $this->info('Created LogsAIUsage trait.');
     }
 
     /**
      * Create the fallback provider trait.
-     *
-     * @return void
      */
     protected function createFallbackTrait(): void
     {
-        $stub = $this->files->get(__DIR__ . '/../../stubs/traits/uses-fallback-provider.stub');
+        $stub = $this->files->get(__DIR__.'/../../stubs/traits/uses-fallback-provider.stub');
         $this->files->put(app_path('AI/Traits/UsesFallbackProvider.php'), $stub);
         $this->info('Created UsesFallbackProvider trait.');
     }

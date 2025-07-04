@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace Kaviyarasu\AIAgent\Services\Core;
 
 use Kaviyarasu\AIAgent\Contracts\Capabilities\VideoGenerationInterface;
-use Kaviyarasu\AIAgent\Contracts\HasProviderSwitching;
 use Kaviyarasu\AIAgent\Contracts\HasModelSwitching;
+use Kaviyarasu\AIAgent\Contracts\HasProviderSwitching;
 use Kaviyarasu\AIAgent\Contracts\Services\VideoServiceInterface;
 use Kaviyarasu\AIAgent\Exceptions\AIAgentException;
 use Kaviyarasu\AIAgent\Factory\ProviderFactory;
 
-class VideoService implements VideoServiceInterface, HasProviderSwitching, HasModelSwitching
+class VideoService implements HasModelSwitching, HasProviderSwitching, VideoServiceInterface
 {
     private ProviderFactory $providerFactory;
 
@@ -60,6 +60,7 @@ class VideoService implements VideoServiceInterface, HasProviderSwitching, HasMo
     public function switchProvider(string $providerName): self
     {
         $this->setProvider($providerName);
+
         return $this;
     }
 
@@ -88,6 +89,7 @@ class VideoService implements VideoServiceInterface, HasProviderSwitching, HasMo
     {
         try {
             $provider = $this->providerFactory->create($providerName);
+
             return $provider->supports('video') && $provider->isAvailable();
         } catch (\Exception $e) {
             return false;
@@ -101,6 +103,7 @@ class VideoService implements VideoServiceInterface, HasProviderSwitching, HasMo
 
         try {
             $this->switchProvider($providerName);
+
             return $callback($this);
         } finally {
             if ($originalProvider) {
@@ -109,7 +112,7 @@ class VideoService implements VideoServiceInterface, HasProviderSwitching, HasMo
                     try {
                         $this->switchModel($originalModel);
                     } catch (\Exception $e) {
-                        logger()->warning('Could not restore original model: ' . $e->getMessage());
+                        logger()->warning('Could not restore original model: '.$e->getMessage());
                     }
                 }
             }
@@ -120,11 +123,12 @@ class VideoService implements VideoServiceInterface, HasProviderSwitching, HasMo
     {
         $provider = $this->getProvider();
 
-        if (!method_exists($provider, 'switchModel')) {
+        if (! method_exists($provider, 'switchModel')) {
             throw new AIAgentException('Current provider does not support model switching');
         }
 
         $provider->switchModel($model);
+
         return $this;
     }
 
@@ -132,7 +136,7 @@ class VideoService implements VideoServiceInterface, HasProviderSwitching, HasMo
     {
         $provider = $this->getProvider();
 
-        if (!method_exists($provider, 'getCurrentModel')) {
+        if (! method_exists($provider, 'getCurrentModel')) {
             return 'unknown';
         }
 
@@ -143,7 +147,7 @@ class VideoService implements VideoServiceInterface, HasProviderSwitching, HasMo
     {
         $provider = $this->getProvider();
 
-        if (!method_exists($provider, 'getAvailableModels')) {
+        if (! method_exists($provider, 'getAvailableModels')) {
             return [];
         }
 
@@ -161,13 +165,14 @@ class VideoService implements VideoServiceInterface, HasProviderSwitching, HasMo
 
         try {
             $this->switchModel($model);
+
             return $callback($this);
         } finally {
             if ($originalModel && $originalModel !== 'unknown') {
                 try {
                     $this->switchModel($originalModel);
                 } catch (\Exception $e) {
-                    logger()->warning('Could not restore original model: ' . $e->getMessage());
+                    logger()->warning('Could not restore original model: '.$e->getMessage());
                 }
             }
         }
@@ -177,7 +182,7 @@ class VideoService implements VideoServiceInterface, HasProviderSwitching, HasMo
     {
         $provider = $this->getProvider();
 
-        if (!method_exists($provider, 'getModelCapabilities')) {
+        if (! method_exists($provider, 'getModelCapabilities')) {
             return [];
         }
 

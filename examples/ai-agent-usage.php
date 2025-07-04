@@ -54,7 +54,7 @@ class BlogController extends Controller
 
         // Execute the agent
         $result = $blogAgent->execute([
-            'prompt' => 'Write a blog post about ' . $request->input('topic'),
+            'prompt' => 'Write a blog post about '.$request->input('topic'),
             'tone' => $request->input('tone', 'professional'),
             'length' => $request->input('length', 'medium'),
         ]);
@@ -72,9 +72,9 @@ class BlogController extends Controller
 
 namespace App\Agents;
 
-use Kaviyarasu\AIAgent\Contracts\Services\TextServiceInterface;
 use App\AI\Traits\LogsAIUsage;
 use App\AI\Traits\UsesFallbackProvider;
+use Kaviyarasu\AIAgent\Contracts\Services\TextServiceInterface;
 
 class ProductionAgent
 {
@@ -94,8 +94,8 @@ class ProductionAgent
     {
         // Execute with both logging and fallback support
         return $this->executeWithLogging(
-            fn() => $this->executeWithFallback(
-                fn() => $this->textService->generateText($data['prompt']),
+            fn () => $this->executeWithFallback(
+                fn () => $this->textService->generateText($data['prompt']),
                 'textService'
             ),
             'textService',

@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Kaviyarasu\AIAgent\Tests\Feature;
 
-use Kaviyarasu\AIAgent\Tests\TestCase;
-use Kaviyarasu\AIAgent\Services\Core\TextService;
-use Kaviyarasu\AIAgent\Services\Core\ImageService;
-use Kaviyarasu\AIAgent\Services\Core\VideoService;
 use Kaviyarasu\AIAgent\Factory\ProviderFactory;
-use Kaviyarasu\AIAgent\Providers\AI\OpenAI\OpenAIProvider;
 use Kaviyarasu\AIAgent\Providers\AI\Claude\ClaudeProvider;
 use Kaviyarasu\AIAgent\Providers\AI\Ideogram\IdeogramProvider;
+use Kaviyarasu\AIAgent\Providers\AI\OpenAI\OpenAIProvider;
+use Kaviyarasu\AIAgent\Services\Core\ImageService;
+use Kaviyarasu\AIAgent\Services\Core\TextService;
+use Kaviyarasu\AIAgent\Services\Core\VideoService;
+use Kaviyarasu\AIAgent\Tests\TestCase;
 use Mockery;
 
 class ComprehensiveProviderSwitchingTest extends TestCase

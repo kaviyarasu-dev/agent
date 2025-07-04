@@ -30,7 +30,7 @@ class BlogService
             'options' => [
                 'tone' => 'professional',
                 'length' => 'medium',
-            ]
+            ],
         ]);
     }
 }
@@ -42,7 +42,7 @@ $content = app(BlogAiAgent::class)->execute([
     'options' => [
         'tone' => 'professional',
         'length' => 'medium',
-    ]
+    ],
 ]);
 
 // Example 3: Different Tones
@@ -53,7 +53,7 @@ $professionalPost = app(BlogAiAgent::class)->execute([
     'options' => [
         'tone' => 'professional',
         'length' => 'long',
-    ]
+    ],
 ]);
 
 // Casual tone
@@ -62,7 +62,7 @@ $casualPost = app(BlogAiAgent::class)->execute([
     'options' => [
         'tone' => 'casual',
         'length' => 'short',
-    ]
+    ],
 ]);
 
 // Friendly tone
@@ -71,7 +71,7 @@ $friendlyPost = app(BlogAiAgent::class)->execute([
     'options' => [
         'tone' => 'friendly',
         'length' => 'medium',
-    ]
+    ],
 ]);
 
 // Example 4: Different Lengths
@@ -82,7 +82,7 @@ $shortPost = app(BlogAiAgent::class)->execute([
     'options' => [
         'tone' => 'professional',
         'length' => 'short',
-    ]
+    ],
 ]);
 
 // Medium post (800-1200 words)
@@ -91,7 +91,7 @@ $mediumPost = app(BlogAiAgent::class)->execute([
     'options' => [
         'tone' => 'professional',
         'length' => 'medium',
-    ]
+    ],
 ]);
 
 // Long post (1500-2000 words)
@@ -100,13 +100,13 @@ $longPost = app(BlogAiAgent::class)->execute([
     'options' => [
         'tone' => 'professional',
         'length' => 'long',
-    ]
+    ],
 ]);
 
 // Example 5: In a Laravel Controller
 // ----------------------------------
-use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class BlogGeneratorController
 {
@@ -120,11 +120,11 @@ class BlogGeneratorController
 
         try {
             $content = app(BlogAiAgent::class)->execute([
-                'prompt' => 'Write a blog post about ' . $validated['topic'],
+                'prompt' => 'Write a blog post about '.$validated['topic'],
                 'options' => [
                     'tone' => $validated['tone'] ?? 'professional',
                     'length' => $validated['length'] ?? 'medium',
-                ]
+                ],
             ]);
 
             return response()->json([
@@ -165,7 +165,7 @@ class GenerateBlogPostJob implements ShouldQueue
             'options' => [
                 'tone' => $this->tone,
                 'length' => $this->length,
-            ]
+            ],
         ]);
 
         // Save to database, send email, etc.
@@ -184,7 +184,7 @@ try {
         'options' => [
             'tone' => 'professional',
             'length' => 'medium',
-        ]
+        ],
     ]);
 
     // Process the content
@@ -192,13 +192,13 @@ try {
 
 } catch (\InvalidArgumentException $e) {
     // Handle validation errors
-    echo "Invalid input: " . $e->getMessage();
+    echo 'Invalid input: '.$e->getMessage();
 } catch (\RuntimeException $e) {
     // Handle AI service errors
-    echo "AI service error: " . $e->getMessage();
+    echo 'AI service error: '.$e->getMessage();
 } catch (\Exception $e) {
     // Handle other errors
-    echo "Unexpected error: " . $e->getMessage();
+    echo 'Unexpected error: '.$e->getMessage();
 }
 
 // Example 8: Using with Minimal Options
@@ -224,7 +224,7 @@ foreach ($topics as $topic) {
         'options' => [
             'tone' => 'professional',
             'length' => 'medium',
-        ]
+        ],
     ]);
 }
 

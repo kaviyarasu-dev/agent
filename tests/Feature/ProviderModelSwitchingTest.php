@@ -6,10 +6,9 @@ namespace Kaviyarasu\AIAgent\Tests\Feature;
 
 use App\Agents\Blog\BlogAiAgentAdvanced;
 use App\Agents\Blog\BlogAiAgentWithTrait;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Kaviyarasu\AIAgent\Tests\TestCase;
 use Kaviyarasu\AIAgent\Contracts\Services\TextServiceInterface;
 use Kaviyarasu\AIAgent\Factory\ProviderFactory;
+use Kaviyarasu\AIAgent\Tests\TestCase;
 
 class ProviderModelSwitchingTest extends TestCase
 {
@@ -63,7 +62,7 @@ class ProviderModelSwitchingTest extends TestCase
 
             $factory->method('create')->willReturn($mockProvider);
             $factory->method('getAvailableProviders')->willReturn([
-                'test' => $mockProvider
+                'test' => $mockProvider,
             ]);
 
             return $factory;
@@ -137,37 +136,45 @@ class ProviderModelSwitchingTest extends TestCase
         $providerFactory = $this->createMock(ProviderFactory::class);
 
         // Create a mock provider with reflection access
-        $mockProvider = new class implements \Kaviyarasu\AIAgent\Contracts\Capabilities\TextGenerationInterface {
+        $mockProvider = new class implements \Kaviyarasu\AIAgent\Contracts\Capabilities\TextGenerationInterface
+        {
             protected array $supportedModels = ['model-1', 'model-2', 'model-3'];
 
             public function generateText(array $params): string
             {
                 return '';
             }
+
             public function streamText(array $params): iterable
             {
                 yield '';
             }
+
             public function getMaxTokens(): int
             {
                 return 4096;
             }
+
             public function getName(): string
             {
                 return 'Test';
             }
+
             public function getVersion(): string
             {
                 return '1.0';
             }
+
             public function supports(string $capability): bool
             {
                 return true;
             }
+
             public function getCapabilities(): array
             {
                 return ['text'];
             }
+
             public function isAvailable(): bool
             {
                 return true;

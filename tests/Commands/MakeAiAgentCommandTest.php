@@ -187,7 +187,7 @@ class MakeAiAgentCommandTest extends TestCase
             ->expectsQuestion('Enter agent class (e.g. Blog\BlogAiAgent)', 'InteractiveAgent')
             ->expectsQuestion('Choose capability', 'text')
             ->expectsQuestion('Choose default provider (optional)', config()->get('ai-agent.default_provider'))
-            ->expectsQuestion('Choose default model (optional)', config()->get('ai-agent.providers.' . config()->get('ai-agent.default_provider') . '.default_model'))
+            ->expectsQuestion('Choose default model (optional)', config()->get('ai-agent.providers.'.config()->get('ai-agent.default_provider').'.default_model'))
             ->expectsQuestion('Include logging functionality?', false)
             ->expectsQuestion('Include fallback provider functionality?', false)
             ->assertSuccessful();

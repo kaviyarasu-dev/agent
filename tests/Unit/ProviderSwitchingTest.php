@@ -4,18 +4,15 @@ declare(strict_types=1);
 
 namespace Kaviyarasu\AIAgent\Tests\Unit;
 
-use Mockery;
-use Kaviyarasu\AIAgent\Tests\TestCase;
-use Kaviyarasu\AIAgent\Services\Core\TextService;
-use Kaviyarasu\AIAgent\Contracts\Services\TextServiceInterface;
+use Kaviyarasu\AIAgent\Agents\BaseAIAgent;
 use Kaviyarasu\AIAgent\Contracts\Services\ImageServiceInterface;
-use Kaviyarasu\AIAgent\Contracts\Services\VideoServiceInterface;
+use Kaviyarasu\AIAgent\Contracts\Services\TextServiceInterface;
+use Kaviyarasu\AIAgent\Examples\EmailAIAgent;
 use Kaviyarasu\AIAgent\Factory\ProviderFactory;
 use Kaviyarasu\AIAgent\Factory\ServiceFactory;
-use Kaviyarasu\AIAgent\Agents\BaseAIAgent;
-use Kaviyarasu\AIAgent\Examples\EmailAIAgent;
-use App\Agents\Examples\AdaptiveCodeAgent;
-use App\Agents\Examples\ContentCreatorAgent;
+use Kaviyarasu\AIAgent\Services\Core\TextService;
+use Kaviyarasu\AIAgent\Tests\TestCase;
+use Mockery;
 
 class ProviderSwitchingTest extends TestCase
 {
@@ -30,7 +27,7 @@ class ProviderSwitchingTest extends TestCase
         $textService = new TextService($providerFactory);
 
         $mockProvider = Mockery::mock(
-            'Kaviyarasu\AIAgent\Contracts\ProviderInterface,' .
+            'Kaviyarasu\AIAgent\Contracts\ProviderInterface,'.
                 'Kaviyarasu\AIAgent\Contracts\Capabilities\TextGenerationInterface'
         );
         $mockProvider->shouldReceive('getName')->andReturn('openai');
@@ -52,7 +49,7 @@ class ProviderSwitchingTest extends TestCase
         $textService = new TextService($providerFactory);
 
         $mockProvider = Mockery::mock(
-            'Kaviyarasu\AIAgent\Contracts\ProviderInterface,' .
+            'Kaviyarasu\AIAgent\Contracts\ProviderInterface,'.
                 'Kaviyarasu\AIAgent\Contracts\Capabilities\TextGenerationInterface'
         );
 
@@ -82,14 +79,14 @@ class ProviderSwitchingTest extends TestCase
         $textService = new TextService($providerFactory);
 
         $claudeProvider = Mockery::mock(
-            'Kaviyarasu\AIAgent\Contracts\ProviderInterface,' .
+            'Kaviyarasu\AIAgent\Contracts\ProviderInterface,'.
                 'Kaviyarasu\AIAgent\Contracts\Capabilities\TextGenerationInterface'
         );
         $claudeProvider->shouldReceive('getName')->andReturn('claude');
         $claudeProvider->shouldReceive('getCurrentModel')->andReturn('claude-3-sonnet');
 
         $openaiProvider = Mockery::mock(
-            'Kaviyarasu\AIAgent\Contracts\ProviderInterface,' .
+            'Kaviyarasu\AIAgent\Contracts\ProviderInterface,'.
                 'Kaviyarasu\AIAgent\Contracts\Capabilities\TextGenerationInterface'
         );
         $openaiProvider->shouldReceive('getName')->andReturn('openai');
@@ -123,7 +120,7 @@ class ProviderSwitchingTest extends TestCase
             ->execute([
                 'recipient' => 'John Doe',
                 'subject' => 'Test Subject',
-                'purpose' => 'Testing'
+                'purpose' => 'Testing',
             ]);
 
         $this->assertIsString($result);
@@ -145,14 +142,15 @@ class ProviderSwitchingTest extends TestCase
         $textService->shouldReceive('switchProvider')->with('openai');
         $imageService->shouldReceive('switchProvider')->with('openai');
 
-        $agent = new class($serviceFactory) extends BaseAIAgent {
+        $agent = new class($serviceFactory) extends BaseAIAgent
+        {
             protected array $requiredServices = ['text', 'image'];
 
             public function execute(array $data)
             {
                 return [
                     'text' => $this->textService->generateText($data['prompt'] ?? 'test'),
-                    'image' => $this->imageService->generateImage($data['image_prompt'] ?? 'test image')
+                    'image' => $this->imageService->generateImage($data['image_prompt'] ?? 'test image'),
                 ];
             }
         };
@@ -168,7 +166,7 @@ class ProviderSwitchingTest extends TestCase
         $textService = new TextService($providerFactory);
 
         $mockProvider = Mockery::mock(
-            'Kaviyarasu\AIAgent\Contracts\ProviderInterface,' .
+            'Kaviyarasu\AIAgent\Contracts\ProviderInterface,'.
                 'Kaviyarasu\AIAgent\Contracts\Capabilities\TextGenerationInterface'
         );
 
@@ -205,12 +203,14 @@ class ProviderSwitchingTest extends TestCase
         $textService->shouldReceive('switchProvider')->with('openai')
             ->once();
         $textService->shouldReceive('generateText')->andReturn('Success with fallback');
-        $agent = new class($serviceFactory) extends BaseAIAgent {
+        $agent = new class($serviceFactory) extends BaseAIAgent
+        {
             protected array $requiredServices = ['text'];
 
             public function execute(array $data)
             {
                 $prompt = $data['prompt'] ?? 'test';
+
                 return $this->textService->generateText($prompt);
             }
         };

@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Kaviyarasu\AIAgent\Tests\Feature;
 
-use Kaviyarasu\AIAgent\Tests\TestCase;
-use Kaviyarasu\AIAgent\Contracts\Services\TextServiceInterface;
-use Kaviyarasu\AIAgent\Contracts\Services\ImageServiceInterface;
 use App\Agents\Blog\BlogAiAgent;
 use App\Agents\Blog\BlogAiAgentWithImages;
+use Kaviyarasu\AIAgent\Contracts\Services\ImageServiceInterface;
+use Kaviyarasu\AIAgent\Contracts\Services\TextServiceInterface;
+use Kaviyarasu\AIAgent\Tests\TestCase;
 
 class BlogAiAgentTest extends TestCase
 {
@@ -32,8 +32,8 @@ class BlogAiAgentTest extends TestCase
             'prompt' => 'Laravel Best Practices',
             'options' => [
                 'tone' => 'professional',
-                'length' => 'medium'
-            ]
+                'length' => 'medium',
+            ],
         ]);
 
         $this->assertIsString($result);
@@ -69,8 +69,8 @@ class BlogAiAgentTest extends TestCase
             'prompt' => 'PHP Development',
             'options' => [
                 'tone' => 'casual',
-                'length' => 'medium'
-            ]
+                'length' => 'medium',
+            ],
         ]);
         $this->assertStringContainsString('Hey there', $casualResult);
 
@@ -78,8 +78,8 @@ class BlogAiAgentTest extends TestCase
             'prompt' => 'PHP Development',
             'options' => [
                 'tone' => 'technical',
-                'length' => 'medium'
-            ]
+                'length' => 'medium',
+            ],
         ]);
         $this->assertStringContainsString('comprehensive', $technicalResult);
 
@@ -87,8 +87,8 @@ class BlogAiAgentTest extends TestCase
             'prompt' => 'PHP Development',
             'options' => [
                 'tone' => 'professional',
-                'length' => 'medium'
-            ]
+                'length' => 'medium',
+            ],
         ]);
         $this->assertStringContainsString('popular programming language', $professionalResult);
     }
@@ -118,8 +118,8 @@ class BlogAiAgentTest extends TestCase
         $result = $agent->execute([
             'prompt' => 'Artificial Intelligence',
             'options' => [
-                'tone' => 'informative'
-            ]
+                'tone' => 'informative',
+            ],
         ]);
 
         $this->assertIsArray($result);
@@ -147,7 +147,7 @@ class BlogAiAgentTest extends TestCase
         $agent = new BlogAiAgent($textService);
         $result = $agent->execute([
             'prompt' => 'general topics',
-            'options' => []
+            'options' => [],
         ]);
 
         $this->assertIsString($result);
@@ -160,7 +160,7 @@ class BlogAiAgentTest extends TestCase
      */
     public function test_blog_agent_real_integration(): void
     {
-        if (!config('ai-agent.providers.openai.api_key') || config('ai-agent.providers.openai.api_key') === 'your-openai-api-key') {
+        if (! config('ai-agent.providers.openai.api_key') || config('ai-agent.providers.openai.api_key') === 'your-openai-api-key') {
             $this->markTestSkipped('OpenAI API key not configured');
         }
 
@@ -170,8 +170,8 @@ class BlogAiAgentTest extends TestCase
             'prompt' => 'Laravel Testing',
             'options' => [
                 'tone' => 'technical',
-                'length' => 'short'
-            ]
+                'length' => 'short',
+            ],
         ]);
 
         $this->assertIsString($result);

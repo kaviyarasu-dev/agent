@@ -4,16 +4,11 @@ declare(strict_types=1);
 
 namespace Kaviyarasu\AIAgent\Tests\Feature;
 
-use Kaviyarasu\AIAgent\Tests\TestCase;
 use Kaviyarasu\AIAgent\Agents\BaseAIAgent;
-use Kaviyarasu\AIAgent\Services\Core\TextService;
-use Kaviyarasu\AIAgent\Services\Core\ImageService;
-use Kaviyarasu\AIAgent\Services\Core\VideoService;
-use Kaviyarasu\AIAgent\Factory\ProviderFactory;
-use Kaviyarasu\AIAgent\Factory\ServiceFactory;
-use Kaviyarasu\AIAgent\Contracts\Services\TextServiceInterface;
 use Kaviyarasu\AIAgent\Contracts\Services\ImageServiceInterface;
-use Kaviyarasu\AIAgent\Contracts\Services\VideoServiceInterface;
+use Kaviyarasu\AIAgent\Contracts\Services\TextServiceInterface;
+use Kaviyarasu\AIAgent\Factory\ServiceFactory;
+use Kaviyarasu\AIAgent\Tests\TestCase;
 use Mockery;
 
 class TestAgent extends BaseAIAgent
@@ -23,6 +18,7 @@ class TestAgent extends BaseAIAgent
     public function execute(array $params): string
     {
         $prompt = $params['prompt'] ?? 'Default prompt';
+
         return $this->textService->generateText($prompt);
     }
 
@@ -333,7 +329,7 @@ class BaseAIAgentTest extends TestCase
 
         $result = $agent->execute([
             'text_prompt' => 'Generate text',
-            'image_prompt' => 'Generate image'
+            'image_prompt' => 'Generate image',
         ]);
 
         $this->assertEquals('Text from Claude', $result['text']);

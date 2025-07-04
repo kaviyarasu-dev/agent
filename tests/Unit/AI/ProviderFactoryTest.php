@@ -3,8 +3,8 @@
 declare(strict_types=1);
 
 use Kaviyarasu\AIAgent\Config\AIConfigManager;
-use Kaviyarasu\AIAgent\Contracts\ProviderInterface;
 use Kaviyarasu\AIAgent\Contracts\HasModelSwitching;
+use Kaviyarasu\AIAgent\Contracts\ProviderInterface;
 use Kaviyarasu\AIAgent\Factory\ProviderFactory;
 
 beforeEach(function () {
@@ -196,6 +196,7 @@ it('clears cache', function () {
 class MockProvider implements ProviderInterface
 {
     private array $config;
+
     private string $currentModel;
 
     public function __construct(array $config)
@@ -247,12 +248,14 @@ class MockProvider implements ProviderInterface
     public function setConfiguration(array $config): ProviderInterface
     {
         $this->config = array_merge($this->config, $config);
+
         return $this;
     }
 
     public function switchModel(string $model): HasModelSwitching
     {
         $this->currentModel = $model;
+
         return $this;
     }
 

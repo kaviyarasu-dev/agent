@@ -1,9 +1,5 @@
 <?php
 
-use Kaviyarasu\AIAgent\Contracts;
-use Kaviyarasu\AIAgent\Providers;
-use Kaviyarasu\AIAgent\Services;
-
 it('ensures contracts are interfaces')
     ->expect('Kaviyarasu\AIAgent\Contracts')
     ->toBeInterfaces();

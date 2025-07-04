@@ -4,11 +4,9 @@ declare(strict_types=1);
 
 namespace Kaviyarasu\AIAgent;
 
-use Spatie\LaravelPackageTools\Package;
-use Spatie\LaravelPackageTools\PackageServiceProvider;
 use Kaviyarasu\AIAgent\Commands\AIAgentCommand;
-use Kaviyarasu\AIAgent\Commands\MakeAiAgentCommand;
 use Kaviyarasu\AIAgent\Commands\ListProvidersCommand;
+use Kaviyarasu\AIAgent\Commands\MakeAiAgentCommand;
 use Kaviyarasu\AIAgent\Config\AIConfigManager;
 use Kaviyarasu\AIAgent\Contracts\Services\ImageServiceInterface;
 use Kaviyarasu\AIAgent\Contracts\Services\TextServiceInterface;
@@ -19,6 +17,8 @@ use Kaviyarasu\AIAgent\Services\Core\ImageService;
 use Kaviyarasu\AIAgent\Services\Core\TextService;
 use Kaviyarasu\AIAgent\Services\Core\VideoService;
 use Kaviyarasu\AIAgent\Services\Modules\Storyboard\CharacterService;
+use Spatie\LaravelPackageTools\Package;
+use Spatie\LaravelPackageTools\PackageServiceProvider;
 
 class AIAgentServiceProvider extends PackageServiceProvider
 {
