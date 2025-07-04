@@ -69,14 +69,6 @@ class IdeogramProvider extends AbstractProvider implements ImageGenerationInterf
             ],
         ];
 
-        if (isset($params['style']) && ! in_array($params['style'], $this->getAvailableStyles())) {
-            throw new AIAgentException('Ideogram API error: Invalid style');
-        }
-
-        if (isset($params['size']) && ! in_array($params['size'], $this->getAvailableSizes())) {
-            throw new AIAgentException('Ideogram API error: Invalid image size');
-        }
-
         $response = Http::withHeaders([
             'Api-Key' => $this->config['api_key'],
             'Content-Type' => 'application/json',
