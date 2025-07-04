@@ -56,7 +56,11 @@ class MakeAiAgentCommand extends GeneratorCommand
      */
     public function handle()
     {
-        $name = $this->ask('Enter agent class (e.g. Blog\BlogAiAgent)');
+        $name = $this->argument('name');
+
+        if (! $name) {
+            $name = $this->ask('Enter agent class (e.g. Blog\\BlogAiAgent)');
+        }
         $capability = $this->choice(
             'Choose capability',
             array_keys($this->capabilities),
@@ -134,7 +138,7 @@ class MakeAiAgentCommand extends GeneratorCommand
         $name = str_replace('\\', '/', $name);
 
         // Convert forward slashes to proper namespace format
-        if (str_contains($this->argument('name'), '/')) {
+        if (is_string($this->argument('name')) && str_contains($this->argument('name'), '/')) {
             $parts = explode('/', $this->argument('name'));
             $className = array_pop($parts);
             $namespace = implode('\\', array_map('ucfirst', $parts));
