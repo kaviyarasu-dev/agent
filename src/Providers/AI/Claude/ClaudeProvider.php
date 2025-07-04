@@ -85,7 +85,8 @@ class ClaudeProvider extends AbstractProvider implements TextGenerationInterface
 
         if (! $response->successful()) {
             logger()->error('Claude API error:', $requestParams);
-            throw new AIAgentException('Claude API error: ' . $response->body());
+
+            throw new AIAgentException('Claude API error: '.$response->body());
         }
 
         return $response->json()['content'][0]['text'] ?? '';
@@ -114,7 +115,7 @@ class ClaudeProvider extends AbstractProvider implements TextGenerationInterface
 
         // Handle streaming response
         $body = $response->getBody();
-        while (!$body->eof()) {
+        while (! $body->eof()) {
             $chunk = $body->read(1024);
             if ($chunk) {
                 yield $chunk;

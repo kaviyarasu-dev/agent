@@ -26,8 +26,8 @@ $agent->switchModel('gpt-4-turbo'); // For OpenAI
 $agent->switchProvider('claude')->switchModel('claude-3-opus-20240229'); // Chain methods
 
 // Get current configuration
-echo "Current Provider: " . $agent->getCurrentProvider() . "\n";
-echo "Current Model: " . $agent->getCurrentModel() . "\n";
+echo 'Current Provider: '.$agent->getCurrentProvider()."\n";
+echo 'Current Model: '.$agent->getCurrentModel()."\n";
 
 // Get available models for current provider
 $models = $agent->getAvailableModels();
@@ -36,14 +36,14 @@ print_r($models);
 // Execute with current settings
 $content = $agent->execute([
     'prompt' => 'Write about AI ethics',
-    'options' => ['tone' => 'professional', 'length' => 'medium']
+    'options' => ['tone' => 'professional', 'length' => 'medium'],
 ]);
 
 // Execute with temporary provider/model (without changing defaults)
 $content = $agent->executeWith(
     [
         'prompt' => 'Write about quantum computing',
-        'options' => ['tone' => 'casual', 'length' => 'short']
+        'options' => ['tone' => 'casual', 'length' => 'short'],
     ],
     'openai',      // Use OpenAI
     'gpt-4'        // Use GPT-4 model
@@ -89,7 +89,7 @@ $claudeProvider->switchModel('claude-3-sonnet-20241128');
 $result = $claudeProvider->generateText([
     'prompt' => 'Write a haiku about programming',
     'temperature' => 0.5,
-    'max_tokens' => 100
+    'max_tokens' => 100,
 ]);
 
 // ===================================================================
@@ -99,7 +99,9 @@ $result = $claudeProvider->generateText([
 class CustomAiAgent
 {
     private ProviderFactory $providerFactory;
+
     private ?string $provider = null;
+
     private ?string $model = null;
 
     public function __construct(ProviderFactory $providerFactory)
@@ -110,12 +112,14 @@ class CustomAiAgent
     public function setProvider(string $provider): self
     {
         $this->provider = $provider;
+
         return $this;
     }
 
     public function setModel(string $model): self
     {
         $this->model = $model;
+
         return $this;
     }
 
@@ -129,7 +133,7 @@ class CustomAiAgent
 
         return $provider->generateText([
             'prompt' => $prompt,
-            'max_tokens' => 1000
+            'max_tokens' => 1000,
         ]);
     }
 }
@@ -191,7 +195,8 @@ function generateWithFallback(string $prompt, array $providers): ?string
                 ->switchModel($config['model'])
                 ->execute(['prompt' => $prompt, 'options' => []]);
         } catch (\Exception $e) {
-            logger()->warning("Provider {$config['provider']} failed: " . $e->getMessage());
+            logger()->warning("Provider {$config['provider']} failed: ".$e->getMessage());
+
             continue;
         }
     }
@@ -231,7 +236,7 @@ class SmartBlogAgent extends BlogAiAgentAdvanced
 // Example 4: Testing different providers in PHPUnit
 class BlogAgentTest extends TestCase
 {
-    public function testWithDifferentProviders()
+    public function test_with_different_providers()
     {
         $agent = app(BlogAiAgentAdvanced::class);
         $data = ['prompt' => 'Test topic', 'options' => []];

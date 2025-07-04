@@ -38,7 +38,7 @@ abstract class AbstractProvider implements ProviderInterface
         $providerKey = strtolower($this->getName());
         $models = config("ai-agent.providers.{$providerKey}.models", []);
 
-        if (!empty($models)) {
+        if (! empty($models)) {
             $this->supportedModels = array_keys($models);
             $this->modelCapabilities = $models;
         }
@@ -51,12 +51,13 @@ abstract class AbstractProvider implements ProviderInterface
     {
         if (! $this->hasModel($model)) {
             throw new \InvalidArgumentException(
-                "Model '{$model}' is not supported by {$this->getName()}. " .
-                    "Available models: " . implode(', ', $this->supportedModels)
+                "Model '{$model}' is not supported by {$this->getName()}. ".
+                    'Available models: '.implode(', ', $this->supportedModels)
             );
         }
 
         $this->currentModel = $model;
+
         return $this;
     }
 
@@ -93,6 +94,7 @@ abstract class AbstractProvider implements ProviderInterface
 
         try {
             $this->switchModel($model);
+
             return $callback($this);
         } finally {
             $this->switchModel($originalModel);
@@ -131,12 +133,13 @@ abstract class AbstractProvider implements ProviderInterface
      */
     public function getDefaultModel(): string
     {
-        if (!empty($this->supportedModels)) {
+        if (! empty($this->supportedModels)) {
             return $this->supportedModels[0];
         }
 
         // Try to get from config
         $providerKey = strtolower($this->getName());
+
         return config("ai-agent.providers.{$providerKey}.default_model", '');
     }
 
@@ -166,8 +169,9 @@ abstract class AbstractProvider implements ProviderInterface
         // Return config without sensitive data
         $safeConfig = $this->config;
         if (isset($safeConfig['api_key'])) {
-            $safeConfig['api_key'] = str_repeat('*', 8) . substr($safeConfig['api_key'], -4);
+            $safeConfig['api_key'] = str_repeat('*', 8).substr($safeConfig['api_key'], -4);
         }
+
         return $safeConfig;
     }
 
@@ -189,7 +193,6 @@ abstract class AbstractProvider implements ProviderInterface
     /**
      * Validate the current model
      *
-     * @return void
      * @throws \InvalidArgumentException
      */
     protected function validateModel(): void
@@ -200,16 +203,14 @@ abstract class AbstractProvider implements ProviderInterface
 
         if (! $this->hasModel($this->currentModel)) {
             throw new \InvalidArgumentException(
-                "Invalid model '{$this->currentModel}' for provider {$this->getName()}. " .
-                    "Available models: " . implode(', ', $this->supportedModels)
+                "Invalid model '{$this->currentModel}' for provider {$this->getName()}. ".
+                    'Available models: '.implode(', ', $this->supportedModels)
             );
         }
     }
 
     /**
      * Get API key from configuration
-     *
-     * @return string
      */
     protected function getApiKey(): string
     {
@@ -218,8 +219,6 @@ abstract class AbstractProvider implements ProviderInterface
 
     /**
      * Get base URL from configuration
-     *
-     * @return string
      */
     protected function getBaseUrl(): string
     {
@@ -228,25 +227,21 @@ abstract class AbstractProvider implements ProviderInterface
 
     /**
      * Get model display name
-     *
-     * @param string|null $model
-     * @return string
      */
     public function getModelDisplayName(?string $model = null): string
     {
         $model = $model ?? $this->currentModel;
+
         return $this->modelCapabilities[$model]['name'] ?? $model;
     }
 
     /**
      * Get model version
-     *
-     * @param string|null $model
-     * @return string
      */
     public function getModelVersion(?string $model = null): string
     {
         $model = $model ?? $this->currentModel;
+
         return $this->modelCapabilities[$model]['version'] ?? 'unknown';
     }
 }

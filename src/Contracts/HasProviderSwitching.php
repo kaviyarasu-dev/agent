@@ -11,16 +11,11 @@ interface HasProviderSwitching
 {
     /**
      * Switch to a different provider.
-     *
-     * @param string $providerName
-     * @return self
      */
     public function switchProvider(string $providerName): self;
 
     /**
      * Get the current provider name.
-     *
-     * @return string
      */
     public function getCurrentProvider(): string;
 
@@ -33,17 +28,12 @@ interface HasProviderSwitching
 
     /**
      * Check if a provider is available.
-     *
-     * @param string $providerName
-     * @return bool
      */
     public function hasProvider(string $providerName): bool;
 
     /**
      * Execute with a temporary provider.
      *
-     * @param string $providerName
-     * @param callable $callback
      * @return mixed
      */
     public function withProvider(string $providerName, callable $callback);

@@ -10,7 +10,7 @@ use Kaviyarasu\AIAgent\Contracts\Capabilities\TextGenerationInterface;
 use Kaviyarasu\AIAgent\Exceptions\AIAgentException;
 use Kaviyarasu\AIAgent\Providers\AI\AbstractProvider;
 
-class OpenAIProvider extends AbstractProvider implements TextGenerationInterface, ImageGenerationInterface
+class OpenAIProvider extends AbstractProvider implements ImageGenerationInterface, TextGenerationInterface
 {
     protected array $supportedModels = [];
 
@@ -47,6 +47,7 @@ class OpenAIProvider extends AbstractProvider implements TextGenerationInterface
     public function supports(string $capability): bool
     {
         $modelCapabilities = $this->modelCapabilities[$this->currentModel]['capabilities'] ?? [];
+
         return in_array($capability, $modelCapabilities);
     }
 
@@ -56,12 +57,13 @@ class OpenAIProvider extends AbstractProvider implements TextGenerationInterface
         foreach ($this->modelCapabilities as $model => $config) {
             $capabilities = array_merge($capabilities, $config['capabilities'] ?? []);
         }
+
         return array_unique($capabilities);
     }
 
     public function generateText(array $params): string
     {
-        if (!$this->supports('text')) {
+        if (! $this->supports('text')) {
             throw new AIAgentException("Model {$this->currentModel} does not support text generation");
         }
 
@@ -78,13 +80,14 @@ class OpenAIProvider extends AbstractProvider implements TextGenerationInterface
         ];
 
         $response = Http::withHeaders([
-            'Authorization' => 'Bearer ' . $this->config['api_key'],
+            'Authorization' => 'Bearer '.$this->config['api_key'],
             'Content-Type' => 'application/json',
         ])->post(self::TEXT_API_URL, $requestParams);
 
         if (! $response->successful()) {
             logger()->error('OpenAI API error:', $requestParams);
-            throw new AIAgentException('OpenAI API error: ' . $response->body());
+
+            throw new AIAgentException('OpenAI API error: '.$response->body());
         }
 
         return $response->json()['choices'][0]['message']['content'] ?? '';
@@ -92,12 +95,12 @@ class OpenAIProvider extends AbstractProvider implements TextGenerationInterface
 
     public function streamText(array $params): iterable
     {
-        if (!$this->supports('text')) {
+        if (! $this->supports('text')) {
             throw new AIAgentException("Model {$this->currentModel} does not support text generation");
         }
 
         $response = Http::withHeaders([
-            'Authorization' => 'Bearer ' . $this->config['api_key'],
+            'Authorization' => 'Bearer '.$this->config['api_key'],
             'Content-Type' => 'application/json',
         ])->withOptions([
             'stream' => true,
@@ -115,7 +118,7 @@ class OpenAIProvider extends AbstractProvider implements TextGenerationInterface
         ]);
 
         $body = $response->getBody();
-        while (!$body->eof()) {
+        while (! $body->eof()) {
             $chunk = $body->read(1024);
             if ($chunk) {
                 yield $chunk;
@@ -125,42 +128,20 @@ class OpenAIProvider extends AbstractProvider implements TextGenerationInterface
 
     public function generateImage(array $params): string
     {
-        if (!$this->supports('image')) {
+        if (! $this->supports('image')) {
             throw new AIAgentException("Model {$this->currentModel} does not support image generation");
         }
 
-        $requestParams = [
-            'model' => $this->currentModel,
-            'prompt' => $params['prompt'],
-            'n' => 1,
-            'size' => $params['size'] ?? '1024x1024',
-        ];
-
-        if ($this->currentModel === 'dall-e-3' && isset($params['quality'])) {
-            $requestParams['quality'] = $params['quality'];
-        }
-
-        $response = Http::withHeaders([
-            'Authorization' => 'Bearer ' . $this->config['api_key'],
-            'Content-Type' => 'application/json',
-        ])->post(self::IMAGE_API_URL, $requestParams);
-
-        if (! $response->successful()) {
-            throw new AIAgentException('OpenAI API error: ' . $response->body());
-        }
-
-        $data = $response->json()['data'] ?? [];
-
-        if (empty($data)) {
-            throw new AIAgentException('No image data returned from OpenAI API');
-        }
-
-        return $data[0]['url'] ?? '';
+        return $this->generateImages($params)[0] ?? '';
     }
 
     public function generateImages(array $params): array
     {
-        if (!$this->supports('image')) {
+        if (! $this->supports('image')) {
+            throw new AIAgentException("Model {$this->currentModel} does not support image generation");
+        }
+
+        if (! $this->supports('image')) {
             throw new AIAgentException("Model {$this->currentModel} does not support image generation");
         }
 
@@ -169,22 +150,22 @@ class OpenAIProvider extends AbstractProvider implements TextGenerationInterface
             'prompt' => $params['prompt'],
             'n' => $params['n'] ?? 1,
             'size' => $params['size'] ?? '1024x1024',
+            'quality' => $params['quality'] ?? 'standard',
+            ...$params,
         ];
 
-        if ($this->currentModel === 'dall-e-3' && isset($params['quality'])) {
-            $requestParams['quality'] = $params['quality'];
-        }
-
         $response = Http::withHeaders([
-            'Authorization' => 'Bearer ' . $this->config['api_key'],
+            'Authorization' => 'Bearer '.$this->config['api_key'],
             'Content-Type' => 'application/json',
         ])->post(self::IMAGE_API_URL, $requestParams);
 
         if (! $response->successful()) {
-            throw new AIAgentException('OpenAI API error: ' . $response->body());
+            throw new AIAgentException('OpenAI API error: '.$response->body());
         }
 
-        return $response->json()['data'] ?? [];
+        $data = $response->json();
+
+        return collect($data['data'])->pluck('b64_json')->all() ?? [];
     }
 
     public function getSupportedFormats(): array

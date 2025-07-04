@@ -12,6 +12,7 @@ use Kaviyarasu\AIAgent\Factory\ProviderFactory;
 trait HasDynamicProvider
 {
     protected ?ProviderFactory $providerFactory = null;
+
     protected string $currentProvider = '';
 
     /**

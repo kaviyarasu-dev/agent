@@ -39,7 +39,7 @@ class ListProvidersCommand extends Command
             // Skip if capability filter is set and provider doesn't support it
             if ($capability) {
                 $providerCapabilities = $this->getProviderCapabilities($config);
-                if (!in_array($capability, $providerCapabilities)) {
+                if (! in_array($capability, $providerCapabilities)) {
                     continue;
                 }
             }
@@ -66,7 +66,7 @@ class ListProvidersCommand extends Command
                 $this->line("  • {$modelKey}");
                 $this->line("    Name: {$modelConfig['name']}");
                 $this->line("    Version: {$modelConfig['version']}");
-                $this->line("    Capabilities: " . implode(', ', $modelConfig['capabilities'] ?? []));
+                $this->line('    Capabilities: '.implode(', ', $modelConfig['capabilities'] ?? []));
 
                 if (isset($modelConfig['max_tokens'])) {
                     $this->line("    Max Tokens: {$modelConfig['max_tokens']}");
@@ -84,11 +84,11 @@ class ListProvidersCommand extends Command
 
                 // Additional model-specific info
                 if (isset($modelConfig['sizes'])) {
-                    $this->line("    Sizes: " . implode(', ', $modelConfig['sizes']));
+                    $this->line('    Sizes: '.implode(', ', $modelConfig['sizes']));
                 }
 
                 if (isset($modelConfig['styles'])) {
-                    $this->line("    Styles: " . implode(', ', $modelConfig['styles']));
+                    $this->line('    Styles: '.implode(', ', $modelConfig['styles']));
                 }
 
                 $this->newLine();
@@ -112,7 +112,7 @@ class ListProvidersCommand extends Command
             $isDefault = $strategy === $defaultStrategy ? ' (default)' : '';
             $this->line("  • {$strategy}{$isDefault}:");
             foreach ($models as $capability => $modelList) {
-                $this->line("    - {$capability}: " . implode(', ', $modelList));
+                $this->line("    - {$capability}: ".implode(', ', $modelList));
             }
         }
 

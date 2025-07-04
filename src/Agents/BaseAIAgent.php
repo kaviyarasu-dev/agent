@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Kaviyarasu\AIAgent\Agents;
 
-use Kaviyarasu\AIAgent\Contracts\HasProviderSwitching;
 use Kaviyarasu\AIAgent\Contracts\HasModelSwitching;
-use Kaviyarasu\AIAgent\Contracts\Services\TextServiceInterface;
+use Kaviyarasu\AIAgent\Contracts\HasProviderSwitching;
 use Kaviyarasu\AIAgent\Contracts\Services\ImageServiceInterface;
+use Kaviyarasu\AIAgent\Contracts\Services\TextServiceInterface;
 use Kaviyarasu\AIAgent\Contracts\Services\VideoServiceInterface;
 use Kaviyarasu\AIAgent\Exceptions\AIAgentException;
 use Kaviyarasu\AIAgent\Factory\ServiceFactory;
@@ -15,17 +15,21 @@ use Kaviyarasu\AIAgent\Factory\ServiceFactory;
 /**
  * Base class for all AI Agents with provider and model switching capabilities.
  */
-abstract class BaseAIAgent implements HasProviderSwitching, HasModelSwitching
+abstract class BaseAIAgent implements HasModelSwitching, HasProviderSwitching
 {
     protected ?TextServiceInterface $textService = null;
+
     protected ?ImageServiceInterface $imageService = null;
+
     protected ?VideoServiceInterface $videoService = null;
+
     protected ServiceFactory $serviceFactory;
 
     /**
      * Track current provider and model for restoration
      */
     protected array $providerStack = [];
+
     protected array $modelStack = [];
 
     /**
@@ -70,7 +74,6 @@ abstract class BaseAIAgent implements HasProviderSwitching, HasModelSwitching
     /**
      * Execute the agent's main logic
      *
-     * @param array $data
      * @return mixed
      */
     abstract public function execute(array $data);
@@ -131,7 +134,7 @@ abstract class BaseAIAgent implements HasProviderSwitching, HasModelSwitching
         if ($this->imageService && method_exists($this->imageService, 'getAvailableProviders')) {
             $imageProviders = $this->imageService->getAvailableProviders();
             foreach ($imageProviders as $name => $info) {
-                if (!isset($providers[$name])) {
+                if (! isset($providers[$name])) {
                     $providers[$name] = $info;
                     $providers[$name]['supports'] = [];
                 }
@@ -142,7 +145,7 @@ abstract class BaseAIAgent implements HasProviderSwitching, HasModelSwitching
         if ($this->videoService && method_exists($this->videoService, 'getAvailableProviders')) {
             $videoProviders = $this->videoService->getAvailableProviders();
             foreach ($videoProviders as $name => $info) {
-                if (!isset($providers[$name])) {
+                if (! isset($providers[$name])) {
                     $providers[$name] = $info;
                     $providers[$name]['supports'] = [];
                 }
@@ -159,6 +162,7 @@ abstract class BaseAIAgent implements HasProviderSwitching, HasModelSwitching
     public function hasProvider(string $providerName): bool
     {
         $providers = $this->getAvailableProviders();
+
         return isset($providers[$providerName]);
     }
 
@@ -171,6 +175,7 @@ abstract class BaseAIAgent implements HasProviderSwitching, HasModelSwitching
 
         try {
             $this->switchProvider($providerName);
+
             return $callback($this);
         } finally {
             if ($originalProvider) {
@@ -268,13 +273,14 @@ abstract class BaseAIAgent implements HasProviderSwitching, HasModelSwitching
 
         try {
             $this->switchModel($model);
+
             return $callback($this);
         } finally {
             if ($originalModel && $originalModel !== 'unknown') {
                 try {
                     $this->switchModel($originalModel);
                 } catch (\Exception $e) {
-                    logger()->warning('Could not restore original model: ' . $e->getMessage());
+                    logger()->warning('Could not restore original model: '.$e->getMessage());
                 }
             }
         }
@@ -304,9 +310,6 @@ abstract class BaseAIAgent implements HasProviderSwitching, HasModelSwitching
     /**
      * Execute with specific provider and model configuration
      *
-     * @param array $data
-     * @param string|null $provider
-     * @param string|null $model
      * @return mixed
      */
     public function executeWith(array $data, ?string $provider = null, ?string $model = null)
@@ -315,10 +318,10 @@ abstract class BaseAIAgent implements HasProviderSwitching, HasModelSwitching
             return $this->execute($data);
         }
 
-        $callback = fn() => $this->execute($data);
+        $callback = fn () => $this->execute($data);
 
         if ($provider !== null && $model !== null) {
-            return $this->withProvider($provider, fn() => $this->withModel($model, $callback));
+            return $this->withProvider($provider, fn () => $this->withModel($model, $callback));
         }
 
         if ($provider !== null) {
@@ -331,9 +334,9 @@ abstract class BaseAIAgent implements HasProviderSwitching, HasModelSwitching
     /**
      * Execute with fallback providers
      *
-     * @param array $data
-     * @param array $providers List of providers to try in order
+     * @param  array  $providers  List of providers to try in order
      * @return mixed
+     *
      * @throws \Exception if all providers fail
      */
     public function executeWithFallback(array $data, array $providers)
@@ -351,7 +354,8 @@ abstract class BaseAIAgent implements HasProviderSwitching, HasModelSwitching
                 }
             } catch (\Exception $e) {
                 $lastException = $e;
-                logger()->warning("Provider {$provider} failed: " . $e->getMessage());
+                logger()->warning("Provider {$provider} failed: ".$e->getMessage());
+
                 continue;
             }
         }
@@ -361,8 +365,6 @@ abstract class BaseAIAgent implements HasProviderSwitching, HasModelSwitching
 
     /**
      * Get service requirements for this agent
-     *
-     * @return array
      */
     public function getRequiredServices(): array
     {
@@ -371,9 +373,6 @@ abstract class BaseAIAgent implements HasProviderSwitching, HasModelSwitching
 
     /**
      * Check if agent has a specific service
-     *
-     * @param string $service
-     * @return bool
      */
     public function hasService(string $service): bool
     {
@@ -387,8 +386,6 @@ abstract class BaseAIAgent implements HasProviderSwitching, HasModelSwitching
 
     /**
      * Get text service if available
-     *
-     * @return TextServiceInterface|null
      */
     public function getTextService(): ?TextServiceInterface
     {
@@ -397,8 +394,6 @@ abstract class BaseAIAgent implements HasProviderSwitching, HasModelSwitching
 
     /**
      * Get image service if available
-     *
-     * @return ImageServiceInterface|null
      */
     public function getImageService(): ?ImageServiceInterface
     {
@@ -407,8 +402,6 @@ abstract class BaseAIAgent implements HasProviderSwitching, HasModelSwitching
 
     /**
      * Get video service if available
-     *
-     * @return VideoServiceInterface|null
      */
     public function getVideoService(): ?VideoServiceInterface
     {
