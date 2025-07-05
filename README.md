@@ -71,6 +71,7 @@ php artisan ai-agent
 | Claude   | ✅   | ❌    | ❌    | Stable |
 | OpenAI   | ✅   | ✅    | ❌    | Stable |
 | Ideogram | ❌   | ✅    | ❌    | Stable |
+| Runware  | ❌   | ✅    | ❌    | Stable |
 
 ### Basic Usage
 

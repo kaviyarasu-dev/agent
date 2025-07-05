@@ -198,6 +198,29 @@ return [
             ],
             'default_model' => env('IDEOGRAM_MODEL', 'V_2'),
         ],
+
+        'runware' => [
+            'api_key' => env('RUNWARE_API_KEY'),
+            'class' => \Kaviyarasu\AIAgent\Providers\AI\Runware\RunwareProvider::class,
+            'models' => [
+                'runware:97@1' => [
+                    'name' => 'HiDream-I1-Full',
+                    'version' => '1.0',
+                    'capabilities' => ['image'],
+                ],
+                'runware:97@2' => [
+                    'name' => 'HiDream-I1-Dev',
+                    'version' => '1.0',
+                    'capabilities' => ['image'],
+                ],
+                'runware:97@3' => [
+                    'name' => 'HiDream-I1-Fast',
+                    'version' => '1.0',
+                    'capabilities' => ['image'],
+                ],
+            ],
+            'default_model' => env('RUNWARE_MODEL', 'runware:97@2'),
+        ],
     ],
 
     /*
