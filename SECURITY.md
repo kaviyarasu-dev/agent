@@ -9,19 +9,29 @@ We actively maintain and provide security updates for the following versions of 
 | 1.x     | :white_check_mark: |
 | < 1.0   | :x:                |
 
-## Reporting a Vulnerability
+## How to Report a Bug or Security Vulnerability
 
-We take security vulnerabilities seriously. If you discover a security vulnerability in the AI Agent package, please report it responsibly.
+### Reporting Bugs
 
-### How to Report
+To report bugs or unexpected behavior in the `agent` package, please use the [Bug Report Template](https://github.com/kaviyarasu-dev/agent/issues/new?template=1_bug_report.yml). Follow the template and provide as much detail as possible to help us reproduce and fix the issue. Include the following information:
 
-1. **Email**: Send details to `kaviphpnschool@gmail.com`
-2. **Subject**: Use the prefix `[SECURITY]` in your email subject
-3. **Include**: 
-   - Description of the vulnerability
-   - Steps to reproduce
-   - Potential impact
-   - Suggested fix (if any)
+- **AiAgent Version**: Provide the version of AiAgent you're using.
+- **PHP Version**: Specify the PHP version you're using.
+- **Description**: A detailed description of the issue.
+- **Steps to Reproduce**: Clear steps to reproduce the bug. If possible, provide a GitHub repository to demonstrate the issue.
+
+If you find a **security vulnerability**, please follow the instructions below:
+
+### Reporting Security Vulnerabilities
+
+If you discover a security vulnerability in the `agent` package, please follow our responsible disclosure process by contacting us directly:
+
+- **Email**: [kaviphpnschool@gmail.com]
+- **Subject**: Security Vulnerability in `[AiAgent]` package
+
+Please include details of the vulnerability, how to reproduce it, and any potential risks involved. We will work with you to address the issue as quickly as possible.
+
+Your report will remain confidential, and we will acknowledge your contribution once the vulnerability is fixed and published.
 
 ### Response Timeline
 
