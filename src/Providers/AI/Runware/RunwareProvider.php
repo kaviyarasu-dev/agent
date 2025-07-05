@@ -70,14 +70,14 @@ class RunwareProvider extends AbstractProvider implements ImageGenerationInterfa
 
         $response = Http::withHeaders([
             'Content-Type' => 'application/json',
-            'Accept' => 'application/json'
+            'Accept' => 'application/json',
         ])
             ->post(self::API_URL, [
                 [
                     'taskType' => 'authentication',
                     'apiKey' => $this->config['api_key'],
                 ],
-                $requestParams
+                $requestParams,
             ]);
 
         if (! $response->successful()) {
