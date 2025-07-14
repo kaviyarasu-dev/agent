@@ -70,6 +70,7 @@ php artisan ai-agent
 |----------|------|-------|-------|---------|
 | Claude   | ✅   | ❌    | ❌    | Stable |
 | OpenAI   | ✅   | ✅    | ❌    | Stable |
+| Gemini   | ✅   | ✅    | ❌    | Stable |
 | Ideogram | ❌   | ✅    | ❌    | Stable |
 | Runware  | ❌   | ✅    | ❌    | Stable |
 
@@ -87,7 +88,7 @@ foreach (AIAgent::text()->streamText('Explain the theory of relativity') as $chu
 }
 
 // Image generation
-$imageUrl = AIAgent::image()->generateImage('A futuristic city at sunset');
+$response = AIAgent::image()->generateImage('A futuristic city at sunset');
 
 // Switch provider at runtime
 $response = AIAgent::provider('openai')->text()->generateText('Hello world');
@@ -109,7 +110,7 @@ $response = AIAgent::provider('claude')
     ]);
 
 // Generate image with specific dimensions
-$imageUrl = AIAgent::provider('openai')
+$response = AIAgent::provider('openai')
     ->image()
     ->switchModel('dall-e-3')
     ->generateImage('A serene landscape with mountains', [
@@ -119,7 +120,7 @@ $imageUrl = AIAgent::provider('openai')
     ]);
 
 // Generate multiple images
-$imageUrls = AIAgent::provider('openai')
+$response = AIAgent::provider('openai')
     ->image()
     ->generateMultipleImages('A serene landscape with mountains', 3);
 ```
@@ -133,7 +134,7 @@ use Kaviyarasu\Agent\Facades\Agent;
 $response = Agent::generateText('Write a haiku about Laravel');
 
 // Create an image
-$image = Agent::provider('openai')->createImage('A coding workspace');
+$response = Agent::provider('openai')->generateImage('A coding workspace');
 
 // Switch providers dynamically
 $result = Agent::provider('claude')->generateText('Explain quantum computing');
@@ -143,6 +144,7 @@ $result = Agent::provider('claude')->generateText('Explain quantum computing');
 
 - [Custom Agent Documentation](docs/CUSTOM_AGENT.md)
 - [Service Agent Documentation](docs/SERVICE_AGENT.md)
+- [Response Formatting Documentation](docs/RESPONSE_FORMAT.md)
 
 ## 🆘 Support
 
