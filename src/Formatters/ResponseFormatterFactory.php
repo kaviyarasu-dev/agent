@@ -29,7 +29,7 @@ class ResponseFormatterFactory
      */
     public function get(string $type): ResponseFormatterInterface
     {
-        if (!isset($this->formatters[$type])) {
+        if (! isset($this->formatters[$type])) {
             throw new AIAgentException("No formatter registered for type: {$type}");
         }
 
@@ -57,8 +57,8 @@ class ResponseFormatterFactory
      */
     private function registerDefaultFormatters(): void
     {
-        $this->register('text', new TextResponseFormatter());
-        $this->register('image', new ImageResponseFormatter());
+        $this->register('text', new TextResponseFormatter);
+        $this->register('image', new ImageResponseFormatter);
     }
 
     /**

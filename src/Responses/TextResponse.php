@@ -53,8 +53,8 @@ class TextResponse extends AIResponse
 
     public static function fromText(
         string $text,
-        string $provider = null,
-        string $model = null,
+        ?string $provider = null,
+        ?string $model = null,
         array $additionalMetadata = []
     ): static {
         $metadata = array_merge([
@@ -67,8 +67,8 @@ class TextResponse extends AIResponse
 
     public static function fromError(
         string $error,
-        string $provider = null,
-        string $model = null,
+        ?string $provider = null,
+        ?string $model = null,
         array $additionalMetadata = []
     ): static {
         $metadata = array_merge([

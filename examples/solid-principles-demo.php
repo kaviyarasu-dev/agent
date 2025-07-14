@@ -2,19 +2,17 @@
 
 /**
  * SOLID Principles Implementation Demo
- * 
+ *
  * This file demonstrates how the new response format system
  * follows SOLID principles in its design.
  */
 
 use Kaviyarasu\AIAgent\Contracts\Formatters\ResponseFormatterInterface;
-use Kaviyarasu\AIAgent\Formatters\TextResponseFormatter;
 use Kaviyarasu\AIAgent\Formatters\ImageResponseFormatter;
 use Kaviyarasu\AIAgent\Formatters\ResponseFormatterFactory;
-use Kaviyarasu\AIAgent\Responses\TextResponse;
+use Kaviyarasu\AIAgent\Formatters\TextResponseFormatter;
 use Kaviyarasu\AIAgent\Responses\ImageResponse;
-use Kaviyarasu\AIAgent\Services\Core\TextService;
-use Kaviyarasu\AIAgent\Services\Core\ImageService;
+use Kaviyarasu\AIAgent\Responses\TextResponse;
 
 // =======================
 // SOLID Principles Demo
@@ -45,7 +43,7 @@ class CustomTextResponseFormatter implements ResponseFormatterInterface
         // Custom formatting logic
         $metadata['custom_processor'] = 'CustomFormatter';
         $metadata['formatted_at'] = now()->toISOString();
-        
+
         return TextResponse::fromText($data, $metadata['provider'] ?? null, $metadata['model'] ?? null, $metadata);
     }
 
@@ -53,7 +51,7 @@ class CustomTextResponseFormatter implements ResponseFormatterInterface
     {
         $metadata['custom_processor'] = 'CustomFormatter';
         $metadata['error_formatted_at'] = now()->toISOString();
-        
+
         return TextResponse::fromError($error, $metadata['provider'] ?? null, $metadata['model'] ?? null, $metadata);
     }
 
@@ -62,7 +60,7 @@ class CustomTextResponseFormatter implements ResponseFormatterInterface
         $processingTime = microtime(true) - $startTime;
         $metadata['processing_time'] = round($processingTime, 3);
         $metadata['custom_processor'] = 'CustomFormatter';
-        
+
         return $this->formatSuccess($data, $metadata);
     }
 
@@ -73,8 +71,8 @@ class CustomTextResponseFormatter implements ResponseFormatterInterface
 }
 
 // Extend the system without modifying existing classes
-$factory = new ResponseFormatterFactory();
-$factory->register('custom_text', new CustomTextResponseFormatter());
+$factory = new ResponseFormatterFactory;
+$factory->register('custom_text', new CustomTextResponseFormatter);
 
 echo "2. Open/Closed Principle: Added custom formatter without modifying existing code\
 ";
@@ -87,13 +85,13 @@ function processWithAnyFormatter(ResponseFormatterInterface $formatter, string $
 {
     return $formatter->formatSuccess($data, [
         'provider' => 'test-provider',
-        'model' => 'test-model'
+        'model' => 'test-model',
     ]);
 }
 
-$textFormatter = new TextResponseFormatter();
-$imageFormatter = new ImageResponseFormatter();
-$customFormatter = new CustomTextResponseFormatter();
+$textFormatter = new TextResponseFormatter;
+$imageFormatter = new ImageResponseFormatter;
+$customFormatter = new CustomTextResponseFormatter;
 
 // All formatters can be used interchangeably
 $textResult = processWithAnyFormatter($textFormatter, 'This is generated text');
@@ -102,11 +100,11 @@ $customResult = processWithAnyFormatter($customFormatter, 'This is custom format
 
 echo "3. Liskov Substitution Principle: All formatters work interchangeably\
 ";
-echo "   - Text Result Success: " . ($textResult->isSuccess() ? 'Yes' : 'No') . "\
+echo '   - Text Result Success: '.($textResult->isSuccess() ? 'Yes' : 'No')."\
 ";
-echo "   - Image Result Success: " . ($imageResult->isSuccess() ? 'Yes' : 'No') . "\
+echo '   - Image Result Success: '.($imageResult->isSuccess() ? 'Yes' : 'No')."\
 ";
-echo "   - Custom Result Success: " . ($customResult->isSuccess() ? 'Yes' : 'No') . "\
+echo '   - Custom Result Success: '.($customResult->isSuccess() ? 'Yes' : 'No')."\
 \
 ";
 
@@ -145,7 +143,7 @@ class AIResponseProcessor
     {
         return $this->formatter->formatSuccess($data, [
             'processor' => 'AIResponseProcessor',
-            'processed_at' => now()->toISOString()
+            'processed_at' => now()->toISOString(),
         ]);
     }
 
@@ -153,7 +151,7 @@ class AIResponseProcessor
     {
         return $this->formatter->formatError($error, [
             'processor' => 'AIResponseProcessor',
-            'error_processed_at' => now()->toISOString()
+            'error_processed_at' => now()->toISOString(),
         ]);
     }
 }
@@ -169,11 +167,11 @@ $customProcessorResult = $customProcessor->processData('Custom processed content
 
 echo "5. Dependency Inversion Principle: High-level class depends on abstraction\
 ";
-echo "   - Text Processor Result: " . ($textProcessorResult->isSuccess() ? 'Success' : 'Failed') . "\
+echo '   - Text Processor Result: '.($textProcessorResult->isSuccess() ? 'Success' : 'Failed')."\
 ";
-echo "   - Image Processor Result: " . ($imageProcessorResult->isSuccess() ? 'Success' : 'Failed') . "\
+echo '   - Image Processor Result: '.($imageProcessorResult->isSuccess() ? 'Success' : 'Failed')."\
 ";
-echo "   - Custom Processor Result: " . ($customProcessorResult->isSuccess() ? 'Success' : 'Failed') . "\
+echo '   - Custom Processor Result: '.($customProcessorResult->isSuccess() ? 'Success' : 'Failed')."\
 \
 ";
 
@@ -185,13 +183,13 @@ echo "   - Custom Processor Result: " . ($customProcessorResult->isSuccess() ? '
 echo "=== Factory Pattern Usage ===\
 ";
 
-$factory = new ResponseFormatterFactory();
+$factory = new ResponseFormatterFactory;
 
 // Get formatter by type
 $textFormatter = $factory->get('text');
 $imageFormatter = $factory->get('image');
 
-echo "Available formatters: " . implode(', ', array_keys($factory->getAll())) . "\
+echo 'Available formatters: '.implode(', ', array_keys($factory->getAll()))."\
 ";
 
 // Strategy Pattern Example
@@ -212,25 +210,25 @@ class ResponseStrategy
     {
         return $this->formatter->formatSuccess($data, [
             'strategy' => 'ResponseStrategy',
-            'execution_time' => microtime(true)
+            'execution_time' => microtime(true),
         ]);
     }
 }
 
-$strategy = new ResponseStrategy();
+$strategy = new ResponseStrategy;
 
 // Switch strategies at runtime
-$strategy->setFormatter(new TextResponseFormatter());
+$strategy->setFormatter(new TextResponseFormatter);
 $textStrategyResult = $strategy->execute('Text strategy result');
 
-$strategy->setFormatter(new ImageResponseFormatter());
+$strategy->setFormatter(new ImageResponseFormatter);
 $imageStrategyResult = $strategy->execute('https://example.com/strategy-image.jpg');
 
 echo "Strategy Pattern: Changed formatter at runtime\
 ";
-echo "   - Text Strategy: " . ($textStrategyResult->isSuccess() ? 'Success' : 'Failed') . "\
+echo '   - Text Strategy: '.($textStrategyResult->isSuccess() ? 'Success' : 'Failed')."\
 ";
-echo "   - Image Strategy: " . ($imageStrategyResult->isSuccess() ? 'Success' : 'Failed') . "\
+echo '   - Image Strategy: '.($imageStrategyResult->isSuccess() ? 'Success' : 'Failed')."\
 \
 ";
 
@@ -247,15 +245,15 @@ $imageError = $imageFormatter->formatError('Image generation failed');
 
 echo "Consistent error format:\
 ";
-echo "   - Text Error: " . $textError->getError() . "\
+echo '   - Text Error: '.$textError->getError()."\
 ";
-echo "   - Image Error: " . $imageError->getError() . "\
+echo '   - Image Error: '.$imageError->getError()."\
 ";
 
 // Both errors have the same structure
-echo "   - Both have same structure: " . (
+echo '   - Both have same structure: '.(
     method_exists($textError, 'getError') && method_exists($imageError, 'getError') ? 'Yes' : 'No'
-) . "\
+)."\
 \
 ";
 
@@ -269,14 +267,14 @@ echo "=== Performance Tracking ===\
 $startTime = microtime(true);
 $timedResponse = $textFormatter->formatWithTiming('Performance test data', $startTime, [
     'provider' => 'test-provider',
-    'model' => 'test-model'
+    'model' => 'test-model',
 ]);
 
 echo "Performance tracking built into formatters:\
 ";
-echo "   - Processing time: " . $timedResponse->getMetadata()['processing_time'] . "s\
+echo '   - Processing time: '.$timedResponse->getMetadata()['processing_time']."s\
 ";
-echo "   - Timestamp: " . $timedResponse->getMetadata()['timestamp'] . "\
+echo '   - Timestamp: '.$timedResponse->getMetadata()['timestamp']."\
 \
 ";
 

@@ -2,14 +2,13 @@
 
 /**
  * Enhanced AI Agent Usage Examples with Structured Responses
- * 
+ *
  * This file demonstrates the new structured response format
  * following SOLID principles and proper error handling.
  */
 
 use Kaviyarasu\AIAgent\Facades\AIAgent;
 use Kaviyarasu\AIAgent\Responses\TextResponse;
-use Kaviyarasu\AIAgent\Responses\ImageResponse;
 
 // Example 1: Basic Text Generation with Structured Response
 // --------------------------------------------------------
@@ -17,29 +16,29 @@ use Kaviyarasu\AIAgent\Responses\ImageResponse;
 // New structured response format
 $textResponse = AIAgent::generateText('Write a story about AI', [
     'temperature' => 0.8,
-    'max_tokens' => 1000
+    'max_tokens' => 1000,
 ]);
 
-echo "Success: " . ($textResponse->isSuccess() ? 'Yes' : 'No') . "\
+echo 'Success: '.($textResponse->isSuccess() ? 'Yes' : 'No')."\
 ";
-echo "Text: " . $textResponse->getText() . "\
+echo 'Text: '.$textResponse->getText()."\
 ";
-echo "Provider: " . $textResponse->getProvider() . "\
+echo 'Provider: '.$textResponse->getProvider()."\
 ";
-echo "Model: " . $textResponse->getModel() . "\
+echo 'Model: '.$textResponse->getModel()."\
 ";
-echo "Tokens Used: " . $textResponse->getTokensUsed() . "\
+echo 'Tokens Used: '.$textResponse->getTokensUsed()."\
 ";
-echo "Processing Time: " . $textResponse->getProcessingTime() . "s\
+echo 'Processing Time: '.$textResponse->getProcessingTime()."s\
 ";
 
 // Access full metadata
 $metadata = $textResponse->getMetadata();
-echo "Full Metadata: " . json_encode($metadata, JSON_PRETTY_PRINT) . "\
+echo 'Full Metadata: '.json_encode($metadata, JSON_PRETTY_PRINT)."\
 ";
 
 // Convert to JSON
-echo "JSON Response: " . $textResponse->toJson() . "\
+echo 'JSON Response: '.$textResponse->toJson()."\
 ";
 
 // Example 2: Backward Compatibility
@@ -47,7 +46,7 @@ echo "JSON Response: " . $textResponse->toJson() . "\
 
 // Still works with raw string response
 $rawText = AIAgent::generateTextRaw('Write a haiku about Laravel');
-echo "Raw Text: " . $rawText . "\
+echo 'Raw Text: '.$rawText."\
 ";
 
 // Example 3: Image Generation with Structured Response
@@ -56,40 +55,40 @@ echo "Raw Text: " . $rawText . "\
 $imageResponse = AIAgent::generateImage('A futuristic city at sunset', [
     'size' => '1024x1024',
     'quality' => 'hd',
-    'style' => 'vivid'
+    'style' => 'vivid',
 ]);
 
-echo "Success: " . ($imageResponse->isSuccess() ? 'Yes' : 'No') . "\
+echo 'Success: '.($imageResponse->isSuccess() ? 'Yes' : 'No')."\
 ";
-echo "Image URL: " . $imageResponse->getUrl() . "\
+echo 'Image URL: '.$imageResponse->getUrl()."\
 ";
-echo "Provider: " . $imageResponse->getProvider() . "\
+echo 'Provider: '.$imageResponse->getProvider()."\
 ";
-echo "Model: " . $imageResponse->getModel() . "\
+echo 'Model: '.$imageResponse->getModel()."\
 ";
-echo "Size: " . $imageResponse->getSize() . "\
+echo 'Size: '.$imageResponse->getSize()."\
 ";
-echo "Quality: " . $imageResponse->getQuality() . "\
+echo 'Quality: '.$imageResponse->getQuality()."\
 ";
-echo "Style: " . $imageResponse->getStyle() . "\
+echo 'Style: '.$imageResponse->getStyle()."\
 ";
-echo "Processing Time: " . $imageResponse->getProcessingTime() . "s\
+echo 'Processing Time: '.$imageResponse->getProcessingTime()."s\
 ";
 
 // Example 4: Multiple Images with Structured Response
 // --------------------------------------------------
 
 $multipleImagesResponse = AIAgent::generateMultipleImages('Abstract art', 3, [
-    'size' => '512x512'
+    'size' => '512x512',
 ]);
 
-echo "Success: " . ($multipleImagesResponse->isSuccess() ? 'Yes' : 'No') . "\
+echo 'Success: '.($multipleImagesResponse->isSuccess() ? 'Yes' : 'No')."\
 ";
-echo "Number of Images: " . count($multipleImagesResponse->getUrls()) . "\
+echo 'Number of Images: '.count($multipleImagesResponse->getUrls())."\
 ";
 
 foreach ($multipleImagesResponse->getUrls() as $index => $url) {
-    echo "Image " . ($index + 1) . ": " . $url . "\
+    echo 'Image '.($index + 1).': '.$url."\
 ";
 }
 
@@ -98,17 +97,17 @@ foreach ($multipleImagesResponse->getUrls() as $index => $url) {
 
 try {
     $response = AIAgent::provider('invalid-provider')->generateText('Test prompt');
-    
-    if (!$response->isSuccess()) {
-        echo "Error: " . $response->getError() . "\
+
+    if (! $response->isSuccess()) {
+        echo 'Error: '.$response->getError()."\
 ";
-        echo "Provider: " . $response->getProvider() . "\
+        echo 'Provider: '.$response->getProvider()."\
 ";
-        echo "Processing Time: " . $response->getProcessingTime() . "s\
+        echo 'Processing Time: '.$response->getProcessingTime()."s\
 ";
     }
 } catch (\Exception $e) {
-    echo "Exception: " . $e->getMessage() . "\
+    echo 'Exception: '.$e->getMessage()."\
 ";
 }
 
@@ -121,11 +120,11 @@ $claudeResponse = AIAgent::provider('claude')
 
 echo "Claude Response:\
 ";
-echo "Provider: " . $claudeResponse->getProvider() . "\
+echo 'Provider: '.$claudeResponse->getProvider()."\
 ";
-echo "Model: " . $claudeResponse->getModel() . "\
+echo 'Model: '.$claudeResponse->getModel()."\
 ";
-echo "Text: " . $claudeResponse->getText() . "\
+echo 'Text: '.$claudeResponse->getText()."\
 ";
 
 $openaiResponse = AIAgent::provider('openai')
@@ -135,11 +134,11 @@ $openaiResponse = AIAgent::provider('openai')
 echo "\
 OpenAI Response:\
 ";
-echo "Provider: " . $openaiResponse->getProvider() . "\
+echo 'Provider: '.$openaiResponse->getProvider()."\
 ";
-echo "Model: " . $openaiResponse->getModel() . "\
+echo 'Model: '.$openaiResponse->getModel()."\
 ";
-echo "Text: " . $openaiResponse->getText() . "\
+echo 'Text: '.$openaiResponse->getText()."\
 ";
 
 // Example 7: Working with Response Objects
@@ -148,9 +147,9 @@ echo "Text: " . $openaiResponse->getText() . "\
 function processTextResponse(TextResponse $response): void
 {
     if ($response->isSuccess()) {
-        echo "Generated text: " . $response->getText() . "\
+        echo 'Generated text: '.$response->getText()."\
 ";
-        
+
         // Log usage statistics
         logger()->info('Text generation successful', [
             'provider' => $response->getProvider(),
@@ -159,9 +158,9 @@ function processTextResponse(TextResponse $response): void
             'processing_time' => $response->getProcessingTime(),
         ]);
     } else {
-        echo "Generation failed: " . $response->getError() . "\
+        echo 'Generation failed: '.$response->getError()."\
 ";
-        
+
         // Log error
         logger()->error('Text generation failed', [
             'error' => $response->getError(),
@@ -203,19 +202,19 @@ $responses = [];
 foreach ($providers as $provider) {
     $response = AIAgent::provider($provider)->generateText($prompt);
     $responses[$provider] = $response;
-    
+
     echo "\
 {$provider} Response:\
 ";
-    echo "Success: " . ($response->isSuccess() ? 'Yes' : 'No') . "\
+    echo 'Success: '.($response->isSuccess() ? 'Yes' : 'No')."\
 ";
-    echo "Model: " . $response->getModel() . "\
+    echo 'Model: '.$response->getModel()."\
 ";
-    echo "Tokens: " . $response->getTokensUsed() . "\
+    echo 'Tokens: '.$response->getTokensUsed()."\
 ";
-    echo "Time: " . $response->getProcessingTime() . "s\
+    echo 'Time: '.$response->getProcessingTime()."s\
 ";
-    echo "Text length: " . strlen($response->getText()) . " characters\
+    echo 'Text length: '.strlen($response->getText())." characters\
 ";
 }
 
@@ -225,12 +224,12 @@ foreach ($providers as $provider) {
 $serviceResponse = AIAgent::text()->generateText('Create a marketing email', [
     'temperature' => 0.7,
     'max_tokens' => 500,
-    'custom_metadata' => ['campaign_id' => 'CAMP-2025-001']
+    'custom_metadata' => ['campaign_id' => 'CAMP-2025-001'],
 ]);
 
 // Access all metadata including custom fields
 $allMetadata = $serviceResponse->getMetadata();
-echo "Campaign ID: " . ($allMetadata['custom_metadata']['campaign_id'] ?? 'N/A') . "\
+echo 'Campaign ID: '.($allMetadata['custom_metadata']['campaign_id'] ?? 'N/A')."\
 ";
 
 // Example 11: Response Serialization
@@ -269,5 +268,5 @@ $analysis = analyzeResponse($analysisResponse);
 
 echo "Response Analysis:\
 ";
-echo json_encode($analysis, JSON_PRETTY_PRINT) . "\
+echo json_encode($analysis, JSON_PRETTY_PRINT)."\
 ";

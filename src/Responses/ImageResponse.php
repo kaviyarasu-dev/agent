@@ -94,6 +94,7 @@ class ImageResponse extends AIResponse
             if (isset($imageData[0]) && is_string($imageData[0])) {
                 return ['urls' => $imageData];
             }
+
             // If it's already properly formatted
             return $imageData;
         }
@@ -103,8 +104,8 @@ class ImageResponse extends AIResponse
 
     public static function fromUrl(
         string $url,
-        string $provider = null,
-        string $model = null,
+        ?string $provider = null,
+        ?string $model = null,
         array $additionalMetadata = []
     ): static {
         $metadata = array_merge([
@@ -118,8 +119,8 @@ class ImageResponse extends AIResponse
 
     public static function fromUrls(
         array $urls,
-        string $provider = null,
-        string $model = null,
+        ?string $provider = null,
+        ?string $model = null,
         array $additionalMetadata = []
     ): static {
         $metadata = array_merge([
@@ -133,8 +134,8 @@ class ImageResponse extends AIResponse
 
     public static function fromError(
         string $error,
-        string $provider = null,
-        string $model = null,
+        ?string $provider = null,
+        ?string $model = null,
         array $additionalMetadata = []
     ): static {
         $metadata = array_merge([

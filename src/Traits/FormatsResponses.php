@@ -11,6 +11,7 @@ use Kaviyarasu\AIAgent\Responses\AIResponse;
 trait FormatsResponses
 {
     protected ResponseFormatterFactory $formatterFactory;
+
     protected ?ResponseFormatterInterface $currentFormatter = null;
 
     /**
@@ -18,8 +19,8 @@ trait FormatsResponses
      */
     protected function initializeFormatterFactory(): void
     {
-        if (!isset($this->formatterFactory)) {
-            $this->formatterFactory = new ResponseFormatterFactory();
+        if (! isset($this->formatterFactory)) {
+            $this->formatterFactory = new ResponseFormatterFactory;
         }
     }
 
@@ -29,7 +30,7 @@ trait FormatsResponses
     protected function getFormatter(): ResponseFormatterInterface
     {
         $this->initializeFormatterFactory();
-        
+
         if ($this->currentFormatter === null) {
             $this->currentFormatter = $this->formatterFactory->get($this->getFormatterType());
         }
@@ -43,6 +44,7 @@ trait FormatsResponses
     protected function formatSuccess(mixed $data, array $metadata = []): AIResponse
     {
         $metadata = $this->enrichMetadata($metadata);
+
         return $this->getFormatter()->formatSuccess($data, $metadata);
     }
 
@@ -52,6 +54,7 @@ trait FormatsResponses
     protected function formatError(string $error, array $metadata = []): AIResponse
     {
         $metadata = $this->enrichMetadata($metadata);
+
         return $this->getFormatter()->formatError($error, $metadata);
     }
 
@@ -61,6 +64,7 @@ trait FormatsResponses
     protected function formatWithTiming(mixed $data, float $startTime, array $metadata = []): AIResponse
     {
         $metadata = $this->enrichMetadata($metadata);
+
         return $this->getFormatter()->formatWithTiming($data, $startTime, $metadata);
     }
 
@@ -96,11 +100,12 @@ trait FormatsResponses
 
         try {
             $result = $callback();
+
             return $this->formatWithTiming($result, $startTime, $metadata);
         } catch (\Exception $e) {
             $processingTime = microtime(true) - $startTime;
             $metadata['processing_time'] = round($processingTime, 3);
-            
+
             return $this->formatError($e->getMessage(), $metadata);
         }
     }

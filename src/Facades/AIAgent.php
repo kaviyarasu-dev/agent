@@ -5,20 +5,20 @@ declare(strict_types=1);
 namespace Kaviyarasu\AIAgent\Facades;
 
 use Illuminate\Support\Facades\Facade;
-use Kaviyarasu\AIAgent\Responses\TextResponse;
 use Kaviyarasu\AIAgent\Responses\ImageResponse;
+use Kaviyarasu\AIAgent\Responses\TextResponse;
 
 /**
  * @method static \Kaviyarasu\AIAgent\Contracts\Services\TextServiceInterface text()
  * @method static \Kaviyarasu\AIAgent\Contracts\Services\ImageServiceInterface image()
  * @method static \Kaviyarasu\AIAgent\Contracts\Services\VideoServiceInterface video()
  * @method static \Kaviyarasu\AIAgent\AIAgent provider(string $name)
- * 
+ *
  * Structured Response Methods:
  * @method static TextResponse generateText(string $prompt, array $options = [])
  * @method static ImageResponse generateImage(string $prompt, array $options = [])
  * @method static ImageResponse generateMultipleImages(string $prompt, int $count, array $options = [])
- * 
+ *
  * Raw Response Methods (Backward Compatibility):
  * @method static string generateTextRaw(string $prompt, array $options = [])
  * @method static string generateImageRaw(string $prompt, array $options = [])
@@ -104,6 +104,7 @@ class AIAgent extends Facade
     {
         $instance = static::getFacadeRoot();
         $instance->text()->switchModel($model);
+
         return $instance;
     }
 
