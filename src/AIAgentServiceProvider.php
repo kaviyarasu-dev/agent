@@ -8,11 +8,15 @@ use Kaviyarasu\AIAgent\Commands\AIAgentCommand;
 use Kaviyarasu\AIAgent\Commands\ListProvidersCommand;
 use Kaviyarasu\AIAgent\Commands\MakeAiAgentCommand;
 use Kaviyarasu\AIAgent\Config\AIConfigManager;
+use Kaviyarasu\AIAgent\Contracts\Formatters\ResponseFormatterInterface;
 use Kaviyarasu\AIAgent\Contracts\Services\ImageServiceInterface;
 use Kaviyarasu\AIAgent\Contracts\Services\TextServiceInterface;
 use Kaviyarasu\AIAgent\Contracts\Services\VideoServiceInterface;
 use Kaviyarasu\AIAgent\Factory\ProviderFactory;
 use Kaviyarasu\AIAgent\Factory\ServiceFactory;
+use Kaviyarasu\AIAgent\Formatters\ImageResponseFormatter;
+use Kaviyarasu\AIAgent\Formatters\ResponseFormatterFactory;
+use Kaviyarasu\AIAgent\Formatters\TextResponseFormatter;
 use Kaviyarasu\AIAgent\Services\Core\ImageService;
 use Kaviyarasu\AIAgent\Services\Core\TextService;
 use Kaviyarasu\AIAgent\Services\Core\VideoService;
@@ -52,6 +56,16 @@ class AIAgentServiceProvider extends PackageServiceProvider
             );
         });
 
+        // Register Response Formatter Factory
+        $this->app->singleton(ResponseFormatterFactory::class, function ($app) {
+            $factory = new ResponseFormatterFactory();
+            
+            // Register additional formatters if needed
+            $this->registerCustomFormatters($factory);
+            
+            return $factory;
+        });
+
         $this->app->singleton(ServiceFactory::class, function ($app) {
             return new ServiceFactory(
                 $app->make(ProviderFactory::class),
@@ -68,6 +82,9 @@ class AIAgentServiceProvider extends PackageServiceProvider
 
         // Register service bindings
         $this->registerServices();
+
+        // Register formatter bindings
+        $this->registerFormatters();
 
         // Register module services
         $this->registerModuleServices();
@@ -89,6 +106,19 @@ class AIAgentServiceProvider extends PackageServiceProvider
             VideoServiceInterface::class,
             VideoService::class
         );
+    }
+
+    protected function registerFormatters(): void
+    {
+        // Register individual formatters
+        $this->app->bind('ai-agent.formatter.text', TextResponseFormatter::class);
+        $this->app->bind('ai-agent.formatter.image', ImageResponseFormatter::class);
+
+        // Register formatter interface binding
+        $this->app->bind(ResponseFormatterInterface::class, function ($app) {
+            // Default to text formatter, can be overridden
+            return $app->make('ai-agent.formatter.text');
+        });
     }
 
     protected function registerModuleServices(): void
@@ -116,5 +146,34 @@ class AIAgentServiceProvider extends PackageServiceProvider
 
                 return $service;
             });
+    }
+
+    /**
+     * Register custom formatters
+     */
+    protected function registerCustomFormatters(ResponseFormatterFactory $factory): void
+    {
+        // Register any custom formatters here
+        // Example:
+        // $factory->register('custom_text', new CustomTextResponseFormatter());
+        
+        // Allow users to extend formatters via configuration
+        $customFormatters = config('ai-agent.custom_formatters', []);
+        
+        foreach ($customFormatters as $type => $formatterClass) {
+            if (class_exists($formatterClass)) {
+                $factory->register($type, new $formatterClass());
+            }
+        }
+    }
+
+    /**
+     * Register facade aliases
+     */
+    public function packageBooted(): void
+    {
+        // Register additional aliases if needed
+        $this->app->alias(AIAgent::class, 'ai-agent');
+        $this->app->alias(ResponseFormatterFactory::class, 'ai-agent.formatter.factory');
     }
 }

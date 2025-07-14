@@ -10,17 +10,17 @@ use Kaviyarasu\AIAgent\Contracts\HasProviderSwitching;
 use Kaviyarasu\AIAgent\Contracts\Services\TextServiceInterface;
 use Kaviyarasu\AIAgent\Exceptions\AIAgentException;
 use Kaviyarasu\AIAgent\Factory\ProviderFactory;
+use Kaviyarasu\AIAgent\Responses\TextResponse;
+use Kaviyarasu\AIAgent\Traits\FormatsResponses;
 
 class TextService implements HasModelSwitching, HasProviderSwitching, TextServiceInterface
 {
+    use FormatsResponses;
+
     private ProviderFactory $providerFactory;
-
     private ?TextGenerationInterface $currentProvider = null;
-
     private string $currentProviderName = '';
-
     private string $originalProviderName = '';
-
     private string $originalModel = '';
 
     public function __construct(ProviderFactory $providerFactory)
@@ -28,39 +28,59 @@ class TextService implements HasModelSwitching, HasProviderSwitching, TextServic
         $this->providerFactory = $providerFactory;
     }
 
-    public function generateText(string $prompt, array $options = []): string
+    /**
+     * Generate text with structured response
+     */
+    public function generateText(string $prompt, array $options = []): TextResponse
     {
-        $provider = $this->getProvider();
-
-        $params = array_merge([
-            'prompt' => $prompt,
-            'temperature' => 1,
-            'max_tokens' => 1000,
-        ], $options);
-
+        $startTime = microtime(true);
+        
         try {
-            return $provider->generateText($params);
+            $provider = $this->getProvider();
+            $params = $this->buildParams($prompt, $options);
+            
+            $result = $provider->generateText($params);
+            
+            // Extract token usage if available
+            $metadata = $this->extractMetadata($params, $result);
+            
+            return $this->formatWithTiming($result, $startTime, $metadata);
         } catch (\Exception $e) {
             logger()->error('Text generation failed', [
-                'provider' => get_class($provider),
+                'provider' => $this->getCurrentProvider(),
                 'error' => $e->getMessage(),
             ]);
 
-            // Attempt with fallback provider
-            $this->currentProvider = null;
+            // Attempt fallback
+            $processingTime = microtime(true) - $startTime;
+            $metadata = [
+                'processing_time' => round($processingTime, 3),
+                'attempted_fallback' => true,
+            ];
 
-            return $this->generateText($prompt, $options);
+            try {
+                $this->currentProvider = null;
+                return $this->generateText($prompt, $options);
+            } catch (\Exception $fallbackError) {
+                return $this->formatError($fallbackError->getMessage(), $metadata);
+            }
         }
+    }
+
+    /**
+     * Generate text with raw string response (backward compatibility)
+     */
+    public function generateTextRaw(string $prompt, array $options = []): string
+    {
+        $response = $this->generateText($prompt, $options);
+        return $response->getText() ?? '';
     }
 
     public function streamText(string $prompt, array $options = []): iterable
     {
         $provider = $this->getProvider();
-
-        $params = array_merge([
-            'prompt' => $prompt,
-            'stream' => true,
-        ], $options);
+        $params = $this->buildParams($prompt, $options);
+        $params['stream'] = true;
 
         return $provider->streamText($params);
     }
@@ -83,7 +103,6 @@ class TextService implements HasModelSwitching, HasProviderSwitching, TextServic
     public function switchProvider(string $providerName): self
     {
         $this->setProvider($providerName);
-
         return $this;
     }
 
@@ -121,7 +140,6 @@ class TextService implements HasModelSwitching, HasProviderSwitching, TextServic
     {
         try {
             $provider = $this->providerFactory->create($providerName);
-
             return $provider->supports('text') && $provider->isAvailable();
         } catch (\Exception $e) {
             return false;
@@ -138,7 +156,6 @@ class TextService implements HasModelSwitching, HasProviderSwitching, TextServic
 
         try {
             $this->switchProvider($providerName);
-
             return $callback($this);
         } finally {
             if ($originalProvider) {
@@ -147,7 +164,6 @@ class TextService implements HasModelSwitching, HasProviderSwitching, TextServic
                     try {
                         $this->switchModel($originalModel);
                     } catch (\Exception $e) {
-                        // Log but don't throw
                         logger()->warning('Could not restore original model: '.$e->getMessage());
                     }
                 }
@@ -167,7 +183,6 @@ class TextService implements HasModelSwitching, HasProviderSwitching, TextServic
         }
 
         $provider->switchModel($model);
-
         return $this;
     }
 
@@ -216,7 +231,6 @@ class TextService implements HasModelSwitching, HasProviderSwitching, TextServic
 
         try {
             $this->switchModel($model);
-
             return $callback($this);
         } finally {
             if ($originalModel && $originalModel !== 'unknown') {
@@ -241,6 +255,49 @@ class TextService implements HasModelSwitching, HasProviderSwitching, TextServic
         }
 
         return $provider->getModelCapabilities($model);
+    }
+
+    /**
+     * Get the formatter type for this service
+     */
+    protected function getFormatterType(): string
+    {
+        return 'text';
+    }
+
+    /**
+     * Build parameters for text generation
+     */
+    private function buildParams(string $prompt, array $options): array
+    {
+        return array_merge([
+            'prompt' => $prompt,
+            'temperature' => 1,
+            'max_tokens' => 1000,
+        ], $options);
+    }
+
+    /**
+     * Extract metadata from generation result
+     */
+    private function extractMetadata(array $params, mixed $result): array
+    {
+        $metadata = [];
+
+        // Extract parameters that were used
+        if (isset($params['temperature'])) {
+            $metadata['temperature'] = $params['temperature'];
+        }
+        if (isset($params['max_tokens'])) {
+            $metadata['max_tokens'] = $params['max_tokens'];
+        }
+
+        // Try to extract token usage from result if it's structured
+        if (is_array($result) && isset($result['usage'])) {
+            $metadata['tokens_used'] = $result['usage']['total_tokens'] ?? 0;
+        }
+
+        return $metadata;
     }
 
     private function getProvider(): TextGenerationInterface

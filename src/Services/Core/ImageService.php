@@ -10,13 +10,15 @@ use Kaviyarasu\AIAgent\Contracts\HasProviderSwitching;
 use Kaviyarasu\AIAgent\Contracts\Services\ImageServiceInterface;
 use Kaviyarasu\AIAgent\Exceptions\AIAgentException;
 use Kaviyarasu\AIAgent\Factory\ProviderFactory;
+use Kaviyarasu\AIAgent\Responses\ImageResponse;
+use Kaviyarasu\AIAgent\Traits\FormatsResponses;
 
 class ImageService implements HasModelSwitching, HasProviderSwitching, ImageServiceInterface
 {
+    use FormatsResponses;
+
     private ProviderFactory $providerFactory;
-
     private ?ImageGenerationInterface $currentProvider = null;
-
     private string $currentProviderName = '';
 
     public function __construct(ProviderFactory $providerFactory)
@@ -24,39 +26,97 @@ class ImageService implements HasModelSwitching, HasProviderSwitching, ImageServ
         $this->providerFactory = $providerFactory;
     }
 
-    public function generateImage(string $prompt, array $options = []): string
+    /**
+     * Generate single image with structured response
+     */
+    public function generateImage(string $prompt, array $options = []): ImageResponse
     {
-        $provider = $this->getProvider();
-        $model = $provider->getModelCapabilities();
+        $startTime = microtime(true);
+        
+        try {
+            $provider = $this->getProvider();
+            $model = $provider->getModelCapabilities();
+            $params = $this->buildParams($prompt, $options, $model);
+            
+            $result = $provider->generateImage($params);
+            
+            // Extract metadata
+            $metadata = $this->extractMetadata($params, $model);
+            
+            return $this->formatWithTiming($result, $startTime, $metadata);
+        } catch (\Exception $e) {
+            logger()->error('Image generation failed', [
+                'provider' => $this->getCurrentProvider(),
+                'error' => $e->getMessage(),
+            ]);
 
-        $params = array_merge([
-            'prompt' => $prompt,
-            'size' => $model['default_size'] ?? '',
-            'style' => $model['default_style'] ?? '',
-            'n' => 1,
-        ], $options);
+            $processingTime = microtime(true) - $startTime;
+            $metadata = [
+                'processing_time' => round($processingTime, 3),
+            ];
 
-        return $provider->generateImage($params);
+            return $this->formatError($e->getMessage(), $metadata);
+        }
     }
 
-    public function generateMultipleImages(string $prompt, int $count, array $options = []): array
+    /**
+     * Generate single image with raw string response (backward compatibility)
+     */
+    public function generateImageRaw(string $prompt, array $options = []): string
     {
-        $provider = $this->getProvider();
-        $model = $provider->getModelCapabilities();
+        $response = $this->generateImage($prompt, $options);
+        return $response->getUrl() ?? '';
+    }
 
-        $params = array_merge([
-            'prompt' => $prompt,
-            'size' => $model['default_size'] ?? '',
-            'style' => $model['default_style'] ?? '',
-            'n' => $count,
-        ], $options);
+    /**
+     * Generate multiple images with structured response
+     */
+    public function generateMultipleImages(string $prompt, int $count, array $options = []): ImageResponse
+    {
+        $startTime = microtime(true);
+        
+        try {
+            $provider = $this->getProvider();
+            $model = $provider->getModelCapabilities();
+            $params = $this->buildParams($prompt, $options, $model);
+            $params['n'] = $count;
+            
+            $result = $provider->generateImages($params);
+            
+            // Extract metadata
+            $metadata = $this->extractMetadata($params, $model);
+            $metadata['count'] = $count;
+            
+            return $this->formatWithTiming($result, $startTime, $metadata);
+        } catch (\Exception $e) {
+            logger()->error('Multiple image generation failed', [
+                'provider' => $this->getCurrentProvider(),
+                'error' => $e->getMessage(),
+            ]);
 
-        return $provider->generateImages($params);
+            $processingTime = microtime(true) - $startTime;
+            $metadata = [
+                'processing_time' => round($processingTime, 3),
+                'count' => $count,
+            ];
+
+            return $this->formatError($e->getMessage(), $metadata);
+        }
+    }
+
+    /**
+     * Generate multiple images with raw array response (backward compatibility)
+     */
+    public function generateMultipleImagesRaw(string $prompt, int $count, array $options = []): array
+    {
+        $response = $this->generateMultipleImages($prompt, $count, $options);
+        return $response->getUrls();
     }
 
     public function setProvider(string $providerName): void
     {
         $provider = $this->providerFactory->create($providerName);
+        
         if (! $provider instanceof ImageGenerationInterface) {
             throw new \InvalidArgumentException('Provider does not support image generation');
         }
@@ -111,7 +171,6 @@ class ImageService implements HasModelSwitching, HasProviderSwitching, ImageServ
 
         try {
             $this->switchProvider($providerName);
-
             return $callback($this);
         } finally {
             if ($originalProvider) {
@@ -195,6 +254,56 @@ class ImageService implements HasModelSwitching, HasProviderSwitching, ImageServ
         }
 
         return $provider->getModelCapabilities($model);
+    }
+
+    /**
+     * Get the formatter type for this service
+     */
+    protected function getFormatterType(): string
+    {
+        return 'image';
+    }
+
+    /**
+     * Build parameters for image generation
+     */
+    private function buildParams(string $prompt, array $options, array $model): array
+    {
+        return array_merge([
+            'prompt' => $prompt,
+            'size' => $model['default_size'] ?? '',
+            'style' => $model['default_style'] ?? '',
+            'n' => 1,
+        ], $options);
+    }
+
+    /**
+     * Extract metadata from generation parameters and model
+     */
+    private function extractMetadata(array $params, array $model): array
+    {
+        $metadata = [];
+
+        // Extract parameters that were used
+        if (isset($params['size'])) {
+            $metadata['size'] = $params['size'];
+        }
+        if (isset($params['style'])) {
+            $metadata['style'] = $params['style'];
+        }
+        if (isset($params['quality'])) {
+            $metadata['quality'] = $params['quality'];
+        }
+
+        // Add model capabilities
+        if (isset($model['default_size'])) {
+            $metadata['default_size'] = $model['default_size'];
+        }
+        if (isset($model['default_style'])) {
+            $metadata['default_style'] = $model['default_style'];
+        }
+
+        return $metadata;
     }
 
     private function getProvider(): ImageGenerationInterface
