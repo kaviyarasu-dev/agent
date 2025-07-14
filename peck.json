@@ -3,7 +3,8 @@
     "ignore": {
         "words": [
             "php",
-            "runware"
+            "runware",
+            "formatters"
         ],
         "paths": []
     }
