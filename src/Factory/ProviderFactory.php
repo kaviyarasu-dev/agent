@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Cache;
 use Kaviyarasu\AIAgent\Config\AIConfigManager;
 use Kaviyarasu\AIAgent\Contracts\ProviderInterface;
 use Kaviyarasu\AIAgent\Exceptions\AIAgentException;
+use Log;
 
 class ProviderFactory
 {
@@ -29,11 +30,11 @@ class ProviderFactory
         $config = $this->configManager->getProviderConfig($providerName);
         $providerClass = $this->configManager->getProviderClass($providerName);
 
-        if (empty($config) || ! $providerClass) {
+        if (empty($config) || !$providerClass) {
             throw new \InvalidArgumentException("Provider {$providerName} not configured");
         }
 
-        if (! class_exists($providerClass)) {
+        if (!class_exists($providerClass)) {
             throw new AIAgentException("Provider class {$providerClass} not found");
         }
 

@@ -146,6 +146,22 @@ return [
             'default_model' => env('OPENAI_MODEL', 'o4-mini-2025-04-16'),
         ],
 
+        'gemini' => [
+            'api_key' => env('GEMINI_API_KEY'),
+            'class' => \Kaviyarasu\AIAgent\Providers\AI\Gemini\GeminiProvider::class,
+            'models' => [
+                'gemini-2.5-pro' => [
+                    'name' => 'Gemini 2.5 Pro',
+                    'version' => '2.5',
+                    'max_tokens' => 4096,
+                    'capabilities' => ['text'],
+                    'supports_streaming' => true,
+                    'supports_functions' => false,
+                ],
+            ],
+            'default_model' => env('GEMINI_MODEL', 'gemini-2.5-pro'),
+        ],
+
         'ideogram' => [
             'api_key' => env('IDEOGRAM_API_KEY'),
             'class' => \Kaviyarasu\AIAgent\Providers\AI\Ideogram\IdeogramProvider::class,
