@@ -9,8 +9,11 @@ use JsonSerializable;
 abstract class AIResponse implements JsonSerializable
 {
     protected bool $success;
+
     protected mixed $data;
+
     protected array $metadata;
+
     protected ?string $error;
 
     public function __construct(

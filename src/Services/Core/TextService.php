@@ -18,9 +18,13 @@ class TextService implements HasModelSwitching, HasProviderSwitching, TextServic
     use FormatsResponses;
 
     private ProviderFactory $providerFactory;
+
     private ?TextGenerationInterface $currentProvider = null;
+
     private string $currentProviderName = '';
+
     private string $originalProviderName = '';
+
     private string $originalModel = '';
 
     public function __construct(ProviderFactory $providerFactory)
@@ -34,16 +38,16 @@ class TextService implements HasModelSwitching, HasProviderSwitching, TextServic
     public function generateText(string $prompt, array $options = []): TextResponse
     {
         $startTime = microtime(true);
-        
+
         try {
             $provider = $this->getProvider();
             $params = $this->buildParams($prompt, $options);
-            
+
             $result = $provider->generateText($params);
-            
+
             // Extract token usage if available
             $metadata = $this->extractMetadata($params, $result);
-            
+
             return $this->formatWithTiming($result, $startTime, $metadata);
         } catch (\Exception $e) {
             logger()->error('Text generation failed', [
@@ -60,6 +64,7 @@ class TextService implements HasModelSwitching, HasProviderSwitching, TextServic
 
             try {
                 $this->currentProvider = null;
+
                 return $this->generateText($prompt, $options);
             } catch (\Exception $fallbackError) {
                 return $this->formatError($fallbackError->getMessage(), $metadata);
@@ -73,6 +78,7 @@ class TextService implements HasModelSwitching, HasProviderSwitching, TextServic
     public function generateTextRaw(string $prompt, array $options = []): string
     {
         $response = $this->generateText($prompt, $options);
+
         return $response->getText() ?? '';
     }
 
@@ -103,6 +109,7 @@ class TextService implements HasModelSwitching, HasProviderSwitching, TextServic
     public function switchProvider(string $providerName): self
     {
         $this->setProvider($providerName);
+
         return $this;
     }
 
@@ -140,6 +147,7 @@ class TextService implements HasModelSwitching, HasProviderSwitching, TextServic
     {
         try {
             $provider = $this->providerFactory->create($providerName);
+
             return $provider->supports('text') && $provider->isAvailable();
         } catch (\Exception $e) {
             return false;
@@ -156,6 +164,7 @@ class TextService implements HasModelSwitching, HasProviderSwitching, TextServic
 
         try {
             $this->switchProvider($providerName);
+
             return $callback($this);
         } finally {
             if ($originalProvider) {
@@ -183,6 +192,7 @@ class TextService implements HasModelSwitching, HasProviderSwitching, TextServic
         }
 
         $provider->switchModel($model);
+
         return $this;
     }
 
@@ -231,6 +241,7 @@ class TextService implements HasModelSwitching, HasProviderSwitching, TextServic
 
         try {
             $this->switchModel($model);
+
             return $callback($this);
         } finally {
             if ($originalModel && $originalModel !== 'unknown') {

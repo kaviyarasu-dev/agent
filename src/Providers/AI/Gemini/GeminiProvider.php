@@ -20,6 +20,7 @@ class GeminiProvider extends AbstractProvider implements ImageGenerationInterfac
     private const TEXT_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/';
 
     private const IMAGE_API_URL = 'https://generativelanguage.googleapis.com/v1beta/openai/images/generations';
+
     public function __construct(array $config)
     {
         parent::__construct($config);
@@ -63,19 +64,19 @@ class GeminiProvider extends AbstractProvider implements ImageGenerationInterfac
 
     public function generateText(array $params): string
     {
-        if (!$this->supports('text')) {
+        if (! $this->supports('text')) {
             throw new AIAgentException("Model {$this->currentModel} does not support text generation");
         }
 
         $requestParams = [
-            "contents" => [
+            'contents' => [
                 [
-                    "parts" => [
+                    'parts' => [
                         [
-                            "text" => $params['prompt'],
-                        ]
-                    ]
-                ]
+                            'text' => $params['prompt'],
+                        ],
+                    ],
+                ],
             ],
         ];
 
@@ -85,14 +86,14 @@ class GeminiProvider extends AbstractProvider implements ImageGenerationInterfac
                 'x-goog-api-key' => $this->config['api_key'],
                 'Content-Type' => 'application/json',
             ])
-            ->post(self::TEXT_API_URL . $this->currentModel . ':generateContent', $requestParams);
+            ->post(self::TEXT_API_URL.$this->currentModel.':generateContent', $requestParams);
 
         Log::info('Gemini Response', [$response->json(), 'curent_model' => $this->currentModel, $requestParams]);
 
-        if (!$response->successful()) {
+        if (! $response->successful()) {
             logger()->error('Gemini API error:', $requestParams);
 
-            throw new AIAgentException('Gemini API error: ' . $response->body());
+            throw new AIAgentException('Gemini API error: '.$response->body());
         }
 
         return $response->json()['candidates'][0]['content']['parts'][0]['text'] ?? '';
@@ -100,19 +101,19 @@ class GeminiProvider extends AbstractProvider implements ImageGenerationInterfac
 
     public function streamText(array $params): iterable
     {
-        if (!$this->supports('text')) {
+        if (! $this->supports('text')) {
             throw new AIAgentException("Model {$this->currentModel} does not support text generation");
         }
 
         $requestParams = [
-            "contents" => [
+            'contents' => [
                 [
-                    "parts" => [
+                    'parts' => [
                         [
-                            "text" => $params['prompt'],
-                        ]
-                    ]
-                ]
+                            'text' => $params['prompt'],
+                        ],
+                    ],
+                ],
             ],
         ];
 
@@ -122,10 +123,10 @@ class GeminiProvider extends AbstractProvider implements ImageGenerationInterfac
                 'x-goog-api-key' => $this->config['api_key'],
                 'Content-Type' => 'application/json',
             ])
-            ->post(self::TEXT_API_URL . $this->currentModel . ':streamGenerateContent?alt=sse', $requestParams);
+            ->post(self::TEXT_API_URL.$this->currentModel.':streamGenerateContent?alt=sse', $requestParams);
 
         $body = $response->getBody();
-        while (!$body->eof()) {
+        while (! $body->eof()) {
             $chunk = $body->read(1024);
             if ($chunk) {
                 yield $chunk;
@@ -135,7 +136,7 @@ class GeminiProvider extends AbstractProvider implements ImageGenerationInterfac
 
     public function generateImage(array $params): string
     {
-        if (!$this->supports('image')) {
+        if (! $this->supports('image')) {
             throw new AIAgentException("Model {$this->currentModel} does not support image generation");
         }
 
@@ -144,7 +145,7 @@ class GeminiProvider extends AbstractProvider implements ImageGenerationInterfac
 
     public function generateImages(array $params): array
     {
-        if (!$this->supports('image')) {
+        if (! $this->supports('image')) {
             throw new AIAgentException("Model {$this->currentModel} does not support image generation");
         }
 
@@ -155,14 +156,14 @@ class GeminiProvider extends AbstractProvider implements ImageGenerationInterfac
         ];
 
         $response = Http::withHeaders([
-            'Authorization' => 'Bearer ' . $this->config['api_key'],
+            'Authorization' => 'Bearer '.$this->config['api_key'],
             'Content-Type' => 'application/json',
         ])->post(self::IMAGE_API_URL, $requestParams);
 
         Log::info('Gemini Response', [$response->json()]);
 
-        if (!$response->successful()) {
-            throw new AIAgentException('Gemini Image API error: ' . $response->body());
+        if (! $response->successful()) {
+            throw new AIAgentException('Gemini Image API error: '.$response->body());
         }
 
         $data = $response->json();

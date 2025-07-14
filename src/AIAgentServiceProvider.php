@@ -58,11 +58,11 @@ class AIAgentServiceProvider extends PackageServiceProvider
 
         // Register Response Formatter Factory
         $this->app->singleton(ResponseFormatterFactory::class, function ($app) {
-            $factory = new ResponseFormatterFactory();
-            
+            $factory = new ResponseFormatterFactory;
+
             // Register additional formatters if needed
             $this->registerCustomFormatters($factory);
-            
+
             return $factory;
         });
 
@@ -156,13 +156,13 @@ class AIAgentServiceProvider extends PackageServiceProvider
         // Register any custom formatters here
         // Example:
         // $factory->register('custom_text', new CustomTextResponseFormatter());
-        
+
         // Allow users to extend formatters via configuration
         $customFormatters = config('ai-agent.custom_formatters', []);
-        
+
         foreach ($customFormatters as $type => $formatterClass) {
             if (class_exists($formatterClass)) {
-                $factory->register($type, new $formatterClass());
+                $factory->register($type, new $formatterClass);
             }
         }
     }

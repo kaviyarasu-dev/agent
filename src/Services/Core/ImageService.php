@@ -18,7 +18,9 @@ class ImageService implements HasModelSwitching, HasProviderSwitching, ImageServ
     use FormatsResponses;
 
     private ProviderFactory $providerFactory;
+
     private ?ImageGenerationInterface $currentProvider = null;
+
     private string $currentProviderName = '';
 
     public function __construct(ProviderFactory $providerFactory)
@@ -32,17 +34,17 @@ class ImageService implements HasModelSwitching, HasProviderSwitching, ImageServ
     public function generateImage(string $prompt, array $options = []): ImageResponse
     {
         $startTime = microtime(true);
-        
+
         try {
             $provider = $this->getProvider();
             $model = $provider->getModelCapabilities();
             $params = $this->buildParams($prompt, $options, $model);
-            
+
             $result = $provider->generateImage($params);
-            
+
             // Extract metadata
             $metadata = $this->extractMetadata($params, $model);
-            
+
             return $this->formatWithTiming($result, $startTime, $metadata);
         } catch (\Exception $e) {
             logger()->error('Image generation failed', [
@@ -65,6 +67,7 @@ class ImageService implements HasModelSwitching, HasProviderSwitching, ImageServ
     public function generateImageRaw(string $prompt, array $options = []): string
     {
         $response = $this->generateImage($prompt, $options);
+
         return $response->getUrl() ?? '';
     }
 
@@ -74,19 +77,19 @@ class ImageService implements HasModelSwitching, HasProviderSwitching, ImageServ
     public function generateMultipleImages(string $prompt, int $count, array $options = []): ImageResponse
     {
         $startTime = microtime(true);
-        
+
         try {
             $provider = $this->getProvider();
             $model = $provider->getModelCapabilities();
             $params = $this->buildParams($prompt, $options, $model);
             $params['n'] = $count;
-            
+
             $result = $provider->generateImages($params);
-            
+
             // Extract metadata
             $metadata = $this->extractMetadata($params, $model);
             $metadata['count'] = $count;
-            
+
             return $this->formatWithTiming($result, $startTime, $metadata);
         } catch (\Exception $e) {
             logger()->error('Multiple image generation failed', [
@@ -110,13 +113,14 @@ class ImageService implements HasModelSwitching, HasProviderSwitching, ImageServ
     public function generateMultipleImagesRaw(string $prompt, int $count, array $options = []): array
     {
         $response = $this->generateMultipleImages($prompt, $count, $options);
+
         return $response->getUrls();
     }
 
     public function setProvider(string $providerName): void
     {
         $provider = $this->providerFactory->create($providerName);
-        
+
         if (! $provider instanceof ImageGenerationInterface) {
             throw new \InvalidArgumentException('Provider does not support image generation');
         }
@@ -171,6 +175,7 @@ class ImageService implements HasModelSwitching, HasProviderSwitching, ImageServ
 
         try {
             $this->switchProvider($providerName);
+
             return $callback($this);
         } finally {
             if ($originalProvider) {

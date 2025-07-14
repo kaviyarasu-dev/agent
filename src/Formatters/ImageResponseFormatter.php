@@ -22,7 +22,7 @@ class ImageResponseFormatter implements ResponseFormatterInterface
         }
 
         $url = is_array($data) ? ($data[0] ?? '') : $data;
-        
+
         return ImageResponse::fromUrl(
             $url,
             $metadata['provider'] ?? null,
@@ -93,14 +93,20 @@ class ImageResponseFormatter implements ResponseFormatterInterface
      */
     public function formatWithSpecs(
         mixed $data,
-        string $size = null,
-        string $quality = null,
-        string $style = null,
+        ?string $size = null,
+        ?string $quality = null,
+        ?string $style = null,
         array $metadata = []
     ): ImageResponse {
-        if ($size) $metadata['size'] = $size;
-        if ($quality) $metadata['quality'] = $quality;
-        if ($style) $metadata['style'] = $style;
+        if ($size) {
+            $metadata['size'] = $size;
+        }
+        if ($quality) {
+            $metadata['quality'] = $quality;
+        }
+        if ($style) {
+            $metadata['style'] = $style;
+        }
 
         return $this->formatSuccess($data, $metadata);
     }
